@@ -1,151 +1,246 @@
-<!DOCTYPE html>
+<!doctype html>
 <!-- 
 Nama  : Muhammad Akbar
 NIM   : F1D02410075
 Kelas : PEMROGRAMAN WEB C 2026
 -->
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MyNetflix</title>
-</head>
+  </head>
 
-<body style="margin:8px; font-family:Arial, sans-serif; background-color:black; color:white;">
-
-    <header style="background-color:#e50914; padding:20px; text-align:center;">
-        <h1>MY NETFLIX</h1>
+  <body
+    style="
+      margin: 8px;
+      font-family: Arial, sans-serif;
+      background-color: black;
+      color: white;
+    "
+  >
+    <header
+      style="background-color: #e50914; padding: 20px; text-align: center"
+    >
+      <h1>MY NETFLIX</h1>
     </header>
 
-    <nav style="background-color:#141414; padding:10px 0;">
-        <ul style="padding:0; text-align:center;">
-            <li style="display:inline; margin:0 15px;">
-                <a href="#home" style="color:white; text-decoration:none;">Home</a>
-            </li>
-            <li style="display:inline; margin:0 15px;">
-                <a href="#movies" style="color:white; text-decoration:none;">Movies</a>
-            </li>
-            <li style="display:inline; margin:0 15px;">
-                <a href="#login" style="color:white; text-decoration:none;">Login</a>
-            </li>
-        </ul>
+    <nav style="background-color: #141414; padding: 10px 0">
+      <ul style="padding: 0; text-align: center">
+        <li style="display: inline; margin: 0 15px">
+          <a href="#home" style="color: white; text-decoration: none">Home</a>
+        </li>
+        <li style="display: inline; margin: 0 15px">
+          <a href="#movies" style="color: white; text-decoration: none"
+            >Movies</a
+          >
+        </li>
+        <li style="display: inline; margin: 0 15px">
+          <a href="#login" style="color: white; text-decoration: none">Login</a>
+        </li>
+      </ul>
     </nav>
 
     <main>
+      <section id="home" style="padding: 40px">
+        <h2>Unlimited Movies, TV Shows, and More</h2>
+        <h3>Entertainment Without Limits</h3>
+        <p>Watch anywhere. <strong>Cancel anytime.</strong></p>
+        <p><em>Ready to watch? Join now.</em></p>
+        <img
+          src="../assets/images/netflix-banner.jpg"
+          alt="Netflix Banner Background"
+          style="width: 100%; margin-top: 20px"
+        />
+      </section>
 
-        <section id="home" style="padding:40px;">
-            <h2>Unlimited Movies, TV Shows, and More</h2>
-            <h3>Entertainment Without Limits</h3>
-            <p>Watch anywhere. <strong>Cancel anytime.</strong></p>
-            <p><em>Ready to watch? Join now.</em></p>
-            <img src="images/netflix-banner.jpg" 
-                 alt="Netflix Banner Background"
-                 style="width:100%; margin-top:20px;">
-        </section>
+      <section id="movies" style="padding: 40px">
+        <h2>Popular on Netflix</h2>
+        <h3>Top Trending This Week</h3>
+        <table
+          style="
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            color: black;
+          "
+        >
+          <tr>
+            <th style="border: 1px solid black; padding: 10px">No</th>
+            <th style="border: 1px solid black; padding: 10px">Title</th>
+            <th style="border: 1px solid black; padding: 10px">Genre</th>
+          </tr>
 
-        <section id="movies" style="padding:40px;">
-            <h2>Popular on Netflix</h2>
-            <h3>Top Trending This Week</h3>
-            <table style="width:100%; border-collapse:collapse; background-color:white; color:black;">
-                <tr>
-                    <th style="border:1px solid black; padding:10px;">No</th>
-                    <th style="border:1px solid black; padding:10px;">Title</th>
-                    <th style="border:1px solid black; padding:10px;">Genre</th>
-                </tr>
+          <tr>
+            <td
+              style="border: 1px solid black; padding: 10px; text-align: center"
+            >
+              1
+            </td>
+            <td style="border: 1px solid black; padding: 10px">
+              Predator (1987)
+            </td>
+            <td style="border: 1px solid black; padding: 10px">
+              Sci-Fi / Action
+            </td>
+          </tr>
 
-                <tr>
-                    <td style="border:1px solid black; padding:10px; text-align:center;">1</td>
-                    <td style="border:1px solid black; padding:10px;">Predator (1987)</td>
-                    <td style="border:1px solid black; padding:10px;">Sci-Fi / Action</td>
-                </tr>
+          <tr>
+            <td
+              style="border: 1px solid black; padding: 10px; text-align: center"
+            >
+              2
+            </td>
+            <td style="border: 1px solid black; padding: 10px">
+              Predator 2 (1990)
+            </td>
+            <td style="border: 1px solid black; padding: 10px">
+              Sci-Fi / Action
+            </td>
+          </tr>
 
-                <tr>
-                    <td style="border:1px solid black; padding:10px; text-align:center;">2</td>
-                    <td style="border:1px solid black; padding:10px;">Predator 2 (1990)</td>
-                    <td style="border:1px solid black; padding:10px;">Sci-Fi / Action</td>
-                </tr>
+          <tr>
+            <td
+              style="border: 1px solid black; padding: 10px; text-align: center"
+            >
+              3
+            </td>
+            <td style="border: 1px solid black; padding: 10px">Alien (1979)</td>
+            <td style="border: 1px solid black; padding: 10px">
+              Sci-Fi / Horror
+            </td>
+          </tr>
 
-                <tr>
-                    <td style="border:1px solid black; padding:10px; text-align:center;">3</td>
-                    <td style="border:1px solid black; padding:10px;">Alien (1979)</td>
-                    <td style="border:1px solid black; padding:10px;">Sci-Fi / Horror</td>
-                </tr>
+          <tr>
+            <td
+              style="border: 1px solid black; padding: 10px; text-align: center"
+            >
+              4
+            </td>
+            <td style="border: 1px solid black; padding: 10px">
+              Aliens (1986)
+            </td>
+            <td style="border: 1px solid black; padding: 10px">
+              Sci-Fi / Action
+            </td>
+          </tr>
 
-                <tr>
-                    <td style="border:1px solid black; padding:10px; text-align:center;">4</td>
-                    <td style="border:1px solid black; padding:10px;">Aliens (1986)</td>
-                    <td style="border:1px solid black; padding:10px;">Sci-Fi / Action</td>
-                </tr>
+          <tr>
+            <td
+              style="border: 1px solid black; padding: 10px; text-align: center"
+            >
+              5
+            </td>
+            <td style="border: 1px solid black; padding: 10px">
+              Alien 3 (1992)
+            </td>
+            <td style="border: 1px solid black; padding: 10px">
+              Sci-Fi / Horror
+            </td>
+          </tr>
 
-                <tr>
-                    <td style="border:1px solid black; padding:10px; text-align:center;">5</td>
-                    <td style="border:1px solid black; padding:10px;">Alien 3 (1992)</td>
-                    <td style="border:1px solid black; padding:10px;">Sci-Fi / Horror</td>
-                </tr>
+          <tr>
+            <td
+              style="border: 1px solid black; padding: 10px; text-align: center"
+            >
+              6
+            </td>
+            <td style="border: 1px solid black; padding: 10px">
+              Alien: Resurrection (1997)
+            </td>
+            <td style="border: 1px solid black; padding: 10px">
+              Sci-Fi / Horror
+            </td>
+          </tr>
 
-                <tr>
-                    <td style="border:1px solid black; padding:10px; text-align:center;">6</td>
-                    <td style="border:1px solid black; padding:10px;">Alien: Resurrection (1997)</td>
-                    <td style="border:1px solid black; padding:10px;">Sci-Fi / Horror</td>
-                </tr>
+          <tr>
+            <td
+              style="border: 1px solid black; padding: 10px; text-align: center"
+            >
+              7
+            </td>
+            <td style="border: 1px solid black; padding: 10px">
+              AVP: Alien vs. Predator (2004)
+            </td>
+            <td style="border: 1px solid black; padding: 10px">
+              Sci-Fi / Action
+            </td>
+          </tr>
 
-                <tr>
-                    <td style="border:1px solid black; padding:10px; text-align:center;">7</td>
-                    <td style="border:1px solid black; padding:10px;">AVP: Alien vs. Predator (2004)</td>
-                    <td style="border:1px solid black; padding:10px;">Sci-Fi / Action</td>
-                </tr>
+          <tr>
+            <td
+              style="border: 1px solid black; padding: 10px; text-align: center"
+            >
+              8
+            </td>
+            <td style="border: 1px solid black; padding: 10px">
+              Aliens vs. Predator: Requiem (2007)
+            </td>
+            <td style="border: 1px solid black; padding: 10px">
+              Sci-Fi / Action
+            </td>
+          </tr>
 
-                <tr>
-                    <td style="border:1px solid black; padding:10px; text-align:center;">8</td>
-                    <td style="border:1px solid black; padding:10px;">Aliens vs. Predator: Requiem (2007)</td>
-                    <td style="border:1px solid black; padding:10px;">Sci-Fi / Action</td>
-                </tr>
+          <tr>
+            <td
+              style="border: 1px solid black; padding: 10px; text-align: center"
+            >
+              9
+            </td>
+            <td style="border: 1px solid black; padding: 10px">
+              Prometheus (2012)
+            </td>
+            <td style="border: 1px solid black; padding: 10px">
+              Sci-Fi / Thriller
+            </td>
+          </tr>
 
-                <tr>
-                    <td style="border:1px solid black; padding:10px; text-align:center;">9</td>
-                    <td style="border:1px solid black; padding:10px;">Prometheus (2012)</td>
-                    <td style="border:1px solid black; padding:10px;">Sci-Fi / Thriller</td>
-                </tr>
+          <tr>
+            <td
+              style="border: 1px solid black; padding: 10px; text-align: center"
+            >
+              10
+            </td>
+            <td style="border: 1px solid black; padding: 10px">
+              Alien: Covenant (2017)
+            </td>
+            <td style="border: 1px solid black; padding: 10px">
+              Sci-Fi / Horror
+            </td>
+          </tr>
+        </table>
+      </section>
 
-                <tr>
-                    <td style="border:1px solid black; padding:10px; text-align:center;">10</td>
-                    <td style="border:1px solid black; padding:10px;">Alien: Covenant (2017)</td>
-                    <td style="border:1px solid black; padding:10px;">Sci-Fi / Horror</td>
-                </tr>
+      <section id="login" style="padding: 40px">
+        <h2>Sign In</h2>
+        <form>
+          <label>Email:</label>
+          <input type="email" /><br /><br />
 
-            </table>
-        </section>
+          <label>Password:</label>
+          <input type="password" /><br /><br />
 
-        <section id="login" style="padding:40px;">
-            <h2>Sign In</h2>
-            <form>
-                <label>Email:</label>
-                <input type="email"><br><br>
+          <label>Date of Birth:</label>
+          <input type="date" /><br /><br />
 
-                <label>Password:</label>
-                <input type="password"><br><br>
+          <label>Plan:</label>
+          <select>
+            <option>Basic</option>
+            <option>Premium</option></select
+          ><br /><br />
 
-                <label>Date of Birth:</label>
-                <input type="date"><br><br>
+          <label>Remember Me</label>
+          <input type="checkbox" /><br /><br />
 
-                <label>Plan:</label>
-                <select>
-                    <option>Basic</option>
-                    <option>Premium</option>
-                </select><br><br>
-
-                <label>Remember Me</label>
-                <input type="checkbox"><br><br>
-
-                <input type="submit" value="Login">
-            </form>
-        </section>
-
+          <input type="submit" value="Login" />
+        </form>
+      </section>
     </main>
 
-    <footer style="background-color:#141414; text-align:center; padding:15px;">
-        <p>&copy; 2026 Muhammad Akbar</p>
+    <footer
+      style="background-color: #141414; text-align: center; padding: 15px"
+    >
+      <p>&copy; 2026 Muhammad Akbar</p>
     </footer>
-
-</body>
+  </body>
 </html>
