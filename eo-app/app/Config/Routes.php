@@ -28,6 +28,7 @@ $routes->get('/profile', 'Profile::index');
 $routes->post('/profile/update', 'Profile::update');
 
 // EVENT (ADMIN ONLY)
+
 $routes->get('/event', 'Event::index', ['filter' => 'admin']);
 
 $routes->get('/event/create', 'Event::create', ['filter' => 'admin']);
