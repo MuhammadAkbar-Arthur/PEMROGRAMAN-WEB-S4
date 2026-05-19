@@ -5,21 +5,24 @@
     <title>Register</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+
     <script>
     tailwind.config = {
         darkMode: 'class'
     }
     </script>
-</head>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
 <body class="bg-gradient-to-r from-purple-500 to-blue-500 min-h-screen flex items-center justify-center">
 
-<div class="bg-white shadow-2xl rounded-2xl overflow-hidden w-[900px] grid md:grid-cols-2">
+<div class="bg-white dark:bg-gray-900 shadow-2xl rounded-2xl overflow-hidden w-full max-w-5xl grid md:grid-cols-2">
 
     <!-- LEFT -->
     <div class="hidden md:flex flex-col justify-center items-center bg-gradient-to-br from-blue-600 to-purple-700 text-white p-10">
 
-        <h1 class="text-5xl font-bold mb-4">
+        <h1 class="text-3xl md:text-5xl font-bold mb-4">
             Join Us
         </h1>
 
@@ -97,7 +100,7 @@
 
             </div>
 
-            <button
+            <button type="submit"
                 class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg hover:opacity-90 transition">
 
                 Register
@@ -118,5 +121,44 @@
 
 </div>
 
+<?php if(session()->getFlashdata('success')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'success',
+
+    title: 'Berhasil 🎉',
+
+    text: '<?= session()->getFlashdata('success'); ?>',
+
+    confirmButtonColor: '#2563eb'
+
+});
+
+</script>
+
+<?php endif; ?>
+<?php if(session()->getFlashdata('error')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'error',
+
+    title: 'Oops 😢',
+
+    text: '<?= session()->getFlashdata('error'); ?>',
+
+    confirmButtonColor: '#dc2626'
+
+});
+
+</script>
+
+<?php endif; ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

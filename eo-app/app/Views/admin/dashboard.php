@@ -24,11 +24,11 @@
 
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 dark:bg-gray-950 transition duration-300">
 
 <?= view('layout/navbar'); ?>
 
-<div class="container mx-auto p-6">
+<div class="container mx-auto p-4 md:p-6">
 
     <!-- HEADER -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
@@ -76,7 +76,7 @@
     <div class="grid md:grid-cols-4 gap-6 mb-8">
 
         <!-- USERS -->
-        <div class="bg-white rounded-2xl shadow-lg p-6">
+        <div class="bg-white dark:bg-gray-900 shadow rounded p-6">
 
             <div class="flex justify-between items-center">
 
@@ -94,7 +94,7 @@
 
                 </div>
 
-                <div class="text-5xl">
+                <div class="text-3xl md:text-5xl">
                     👤
                 </div>
 
@@ -103,7 +103,7 @@
         </div>
 
         <!-- EVENTS -->
-        <div class="bg-white rounded-2xl shadow-lg p-6">
+        <div class="bg-white dark:bg-gray-900 shadow rounded p-6">
 
             <div class="flex justify-between items-center">
 
@@ -121,7 +121,7 @@
 
                 </div>
 
-                <div class="text-5xl">
+                <div class="text-3xl md:text-5xl">
                     🎫
                 </div>
 
@@ -130,7 +130,7 @@
         </div>
 
         <!-- BOOKINGS -->
-        <div class="bg-white rounded-2xl shadow-lg p-6">
+        <div class="bg-white dark:bg-gray-900 shadow rounded p-6">
 
             <div class="flex justify-between items-center">
 
@@ -148,7 +148,7 @@
 
                 </div>
 
-                <div class="text-5xl">
+                <div class="text-3xl md:text-5xl">
                     📅
                 </div>
 
@@ -157,7 +157,7 @@
         </div>
 
         <!-- FAVORITES -->
-        <div class="bg-white rounded-2xl shadow-lg p-6">
+        <div class="bg-white dark:bg-gray-900 shadow rounded p-6">
 
             <div class="flex justify-between items-center">
 
@@ -175,7 +175,7 @@
 
                 </div>
 
-                <div class="text-5xl">
+                <div class="text-3xl md:text-5xl">
                     ❤️
                 </div>
 
@@ -186,7 +186,7 @@
     </div>
 
     <!-- CHART -->
-    <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+    <div class="bg-white dark:bg-gray-900 shadow rounded p-8 mb-8">
 
         <div class="flex justify-between items-center mb-6">
 
@@ -209,7 +209,7 @@
     </div>
 
     <!-- RECENT BOOKINGS -->
-    <div class="bg-white rounded-2xl shadow-lg p-6 overflow-x-auto">
+    <div class="bg-white dark:bg-gray-900 shadow rounded p-6 overflow-x-auto">
 
         <div class="mb-5">
 
@@ -357,6 +357,44 @@ $(document).ready(function () {
 </script>
 
 <?= view('layout/footer'); ?>
+<?php if(session()->getFlashdata('success')): ?>
 
+<script>
+
+Swal.fire({
+
+    icon: 'success',
+
+    title: 'Berhasil 🎉',
+
+    text: '<?= session()->getFlashdata('success'); ?>',
+
+    confirmButtonColor: '#2563eb'
+
+});
+
+</script>
+
+<?php endif; ?>
+<?php if(session()->getFlashdata('error')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'error',
+
+    title: 'Oops 😢',
+
+    text: '<?= session()->getFlashdata('error'); ?>',
+
+    confirmButtonColor: '#dc2626'
+
+});
+
+</script>
+
+<?php endif; ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

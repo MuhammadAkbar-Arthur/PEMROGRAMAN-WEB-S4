@@ -11,15 +11,14 @@
     }
     </script>
 </head>
-
 <body class="bg-gradient-to-r from-blue-500 to-purple-600 min-h-screen flex items-center justify-center">
 
-<div class="bg-white/20 backdrop-blur-lg shadow-2xl rounded-2xl overflow-hidden w-[900px] grid md:grid-cols-2">
+<div class="bg-white dark:bg-gray-900 shadow rounded p-6">
 
     <!-- LEFT -->
     <div class="hidden md:flex flex-col justify-center items-center text-white p-10">
 
-        <h1 class="text-5xl font-bold mb-4">
+        <h1 class="text-3xl md:text-5xl font-bold mb-4">
             Event Organizer
         </h1>
 
@@ -30,7 +29,7 @@
     </div>
 
     <!-- RIGHT -->
-    <div class="bg-white p-10">
+    <div class="bg-white dark:bg-gray-900 shadow rounded p-6">
 
         <h2 class="text-3xl font-bold mb-6 text-center">
             Login
@@ -76,7 +75,7 @@
 
             </div>
 
-            <button
+            <button type="submit"
                 class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg hover:opacity-90 transition">
 
                 Login
@@ -103,5 +102,44 @@
 
 </div>
 
+<?php if(session()->getFlashdata('success')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'success',
+
+    title: 'Berhasil 🎉',
+
+    text: '<?= session()->getFlashdata('success'); ?>',
+
+    confirmButtonColor: '#2563eb'
+
+});
+
+</script>
+
+<?php endif; ?>
+<?php if(session()->getFlashdata('error')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'error',
+
+    title: 'Oops 😢',
+
+    text: '<?= session()->getFlashdata('error'); ?>',
+
+    confirmButtonColor: '#dc2626'
+
+});
+
+</script>
+
+<?php endif; ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

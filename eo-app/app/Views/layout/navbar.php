@@ -24,9 +24,16 @@ if(session()->get('logged_in')) {
            Event Organizer
 
         </a>
+        <!-- MOBILE BUTTON -->
+        <button
+            onclick="toggleMenu()"
+            class="md:hidden bg-gray-700 px-3 py-2 rounded">
 
+            ☰
+
+        </button>
         <!-- MENU -->
-        <div class="flex gap-4 items-center flex-wrap">
+        <div class="hidden md:flex gap-4 items-center flex-wrap" id="mobileMenu">
 
             <!-- DARK MODE -->
             <button
@@ -170,5 +177,32 @@ if(session()->get('logged_in')) {
 
         }
     }
+    <script>
+
+    function toggleMenu()
+    {
+        const menu = document.getElementById('mobileMenu');
+
+        menu.classList.toggle('hidden');
+
+        menu.classList.toggle('flex');
+
+        menu.classList.toggle('flex-col');
+
+        menu.classList.toggle('absolute');
+
+        menu.classList.toggle('top-20');
+
+        menu.classList.toggle('right-5');
+
+        menu.classList.toggle('bg-gray-900');
+
+        menu.classList.toggle('p-5');
+
+        menu.classList.toggle('rounded-lg');
+
+    }
+
+    </script>
 
 </script>

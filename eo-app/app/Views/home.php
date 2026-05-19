@@ -17,11 +17,11 @@
 
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 dark:bg-gray-950 transition duration-300">
 
 <?= view('layout/navbar'); ?>
 
-<div class="container mx-auto p-6">
+<div class="container mx-auto p-4 md:p-6">
 
     <!-- HERO SECTION -->
     <div class="relative rounded-2xl overflow-hidden mb-10 shadow-lg">
@@ -35,7 +35,7 @@
 
             <div class="p-10 text-white max-w-2xl">
 
-                <h1 class="text-5xl font-bold mb-4 leading-tight">
+                <h1 class="text-3xl md:text-5xl font-bold mb-4 leading-tight">
 
                     Discover Amazing Events Near You 🎉
 
@@ -60,7 +60,7 @@
                     <?php if(!session()->get('id')): ?>
 
                     <a href="/register"
-                       class="bg-white text-black hover:bg-gray-200 px-6 py-3 rounded-lg font-semibold">
+                       class="bg-white dark:bg-gray-900 shadow rounded p-6 text-black hover:bg-gray-200 px-6 py-3 rounded-lg font-semibold">
 
                         Join Now
 
@@ -173,11 +173,11 @@
     <!-- EVENT -->
     <div id="event-section">
 
-        <div id="eventContainer" class="grid md:grid-cols-3 gap-6">
+        <div id="eventContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
             <?php foreach($events as $e): ?>
 
-            <div class="bg-white p-4 shadow rounded
+            <div class="bg-white dark:bg-gray-900 shadow rounded p-6"
                         hover:shadow-2xl
                         hover:-translate-y-2
                         transition-all duration-300"
@@ -290,9 +290,9 @@ async function loadEvents()
 
             <div class="col-span-3">
 
-                <div class="bg-white p-10 rounded-xl text-center shadow">
+                <div class="bg-white dark:bg-gray-900 shadow rounded p-6">
 
-                    <h2 class="text-2xl font-bold text-gray-700 mb-2">
+                    <h2 class="text-2xl font-bold text-gray-700 dark:text-gray-200 mb-2">
 
                         😢 Event Tidak Ditemukan
 
@@ -316,7 +316,7 @@ async function loadEvents()
 
             html += `
 
-            <div class="bg-white p-4 shadow rounded
+            <div class="bg-white dark:bg-gray-900 shadow rounded p-6
                         hover:shadow-2xl
                         hover:-translate-y-2
                         transition-all duration-300">
@@ -383,5 +383,44 @@ sortInput.addEventListener('change', loadEvents);
 </script>
 <?= view('layout/footer'); ?>
 
+<?php if(session()->getFlashdata('success')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'success',
+
+    title: 'Berhasil 🎉',
+
+    text: '<?= session()->getFlashdata('success'); ?>',
+
+    confirmButtonColor: '#2563eb'
+
+});
+
+</script>
+
+<?php endif; ?>
+<?php if(session()->getFlashdata('error')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'error',
+
+    title: 'Oops 😢',
+
+    text: '<?= session()->getFlashdata('error'); ?>',
+
+    confirmButtonColor: '#dc2626'
+
+});
+
+</script>
+
+<?php endif; ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

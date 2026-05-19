@@ -11,12 +11,41 @@
     }
     </script>
 </head>
+<script>
 
-<body class="bg-gray-100">
+function confirmDelete(event)
+{
+    event.preventDefault();
+
+    const url = event.currentTarget.href;
+
+    Swal.fire({
+
+        title: 'Yakin?',
+        text: 'Data akan dihapus!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya'
+
+    }).then((result) => {
+
+        if(result.isConfirmed) {
+
+            window.location.href = url;
+
+        }
+
+    });
+
+    return false;
+}
+
+</script>
+<body class="bg-gray-100 dark:bg-gray-950 transition duration-300">
 
 <?= view('layout/navbar'); ?>
 
-<div class="container mx-auto p-6">
+<div class="container mx-auto p-4 md:p-6">
 
     <!-- HEADER -->
     <div class="flex justify-between items-center mb-8">
@@ -45,7 +74,7 @@
     <!-- EMPTY STATE -->
     <?php if(empty($favorites)): ?>
 
-        <div class="bg-white rounded-2xl shadow-lg p-10 text-center">
+        <div class="bg-white dark:bg-gray-900 shadow rounded p-6">
 
             <h2 class="text-2xl font-bold mb-3">
                 Wishlist masih kosong 😢
@@ -67,11 +96,11 @@
     <?php else: ?>
 
     <!-- CARD GRID -->
-    <div class="grid md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
         <?php foreach($favorites as $f): ?>
 
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden
+        <div class="bg-white dark:bg-gray-900 shadow rounded p-6 shadow-lg overflow-hidden
                     hover:-translate-y-2 hover:shadow-2xl
                     transition-all duration-300">
 
@@ -122,6 +151,7 @@
                     </a>
 
                     <a href="/favorite/remove/<?= $f['event_id']; ?>"
+                       onclick="return confirmDelete(event)"
                        class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">
 
                        Remove
@@ -144,5 +174,44 @@
 
 <?= view('layout/footer'); ?>
 
+<?php if(session()->getFlashdata('success')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'success',
+
+    title: 'Berhasil 🎉',
+
+    text: '<?= session()->getFlashdata('success'); ?>',
+
+    confirmButtonColor: '#2563eb'
+
+});
+
+</script>
+
+<?php endif; ?>
+<?php if(session()->getFlashdata('error')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'error',
+
+    title: 'Oops 😢',
+
+    text: '<?= session()->getFlashdata('error'); ?>',
+
+    confirmButtonColor: '#dc2626'
+
+});
+
+</script>
+
+<?php endif; ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

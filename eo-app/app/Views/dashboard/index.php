@@ -13,7 +13,7 @@
 
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 dark:bg-gray-950 transition duration-300">
 
 <?= view('layout/navbar'); ?>
 
@@ -41,7 +41,7 @@
     <div class="grid md:grid-cols-2 gap-6 mb-10">
 
         <!-- BOOKING -->
-        <div class="bg-white rounded-2xl shadow-xl p-8">
+        <div class="bg-white dark:bg-gray-900 shadow rounded p-6">
 
             <div class="flex justify-between items-center">
 
@@ -51,7 +51,7 @@
                         Total Booking
                     </p>
 
-                    <h2 class="text-5xl font-bold text-blue-500">
+                    <h2 class="text-3xl md:text-5xl font-bold text-blue-500">
 
                         <?= $bookingTotal; ?>
 
@@ -68,7 +68,7 @@
         </div>
 
         <!-- FAVORITE -->
-        <div class="bg-white rounded-2xl shadow-xl p-8">
+        <div class="bg-white dark:bg-gray-900 shadow rounded p-6">
 
             <div class="flex justify-between items-center">
 
@@ -78,7 +78,7 @@
                         Wishlist Event
                     </p>
 
-                    <h2 class="text-5xl font-bold text-pink-500">
+                    <h2 class="text-3xl md:text-5xl font-bold text-pink-500">
 
                         <?= $favoriteTotal; ?>
 
@@ -97,7 +97,7 @@
     </div>
 
     <!-- UPCOMING EVENT -->
-    <div class="bg-white rounded-2xl shadow-xl p-8 mb-10">
+    <div class="bg-white dark:bg-gray-900 shadow rounded p-6 mb-10">
 
         <div class="flex justify-between items-center mb-6">
 
@@ -172,7 +172,7 @@
     </div>
 
     <!-- FAVORITE EVENT -->
-    <div class="bg-white rounded-2xl shadow-xl p-8">
+    <div class="bg-white dark:bg-gray-900 shadow rounded p-6 mb-10">
 
         <div class="flex justify-between items-center mb-6">
 
@@ -250,5 +250,44 @@
 
 <?= view('layout/footer'); ?>
 
+<?php if(session()->getFlashdata('success')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'success',
+
+    title: 'Berhasil 🎉',
+
+    text: '<?= session()->getFlashdata('success'); ?>',
+
+    confirmButtonColor: '#2563eb'
+
+});
+
+</script>
+
+<?php endif; ?>
+<?php if(session()->getFlashdata('error')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'error',
+
+    title: 'Oops 😢',
+
+    text: '<?= session()->getFlashdata('error'); ?>',
+
+    confirmButtonColor: '#dc2626'
+
+});
+
+</script>
+
+<?php endif; ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

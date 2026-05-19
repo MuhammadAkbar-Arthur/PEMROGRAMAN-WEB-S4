@@ -3,8 +3,37 @@
 <head>
     <title>My Bookings</title>
 </head>
+<script>
 
-<body>
+function confirmDelete(event)
+{
+    event.preventDefault();
+
+    const url = event.currentTarget.href;
+
+    Swal.fire({
+
+        title: 'Yakin?',
+        text: 'Data akan dihapus!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya'
+
+    }).then((result) => {
+
+        if(result.isConfirmed) {
+
+            window.location.href = url;
+
+        }
+
+    });
+
+    return false;
+}
+
+</script>
+<body class="bg-gray-100 dark:bg-gray-950 transition duration-300">
     <?= view('layout/navbar'); ?>
 
 <h1>My Bookings</h1>
@@ -34,7 +63,9 @@
                 Ticket
 
             </a>
-            <a href="/booking/delete/<?= $b['id'] ?>">Batal</a>
+            <a href="/booking/delete/<?= $b['id'] ?>"
+            onclick="return confirmDelete(event)"
+            >Batal</a>
         </td>
         <td>
 
@@ -70,5 +101,44 @@
 
 </table>
 <?= view('layout/footer'); ?>
+<?php if(session()->getFlashdata('success')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'success',
+
+    title: 'Berhasil 🎉',
+
+    text: '<?= session()->getFlashdata('success'); ?>',
+
+    confirmButtonColor: '#2563eb'
+
+});
+
+</script>
+
+<?php endif; ?>
+<?php if(session()->getFlashdata('error')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'error',
+
+    title: 'Oops 😢',
+
+    text: '<?= session()->getFlashdata('error'); ?>',
+
+    confirmButtonColor: '#dc2626'
+
+});
+
+</script>
+
+<?php endif; ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

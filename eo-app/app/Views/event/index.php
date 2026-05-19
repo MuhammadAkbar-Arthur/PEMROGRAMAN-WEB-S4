@@ -13,11 +13,40 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
+<script>
 
-<body class="bg-gray-100">
+function confirmDelete(event)
+{
+    event.preventDefault();
+
+    const url = event.currentTarget.href;
+
+    Swal.fire({
+
+        title: 'Yakin?',
+        text: 'Data akan dihapus!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya'
+
+    }).then((result) => {
+
+        if(result.isConfirmed) {
+
+            window.location.href = url;
+
+        }
+
+    });
+
+    return false;
+}
+
+</script>
+<body class="bg-gray-100 dark:bg-gray-950 transition duration-300">
     <?= view('layout/navbar'); ?>
 
-<div class="container mx-auto p-6">
+<div class="container mx-auto p-4 md:p-6">
 
     <div class="flex justify-between items-center mb-6">
 
@@ -41,7 +70,7 @@
 
     </div>
 
-    <div class="bg-white shadow rounded overflow-hidden">
+    <div class="bg-white dark:bg-gray-900 shadow rounded p-6">
 
         <table class="w-full">
 
@@ -89,6 +118,7 @@
                         </a>
 
                         <a href="/event/delete/<?= $e['id'] ?>"
+                            onclick="return confirmDelete(event)"
                             class="delete-btn text-red-500">
                             Hapus
                         </a>
@@ -149,6 +179,45 @@ deleteButtons.forEach(button => {
 
 </script>
 <?= view('layout/footer'); ?>
+<?php if(session()->getFlashdata('success')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'success',
+
+    title: 'Berhasil 🎉',
+
+    text: '<?= session()->getFlashdata('success'); ?>',
+
+    confirmButtonColor: '#2563eb'
+
+});
+
+</script>
+
+<?php endif; ?>
+<?php if(session()->getFlashdata('error')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'error',
+
+    title: 'Oops 😢',
+
+    text: '<?= session()->getFlashdata('error'); ?>',
+
+    confirmButtonColor: '#dc2626'
+
+});
+
+</script>
+
+<?php endif; ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>

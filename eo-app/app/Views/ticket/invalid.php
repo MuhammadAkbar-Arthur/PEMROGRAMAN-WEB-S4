@@ -14,7 +14,7 @@
 
 <body class="bg-red-100 min-h-screen flex items-center justify-center">
 
-<div class="bg-white shadow-xl rounded-2xl p-10 text-center">
+<div class="bg-white dark:bg-gray-900 shadow rounded p-6 text-center">
 
     <div class="text-6xl mb-4">
         ❌
@@ -30,5 +30,44 @@
 
 </div>
 
+<?php if(session()->getFlashdata('success')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'success',
+
+    title: 'Berhasil 🎉',
+
+    text: '<?= session()->getFlashdata('success'); ?>',
+
+    confirmButtonColor: '#2563eb'
+
+});
+
+</script>
+
+<?php endif; ?>
+<?php if(session()->getFlashdata('error')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'error',
+
+    title: 'Oops 😢',
+
+    text: '<?= session()->getFlashdata('error'); ?>',
+
+    confirmButtonColor: '#dc2626'
+
+});
+
+</script>
+
+<?php endif; ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

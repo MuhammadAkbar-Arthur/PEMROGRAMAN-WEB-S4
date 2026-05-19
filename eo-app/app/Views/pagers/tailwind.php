@@ -1,50 +1,58 @@
 <?php if ($pager->hasPrevious() || $pager->hasNext()) : ?>
 
-<div class="flex justify-center mt-8">
+<nav class="flex justify-center mt-6">
 
-    <nav class="flex items-center gap-2">
+    <ul class="flex items-center gap-2">
 
-        <!-- PREVIOUS -->
+        <!-- PREV -->
         <?php if ($pager->hasPrevious()) : ?>
 
-            <a href="<?= $pager->getPreviousPageURI() ?>"
-               class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+            <li>
+                <a href="<?= $pager->getPreviousPageURI() ?>"
+                   class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
 
-               Previous
+                    Prev
 
-            </a>
+                </a>
+            </li>
 
         <?php endif ?>
 
-        <!-- PAGE NUMBER -->
+        <!-- NUMBER -->
         <?php foreach ($pager->links() as $link) : ?>
 
-            <a href="<?= $link['uri'] ?>"
-               class="px-4 py-2 rounded-lg
-               <?= $link['active']
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 hover:bg-gray-300' ?>">
+            <li>
 
-                <?= $link['title'] ?>
+                <a href="<?= $link['uri'] ?>"
+                   class="px-4 py-2 rounded
+                   <?= $link['active']
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-200 hover:bg-gray-300' ?>">
 
-            </a>
+                    <?= $link['title'] ?>
+
+                </a>
+
+            </li>
 
         <?php endforeach ?>
 
         <!-- NEXT -->
         <?php if ($pager->hasNext()) : ?>
 
-            <a href="<?= $pager->getNextPageURI() ?>"
-               class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+            <li>
+                <a href="<?= $pager->getNextPageURI() ?>"
+                   class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
 
-               Next
+                    Next
 
-            </a>
+                </a>
+            </li>
 
         <?php endif ?>
 
-    </nav>
+    </ul>
 
-</div>
+</nav>
 
 <?php endif ?>

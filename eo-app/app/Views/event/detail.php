@@ -12,11 +12,11 @@
     </script>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 dark:bg-gray-950 transition duration-300">
 
 <?= view('layout/navbar'); ?>
 
-<div class="container mx-auto p-6">
+<div class="container mx-auto p-4 md:p-6">
 
     <!-- BACK BUTTON -->
     <a href="/"
@@ -27,7 +27,7 @@
     </a>
 
     <!-- HERO -->
-    <div class="bg-white rounded-2xl overflow-hidden shadow-xl mt-4">
+    <div class="bg-white dark:bg-gray-900 shadow rounded p-6">
 
         <!-- IMAGE -->
         <?php if($event['image']): ?>
@@ -63,7 +63,7 @@
             </h1>
 
             <!-- INFO GRID -->
-            <div class="grid md:grid-cols-3 gap-4 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
 
                 <!-- LOCATION -->
                 <div class="bg-gray-100 rounded-xl p-4">
@@ -136,7 +136,7 @@
                     About Event
                 </h2>
 
-                <p class="text-gray-700 leading-8">
+                <p class="text-gray-700 dark:text-gray-200 leading-8">
 
                     <?= $event['description'] ?>
 
@@ -242,7 +242,7 @@
 
 </div>
 <!-- COMMENT SECTION -->
-<div class="bg-white shadow-xl rounded-2xl p-8 mt-8">
+<div class="bg-white dark:bg-gray-900 shadow rounded p-6">
 
     <h2 class="text-3xl font-bold mb-6">
 
@@ -323,7 +323,7 @@
 
                     </div>
 
-                    <p class="text-gray-700 leading-7">
+                    <p class="text-gray-700 dark:text-gray-200 leading-7">
 
                         <?= $c['comment']; ?>
 
@@ -348,5 +348,44 @@
 </div>
 <?= view('layout/footer'); ?>
 
+<?php if(session()->getFlashdata('success')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'success',
+
+    title: 'Berhasil 🎉',
+
+    text: '<?= session()->getFlashdata('success'); ?>',
+
+    confirmButtonColor: '#2563eb'
+
+});
+
+</script>
+
+<?php endif; ?>
+<?php if(session()->getFlashdata('error')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'error',
+
+    title: 'Oops 😢',
+
+    text: '<?= session()->getFlashdata('error'); ?>',
+
+    confirmButtonColor: '#dc2626'
+
+});
+
+</script>
+
+<?php endif; ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

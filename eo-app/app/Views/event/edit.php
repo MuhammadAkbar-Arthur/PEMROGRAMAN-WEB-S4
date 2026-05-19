@@ -11,14 +11,23 @@
     }
     </script>
 </head>
+<script>
 
-<body class="bg-gray-100">
+function showLoading(button)
+{
+    button.disabled = true;
+
+    button.innerHTML = 'Loading...';
+}
+
+</script>
+<body class="bg-gray-100 dark:bg-gray-950 transition duration-300">
 
 <?= view('layout/navbar'); ?>
 
-<div class="container mx-auto p-6">
+<div class="container mx-auto p-4 md:p-6">
 
-    <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-8">
+    <div class="bg-white dark:bg-gray-900 shadow rounded p-6">
 
         <h1 class="text-3xl font-bold mb-6">
             Edit Event
@@ -157,7 +166,7 @@
 
             </div>
 
-            <button
+            <button onclick="showLoading(this)"
                 class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-lg">
 
                 Update Event
@@ -172,5 +181,44 @@
 
 <?= view('layout/footer'); ?>
 
+<?php if(session()->getFlashdata('success')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'success',
+
+    title: 'Berhasil 🎉',
+
+    text: '<?= session()->getFlashdata('success'); ?>',
+
+    confirmButtonColor: '#2563eb'
+
+});
+
+</script>
+
+<?php endif; ?>
+<?php if(session()->getFlashdata('error')): ?>
+
+<script>
+
+Swal.fire({
+
+    icon: 'error',
+
+    title: 'Oops 😢',
+
+    text: '<?= session()->getFlashdata('error'); ?>',
+
+    confirmButtonColor: '#dc2626'
+
+});
+
+</script>
+
+<?php endif; ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

@@ -19,7 +19,7 @@ class Auth extends BaseController
     // =========================
     public function processLogin()
     {
-        $validation = \Config\Services::validation();
+        helper(['form']);
 
         $rules = [
 
@@ -33,44 +33,67 @@ class Auth extends BaseController
 
             return redirect()->back()
                 ->withInput()
-                ->with('error', $validation->listErrors());
+                ->with(
+                    'error',
+                    $this->validator->listErrors()
+                );
         }
 
         $model = new UserModel();
 
         $email = $this->request->getPost('email');
+
         $password = $this->request->getPost('password');
 
-        $user = $model->where('email', $email)->first();
+        $user = $model
+            ->where('email', $email)
+            ->first();
 
-        if ($user) {
+        if (!$user) {
 
-            if (password_verify($password, $user['password'])) {
-
-                session()->set([
-                    'id'    => $user['id'],
-                    'name'  => $user['name'],
-                    'email' => $user['email'],
-                    'role'  => $user['role'],
-                    'logged_in' => true
-                ]);
-
-                session()->setFlashdata(
-                    'success',
-                    'Login berhasil 🎉'
+            return redirect()->back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Email atau password salah'
                 );
-
-                if ($user['role'] == 'admin') {
-                    return redirect()->to('/admin');
-                }
-
-                return redirect()->to('/');
-            }
         }
 
-        return redirect()->to('/login')
-            ->withInput()
-            ->with('error', 'Email atau password salah');
+        if (!password_verify($password, $user['password'])) {
+
+            return redirect()->back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Email atau password salah'
+                );
+        }
+
+        session()->set([
+
+            'id' => $user['id'],
+
+            'name' => $user['name'],
+
+            'email' => $user['email'],
+
+            'role' => $user['role'],
+
+            'logged_in' => true
+
+        ]);
+
+        session()->setFlashdata(
+            'success',
+            'Login berhasil 🎉'
+        );
+
+        if ($user['role'] == 'admin') {
+
+            return redirect()->to('/admin');
+        }
+
+        return redirect()->to('/');
     }
 
     // =========================
