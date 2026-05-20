@@ -105,6 +105,7 @@ class Home extends BaseController
         }
 
         $data['event'] = $event;
+        $bookingModel = new \App\Models\BookingModel();
         // TOTAL BOOKING APPROVED
         $totalBooked = $bookingModel
             ->where('event_id', $id)

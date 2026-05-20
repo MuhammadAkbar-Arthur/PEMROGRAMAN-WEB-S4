@@ -88,7 +88,7 @@
 
                     <h2 class="text-4xl font-bold mt-2 text-blue-600">
 
-                        <?= $totalUsers; ?>
+                        <?= esc($totalUsers); ?>
 
                     </h2>
 
@@ -115,7 +115,7 @@
 
                     <h2 class="text-4xl font-bold mt-2 text-purple-600">
 
-                        <?= $totalEvents; ?>
+                        <?= esc($totalEvents); ?>
 
                     </h2>
 
@@ -142,7 +142,7 @@
 
                     <h2 class="text-4xl font-bold mt-2 text-green-600">
 
-                        <?= $totalBookings; ?>
+                        <?= esc($totalBookings); ?>
 
                     </h2>
 
@@ -169,7 +169,7 @@
 
                     <h2 class="text-4xl font-bold mt-2 text-pink-600">
 
-                        <?= $totalFavorites; ?>
+                        <?= esc($totalFavorites); ?>
 
                     </h2>
 
@@ -255,19 +255,19 @@
                         </td>
 
                         <td>
-                            <?= $b['event_title']; ?>
+                            <?= esc($b['event_title']); ?>
                         </td>
 
                         <td>
-                            <?= $b['date']; ?>
+                            <?= esc($b['date']); ?>
                         </td>
 
                         <td>
-                            <?= $b['location']; ?>
+                            <?= esc($b['location']); ?>
                         </td>
 
                         <td>
-                            <?= $b['created_at']; ?>
+                            <?= esc($b['created_at']); ?>
                         </td>
 
                     </tr>
@@ -293,13 +293,13 @@ new Chart(ctx, {
 
     data: {
 
-        labels: <?= $chartLabels; ?>,
+        labels: <?= json_encode(json_decode($chartLabels)); ?>,
 
         datasets: [{
 
             label: 'Jumlah Booking',
 
-            data: <?= $chartTotals; ?>,
+            data: <?= json_encode(json_decode($chartTotals)); ?>,
 
             borderWidth: 2,
 

@@ -48,7 +48,7 @@ function showLoading(button)
 
             <?php if($user['avatar']): ?>
 
-                <img src="/uploads/<?= $user['avatar']; ?>"
+                <img src="/uploads/<?= esc($user['avatar'], 'url'); ?>"
                      class="w-32 h-32 rounded-full object-cover border-4 border-blue-500">
 
             <?php else: ?>
@@ -76,7 +76,7 @@ function showLoading(button)
 
                 <input type="text"
                        name="name"
-                       value="<?= $user['name']; ?>"
+                       value="<?= esc($user['name']); ?>"
                        class="w-full border p-3 rounded-lg"
                        required>
 
@@ -90,7 +90,7 @@ function showLoading(button)
                 </label>
 
                 <input type="email"
-                       value="<?= $user['email']; ?>"
+                       value="<?= esc($user['email']); ?>"
                        class="w-full border p-3 rounded-lg bg-gray-100"
                        disabled>
 
@@ -105,7 +105,7 @@ function showLoading(button)
 
                 <input type="text"
                        name="phone"
-                       value="<?= $user['phone']; ?>"
+                       value="<?= esc($user['phone']); ?>"
                        class="w-full border p-3 rounded-lg">
 
             </div>
@@ -119,7 +119,7 @@ function showLoading(button)
 
                 <textarea name="bio"
                           class="w-full border p-3 rounded-lg"
-                          rows="4"><?= $user['bio']; ?></textarea>
+                          rows="4"><?= esc($user['bio']); ?></textarea>
 
             </div>
 
@@ -175,7 +175,7 @@ Swal.fire({
 
     title: 'Berhasil 🎉',
 
-    text: '<?= session()->getFlashdata('success'); ?>',
+    text: <?= json_encode(session()->getFlashdata('success')); ?>,
 
     confirmButtonColor: '#2563eb'
 
@@ -194,7 +194,7 @@ Swal.fire({
 
     title: 'Oops 😢',
 
-    text: '<?= session()->getFlashdata('error'); ?>',
+    text: <?= json_encode(session()->getFlashdata('error')); ?>,
 
     confirmButtonColor: '#dc2626'
 

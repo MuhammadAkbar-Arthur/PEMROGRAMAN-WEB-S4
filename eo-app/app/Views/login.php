@@ -39,7 +39,7 @@
 
             <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
 
-                <?= session()->getFlashdata('error'); ?>
+                <?= esc(session()->getFlashdata('error')); ?>
 
             </div>
 
@@ -131,7 +131,7 @@ Swal.fire({
 
     title: 'Oops 😢',
 
-    text: '<?= session()->getFlashdata('error'); ?>',
+    text: '<?= esc(session()->getFlashdata('error')); ?>',
 
     confirmButtonColor: '#dc2626'
 

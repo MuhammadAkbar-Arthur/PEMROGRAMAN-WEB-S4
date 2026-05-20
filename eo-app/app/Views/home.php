@@ -117,14 +117,14 @@
                id="keyword"
                name="keyword"
                placeholder="Cari event..."
-               value="<?= $keyword ?? '' ?>"
+               value="<?= esc($keyword ?? '') ?>"
                class="border p-2 rounded w-full">
 
         <input type="text"
                id="location"
                name="location"
                placeholder="Lokasi..."
-               value="<?= $location ?? '' ?>"
+               value="<?= esc($location ?? '') ?>"
                class="border p-2 rounded w-full">
 
         <!-- CATEGORY -->
@@ -138,11 +138,11 @@
 
             <?php foreach($categories as $c): ?>
 
-                <option value="<?= $c['id']; ?>"
+                <option value="<?= esc($c['id']); ?>"
 
                     <?= ($category == $c['id']) ? 'selected' : ''; ?>>
 
-                    <?= $c['name']; ?>
+                    <?= esc($c['name']); ?>
 
                 </option>
 
@@ -185,7 +185,7 @@
 
                 <?php if($e['image']): ?>
 
-                    <img src="/uploads/<?= $e['image'] ?>"
+                    <img src="/uploads/<?= esc($e['image'], 'url') ?>"
                         class="mb-3 h-48 w-full object-cover rounded">
 
                 <?php endif; ?>
@@ -193,23 +193,23 @@
                 <!-- CATEGORY -->
                 <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
 
-                    <?= $e['category_name'] ?? 'No Category'; ?>
+                    <?= esc($e['category_name'] ?? 'No Category'); ?>
 
                 </span>
 
                 <!-- TITLE -->
                 <h2 class="text-xl font-bold mb-2 mt-3">
-                    <?= $e['title'] ?>
+                    <?= esc($e['title']) ?>
                 </h2>
 
                 <!-- LOCATION -->
                 <p class="text-gray-600">
-                    📍 <?= $e['location'] ?>
+                    📍 <?= esc($e['location']) ?>
                 </p>
 
                 <!-- DATE -->
                 <p class="text-gray-500 mb-3">
-                    📅 <?= $e['date'] ?>
+                    📅 <?= esc($e['date']) ?>
                 </p>
 
                 <!-- BUTTON -->
@@ -393,7 +393,7 @@ Swal.fire({
 
     title: 'Berhasil 🎉',
 
-    text: '<?= session()->getFlashdata('success'); ?>',
+    text: <?= json_encode(session()->getFlashdata('success')); ?>,
 
     confirmButtonColor: '#2563eb'
 
@@ -412,7 +412,7 @@ Swal.fire({
 
     title: 'Oops 😢',
 
-    text: '<?= session()->getFlashdata('error'); ?>',
+    text: <?= json_encode(session()->getFlashdata('error')); ?>,
 
     confirmButtonColor: '#dc2626'
 

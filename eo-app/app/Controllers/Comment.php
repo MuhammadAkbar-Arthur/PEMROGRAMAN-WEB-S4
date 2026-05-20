@@ -11,6 +11,7 @@ class Comment extends BaseController
     // =========================
     public function store($event_id)
     {
+        // HARUS LOGIN
         if (!session()->get('logged_in')) {
 
             return redirect()->to('/login');
@@ -18,21 +19,24 @@ class Comment extends BaseController
 
         $model = new CommentModel();
 
-        $comment = $this->request->getPost('comment');
+        // AMBIL + BERSIHKAN INPUT
+        $comment = trim($this->request->getPost('comment'));
 
-        if (!$comment) {
+        // VALIDASI KOSONG / SPASI
+        if (empty($comment)) {
 
             return redirect()->back()
                 ->with('error', 'Komentar tidak boleh kosong');
         }
 
+        // SIMPAN COMMENT
         $model->save([
 
-            'user_id' => session()->get('id'),
+            'user_id'  => session()->get('id'),
 
             'event_id' => $event_id,
 
-            'comment' => $comment
+            'comment'  => $comment
 
         ]);
 
@@ -45,6 +49,7 @@ class Comment extends BaseController
     // =========================
     public function delete($id)
     {
+        // HARUS LOGIN
         if (!session()->get('logged_in')) {
 
             return redirect()->to('/login');
@@ -54,18 +59,21 @@ class Comment extends BaseController
 
         $comment = $model->find($id);
 
+        // COMMENT TIDAK ADA
         if (!$comment) {
 
-            return redirect()->back();
+            return redirect()->back()
+                ->with('error', 'Komentar tidak ditemukan');
         }
 
-        // hanya pemilik komentar
+        // HANYA PEMILIK KOMENTAR
         if ($comment['user_id'] != session()->get('id')) {
 
             return redirect()->back()
                 ->with('error', 'Akses ditolak');
         }
 
+        // DELETE COMMENT
         $model->delete($id);
 
         return redirect()->back()

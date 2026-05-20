@@ -114,7 +114,7 @@ if(session()->get('logged_in')) {
                 <!-- USER -->
                 <span class="text-gray-300">
 
-                    Hi, <?= session()->get('name'); ?>
+                    Hi, <?= esc(session()->get('name')); ?>
 
                 </span>
 

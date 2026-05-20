@@ -32,7 +32,7 @@
         <!-- IMAGE -->
         <?php if($event['image']): ?>
 
-            <img src="/uploads/<?= $event['image'] ?>"
+            <img src="/uploads/<?= esc($event['image'], 'url') ?>"
                  class="w-full h-[400px] object-cover">
 
         <?php else: ?>
@@ -49,7 +49,7 @@
 
                 <span class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm">
 
-                    <?= $event['category_name']; ?>
+                    <?= esc($event['category_name']); ?>
 
                 </span>
 
@@ -58,7 +58,7 @@
             <!-- TITLE -->
             <h1 class="text-4xl font-bold mt-4 mb-4">
 
-                <?= $event['title'] ?>
+                <?= esc($event['title']) ?>
 
             </h1>
 
@@ -73,7 +73,7 @@
                     </p>
 
                     <p class="font-bold text-lg">
-                        📍 <?= $event['location'] ?>
+                        📍 <?= esc($event['location']) ?>
                     </p>
 
                 </div>
@@ -86,7 +86,7 @@
                     </p>
 
                     <p class="font-bold text-lg">
-                        📅 <?= $event['date'] ?>
+                        📅 <?= esc($event['date']) ?>
                     </p>
 
                 </div>
@@ -138,37 +138,9 @@
 
                 <p class="text-gray-700 dark:text-gray-200 leading-8">
 
-                    <?= $event['description'] ?>
+                    <?= esc($event['description']) ?>
 
                 </p>
-
-            </div>
-            <!-- FAVORITE BUTTON -->
-            <div class="mb-6">
-
-                <?php if(session()->get('logged_in')): ?>
-
-                    <?php if(!$isFavorite): ?>
-
-                        <a href="/favorite/add/<?= $event['id']; ?>"
-                        class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-xl inline-block font-semibold transition">
-
-                        ❤️ Add Wishlist
-
-                        </a>
-
-                    <?php else: ?>
-
-                        <a href="/favorite/remove/<?= $event['id']; ?>"
-                        class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl inline-block font-semibold transition">
-
-                        💔 Remove Wishlist
-
-                        </a>
-
-                    <?php endif; ?>
-
-                <?php endif; ?>
 
             </div>
             <!-- ACTION BUTTON -->
@@ -298,13 +270,13 @@
 
                             <h3 class="font-bold">
 
-                                <?= $c['name']; ?>
+                                <?= esc($c['name']); ?>
 
                             </h3>
 
                             <p class="text-sm text-gray-500">
 
-                                <?= $c['created_at']; ?>
+                                <?= esc($c['created_at']); ?>
 
                             </p>
 
@@ -325,7 +297,7 @@
 
                     <p class="text-gray-700 dark:text-gray-200 leading-7">
 
-                        <?= $c['comment']; ?>
+                        <?= esc($c['comment']); ?>
 
                     </p>
 

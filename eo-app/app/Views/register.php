@@ -47,7 +47,7 @@
 
                     <?php foreach(session()->getFlashdata('errors') as $error): ?>
 
-                        <li><?= $error ?></li>
+                        <li><?= esc($error) ?></li>
 
                     <?php endforeach; ?>
 
@@ -67,7 +67,7 @@
 
                 <input type="text"
                     name="name"
-                    value="<?= old('name'); ?>"
+                    value="<?= esc(old('name')); ?>"
                     class="w-full border p-3 rounded-lg"
                     required>
 
@@ -81,7 +81,7 @@
 
                 <input type="email"
                        name="email"
-                       value="<?= old('email'); ?>"
+                       value="<?= esc(old('email')); ?>"
                        class="w-full border p-3 rounded-lg"
                        required>
 

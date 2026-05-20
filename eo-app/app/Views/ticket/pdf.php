@@ -54,7 +54,7 @@
 
     <div class="event">
 
-        <?= $booking['title']; ?>
+        <?= esc($booking['title']); ?>
 
     </div>
 
@@ -68,28 +68,28 @@
     <div class="info">
 
         <strong>Nama:</strong>
-        <?= $booking['name']; ?>
+        <?= esc($booking['name']); ?>
 
     </div>
 
     <div class="info">
 
         <strong>Email:</strong>
-        <?= $booking['email']; ?>
+        <?= esc($booking['email']); ?>
 
     </div>
 
     <div class="info">
 
         <strong>Lokasi:</strong>
-        <?= $booking['location']; ?>
+        <?= esc($booking['location']); ?>
 
     </div>
 
     <div class="info">
 
         <strong>Tanggal:</strong>
-        <?= $booking['date']; ?>
+        <?= esc($booking['date']); ?>
 
     </div>
     <div style="margin-top:30px; text-align:center;">

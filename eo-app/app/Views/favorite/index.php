@@ -122,21 +122,21 @@ function confirmDelete(event)
                 <!-- TITLE -->
                 <h2 class="text-2xl font-bold mb-2">
 
-                    <?= $f['title']; ?>
+                    <?= esc($f['title']); ?>
 
                 </h2>
 
                 <!-- LOCATION -->
                 <p class="text-gray-600 mb-2">
 
-                    📍 <?= $f['location']; ?>
+                    📍 <?= esc($f['location']); ?>
 
                 </p>
 
                 <!-- DATE -->
                 <p class="text-gray-500 mb-5">
 
-                    📅 <?= $f['date']; ?>
+                    📅 <?= esc($f['date']); ?>
 
                 </p>
 
