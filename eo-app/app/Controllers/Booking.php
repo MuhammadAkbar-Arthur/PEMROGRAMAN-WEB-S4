@@ -17,35 +17,27 @@ class Booking extends BaseController
 
         // ADMIN TIDAK BOLEH BOOKING
         if (session()->get('role') == 'admin') {
-
             return redirect()->to('/admin')
-                ->with(
-                    'error',
-                    'Admin tidak dapat melakukan booking'
-                );
+                ->with('error', 'Admin tidak dapat melakukan booking');
         }
 
         $model = new BookingModel();
-
         $user_id = session()->get('id');
+
         // =========================
         // CEK EVENT
         // =========================
         $db = \Config\Database::connect();
-
         $event = $db->table('events')
             ->where('id', $event_id)
             ->get()
             ->getRowArray();
 
         if (!$event) {
-
             return redirect()->back()
-                ->with(
-                    'error',
-                    'Event tidak ditemukan'
-                );
+                ->with('error', 'Event tidak ditemukan');
         }
+
         // =========================
         // HITUNG BOOKING APPROVED
         // =========================
@@ -55,12 +47,8 @@ class Booking extends BaseController
             ->countAllResults();
 
         if ($totalApproved >= $event['quota']) {
-
             return redirect()->back()
-                ->with(
-                    'error',
-                    'Kuota event sudah penuh'
-                );
+                ->with('error', 'Kuota event sudah penuh');
         }
 
         // =========================
@@ -72,38 +60,26 @@ class Booking extends BaseController
             ->first();
 
         if ($check) {
-
             return redirect()->back()
-                ->with(
-                    'error',
-                    'Kamu sudah booking event ini'
-                );
+                ->with('error', 'Kamu sudah booking event ini');
         }
 
         // =========================
         // SAVE BOOKING
         // =========================
         $model->save([
-
             'user_id' => $user_id,
-
             'event_id' => $event_id,
-
             'status' => 'pending'
-
         ]);
 
-        // ambil booking terbaru
         $booking_id = $model->getInsertID();
 
         // kirim email pending
         $this->sendBookingEmail($booking_id);
 
         return redirect()->to('/my-bookings')
-            ->with(
-                'success',
-                'Booking berhasil dibuat'
-            );
+            ->with('success', 'Booking berhasil dibuat');
     }
 
     // =========================
@@ -114,7 +90,6 @@ class Booking extends BaseController
         $this->checkLogin();
 
         $db = \Config\Database::connect();
-
         $builder = $db->table('bookings');
 
         $builder->select('
@@ -127,66 +102,45 @@ class Booking extends BaseController
             events.image
         ');
     
-        $builder->join(
-            'events',
-            'events.id = bookings.event_id'
-        );
+        $builder->join('events', 'events.id = bookings.event_id');
+        $builder->where('bookings.user_id', session()->get('id'));
+        $builder->orderBy('bookings.id', 'DESC');
 
-        $builder->where(
-            'bookings.user_id',
-            session()->get('id')
-        );
-
-        $builder->orderBy(
-            'bookings.id',
-            'DESC'
-        );
-
-        $data['bookings'] = $builder
-            ->get()
-            ->getResultArray();
+        $data['bookings'] = $builder->get()->getResultArray();
 
         return view('booking/bookings', $data);
     }
 
     // =========================
-    // DELETE BOOKING
+    // DELETE BOOKING (DIAMANKAN DENGAN METODE POST)
     // =========================
     public function delete($id)
     {
         $this->checkLogin();
 
-        $model = new BookingModel();
-
-        $booking = $model->find($id);
-
-        // booking tidak ada
-        if (!$booking) {
-
-            return redirect()->back()
-                ->with(
-                    'error',
-                    'Booking tidak ditemukan'
-                );
+        // VALIDASI KEAMANAN: Blokir jika request dikirim lewat GET URL langsung
+        if ($this->request->getMethod() !== 'post') {
+            return redirect()->to('/my-bookings')->with('error', 'Akses ilegal diblokir!');
         }
 
-        // SECURITY
-        if ($booking['user_id'] != session()->get('id')) {
+        $model = new BookingModel();
+        $booking = $model->find($id);
 
-            return redirect()->back()
-                ->with(
-                    'error',
-                    'Akses ditolak'
-                );
+        if (!$booking) {
+            return redirect()->to('/my-bookings')
+                ->with('error', 'Booking tidak ditemukan');
+        }
+
+        // SECURITY VALIDATION
+        if ($booking['user_id'] != session()->get('id')) {
+            return redirect()->to('/my-bookings')
+                ->with('error', 'Akses ditolak');
         }
 
         $model->delete($id);
 
         return redirect()->to('/my-bookings')
-            ->with(
-                'success',
-                'Booking berhasil dibatalkan'
-            );
+            ->with('success', 'Booking berhasil dibatalkan');
     }
 
     // =========================
@@ -196,82 +150,39 @@ class Booking extends BaseController
     {
         $this->checkLogin();
 
-        // HANYA ADMIN & ORGANIZER
-        if (
-            !in_array(
-                session()->get('role'),
-                ['admin', 'organizer']
-            )
-        ) {
-
+        if (!in_array(session()->get('role'), ['admin', 'organizer'])) {
             return redirect()->to('/')
-                ->with(
-                    'error',
-                    'Akses ditolak'
-                );
+                ->with('error', 'Akses ditolak');
         }
 
         $model = new BookingModel();
-
         $db = \Config\Database::connect();
-
         $builder = $db->table('bookings');
 
-        $builder->select('
-            bookings.*,
-            events.owner_id
-        ');
+        $builder->select('bookings.*, events.owner_id');
+        $builder->join('events', 'events.id = bookings.event_id');
+        $builder->where('bookings.id', $id);
 
-        $builder->join(
-            'events',
-            'events.id = bookings.event_id'
-        );
-
-        $builder->where(
-            'bookings.id',
-            $id
-        );
-
-        $booking = $builder
-            ->get()
-            ->getRowArray();
+        $booking = $builder->get()->getRowArray();
 
         if (!$booking) {
-
             return redirect()->back()
-                ->with(
-                    'error',
-                    'Booking tidak ditemukan'
-                );
+                ->with('error', 'Booking tidak ditemukan');
         }
 
-        // ORGANIZER HANYA BOLEH APPROVE EVENT MILIKNYA
-        if (
-            session()->get('role') == 'organizer' &&
-            $booking['owner_id'] != session()->get('id')
-        ) {
-
+        if (session()->get('role') == 'organizer' && $booking['owner_id'] != session()->get('id')) {
             return redirect()->back()
-                ->with(
-                    'error',
-                    'Bukan booking event milik kamu'
-                );
+                ->with('error', 'Bukan booking event milik kamu');
         }
 
         $model->update($id, [
-
             'status' => 'approved'
-
         ]);
 
-        // kirim email approved
         $this->sendBookingEmail($id);
 
         return redirect()->back()
-            ->with(
-                'success',
-                'Booking approved'
-            );
+            ->with('success', 'Booking approved');
     }
 
     // =========================
@@ -281,82 +192,39 @@ class Booking extends BaseController
     {
         $this->checkLogin();
 
-        // HANYA ADMIN & ORGANIZER
-        if (
-            !in_array(
-                session()->get('role'),
-                ['admin', 'organizer']
-            )
-        ) {
-
+        if (!in_array(session()->get('role'), ['admin', 'organizer'])) {
             return redirect()->to('/')
-                ->with(
-                    'error',
-                    'Akses ditolak'
-                );
+                ->with('error', 'Akses ditolak');
         }
 
         $model = new BookingModel();
-
         $db = \Config\Database::connect();
-
         $builder = $db->table('bookings');
 
-        $builder->select('
-            bookings.*,
-            events.owner_id
-        ');
+        $builder->select('bookings.*, events.owner_id');
+        $builder->join('events', 'events.id = bookings.event_id');
+        $builder->where('bookings.id', $id);
 
-        $builder->join(
-            'events',
-            'events.id = bookings.event_id'
-        );
-
-        $builder->where(
-            'bookings.id',
-            $id
-        );
-
-        $booking = $builder
-            ->get()
-            ->getRowArray();
+        $booking = $builder->get()->getRowArray();
 
         if (!$booking) {
-
             return redirect()->back()
-                ->with(
-                    'error',
-                    'Booking tidak ditemukan'
-                );
+                ->with('error', 'Booking tidak ditemukan');
         }
 
-        // ORGANIZER HANYA BOLEH REJECT EVENT MILIKNYA
-        if (
-            session()->get('role') == 'organizer' &&
-            $booking['owner_id'] != session()->get('id')
-        ) {
-
+        if (session()->get('role') == 'organizer' && $booking['owner_id'] != session()->get('id')) {
             return redirect()->back()
-                ->with(
-                    'error',
-                    'Bukan booking event milik kamu'
-                );
+                ->with('error', 'Bukan booking event milik kamu');
         }
 
         $model->update($id, [
-
             'status' => 'rejected'
-
         ]);
 
-        // kirim email rejected
         $this->sendBookingEmail($id);
 
         return redirect()->back()
-            ->with(
-                'success',
-                'Booking rejected'
-            );
+            ->with('success', 'Booking rejected');
     }
 
     // =========================
@@ -367,7 +235,6 @@ class Booking extends BaseController
         $this->checkLogin();
 
         $db = \Config\Database::connect();
-
         $builder = $db->table('bookings');
 
         $builder->select('
@@ -379,57 +246,26 @@ class Booking extends BaseController
             events.date
         ');
 
-        $builder->join(
-            'users',
-            'users.id = bookings.user_id'
-        );
+        $builder->join('users', 'users.id = bookings.user_id');
+        $builder->join('events', 'events.id = bookings.event_id');
+        $builder->where('bookings.id', $booking_id);
 
-        $builder->join(
-            'events',
-            'events.id = bookings.event_id'
-        );
+        $booking = $builder->get()->getRowArray();
 
-        $builder->where(
-            'bookings.id',
-            $booking_id
-        );
-
-        $booking = $builder
-            ->get()
-            ->getRowArray();
-
-        // booking tidak ditemukan
         if (!$booking) {
-
             return redirect()->back()
-                ->with(
-                    'error',
-                    'Ticket tidak ditemukan'
-                );
+                ->with('error', 'Ticket tidak ditemukan');
         }
 
-        // SECURITY USER
         if ($booking['user_id'] != session()->get('id')) {
-
             return redirect()->back()
-                ->with(
-                    'error',
-                    'Akses ditolak'
-                );
+                ->with('error', 'Akses ditolak');
         }
 
-        // HARUS APPROVED
         if ($booking['status'] != 'approved') {
-
             return redirect()->back()
-                ->with(
-                    'error',
-                    'Ticket hanya tersedia untuk booking approved'
-                );
+                ->with('error', 'Ticket hanya tersedia untuk booking approved');
         }
-        // =========================
-        // QR CODE GENERATE
-        // =========================
 
         $qrData = base_url('/ticket/verify/' . $booking['id']);
 
@@ -440,42 +276,24 @@ class Booking extends BaseController
             ->margin(10)
             ->build();
 
-        $qrImage = base64_encode(
-            $result->getString()
-        );
-        // LOAD VIEW PDF
-        $html = view('ticket/pdf', [
+        $qrImage = base64_encode($result->getString());
 
+        $html = view('ticket/pdf', [
             'booking' => $booking,
             'qrImage' => $qrImage
-
         ]);
 
-        // DOMPDF
         $dompdf = new \Dompdf\Dompdf();
-
         $dompdf->loadHtml($html);
-
-        $dompdf->setPaper(
-            'A4',
-            'portrait'
-        );
-
+        $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
-        $dompdf->stream(
-
-            'ticket-' . $booking['id'] . '.pdf',
-
-            ['Attachment' => true]
-
-        );
+        $dompdf->stream('ticket-' . $booking['id'] . '.pdf', ['Attachment' => true]);
     }
 
     private function sendBookingEmail($booking_id)
     {
         $db = \Config\Database::connect();
-
         $builder = $db->table('bookings');
 
         $builder->select('
@@ -487,53 +305,26 @@ class Booking extends BaseController
             events.date
         ');
 
-        $builder->join(
-            'users',
-            'users.id = bookings.user_id'
-        );
+        $builder->join('users', 'users.id = bookings.user_id');
+        $builder->join('events', 'events.id = bookings.event_id');
+        $builder->where('bookings.id', $booking_id);
 
-        $builder->join(
-            'events',
-            'events.id = bookings.event_id'
-        );
-
-        $builder->where(
-            'bookings.id',
-            $booking_id
-        );
-
-        $booking = $builder
-            ->get()
-            ->getRowArray();
+        $booking = $builder->get()->getRowArray();
 
         if (!$booking) {
-
             return;
         }
 
         $email = \Config\Services::email();
+        $email->setTo($booking['email']);
+        $email->setSubject('Booking Event Notification');
 
-        $email->setTo(
-            $booking['email']
-        );
-
-        $email->setSubject(
-            'Booking Event Notification'
-        );
-
-        $message = view(
-            'email/booking_status',
-            ['booking' => $booking]
-        );
+        $message = view('email/booking_status', ['booking' => $booking]);
         $email->setMailType('html');
         $email->setMessage($message);
 
         if (!$email->send()) {
-
-            log_message(
-                'error',
-                $email->printDebugger(['headers'])
-            );
+            log_message('error', $email->printDebugger(['headers']));
         }
     }
 
@@ -543,7 +334,6 @@ class Booking extends BaseController
     public function verify($booking_id)
     {
         $db = \Config\Database::connect();
-
         $builder = $db->table('bookings');
 
         $builder->select('
@@ -554,40 +344,18 @@ class Booking extends BaseController
             events.location
         ');
 
-        $builder->join(
-            'users',
-            'users.id = bookings.user_id'
-        );
+        $builder->join('users', 'users.id = bookings.user_id');
+        $builder->join('events', 'events.id = bookings.event_id');
+        $builder->where('bookings.id', $booking_id);
 
-        $builder->join(
-            'events',
-            'events.id = bookings.event_id'
-        );
+        $booking = $builder->get()->getRowArray();
 
-        $builder->where(
-            'bookings.id',
-            $booking_id
-        );
-
-        $booking = $builder
-            ->get()
-            ->getRowArray();
-
-        if (!$booking) {
-
-            return view('ticket/invalid');
-        }
-
-        if ($booking['status'] != 'approved') {
-
+        if (!$booking || $booking['status'] != 'approved') {
             return view('ticket/invalid');
         }
 
         return view('ticket/verify', [
-
             'booking' => $booking
-
         ]);
     }
-
 }

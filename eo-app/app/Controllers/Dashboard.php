@@ -125,14 +125,6 @@ class Dashboard extends BaseController
             ->get()
             ->getResultArray();
 
-        // Menarik data Wishlist milik User saat ini
-        $favorites = $db->table('favorites')
-            ->select('events.*')
-            ->join('events', 'events.id = favorites.event_id')
-            ->where('favorites.user_id', $userId)
-            ->limit(3)
-            ->get()
-            ->getResultArray();
         // =========================
         // TOP EVENT PERFORMANCE
         // =========================
@@ -252,7 +244,6 @@ class Dashboard extends BaseController
             
             // Komponen Data List Card
             'upcoming'      => $upcoming,
-            'favorites'     => $favorites,
             
             // Komponen Data Grafik Analytics (Sudah berformat string JSON)
             'chartLabels'   => json_encode($chartLabels),

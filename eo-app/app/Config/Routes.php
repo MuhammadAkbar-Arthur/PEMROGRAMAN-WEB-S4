@@ -10,7 +10,7 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 $routes->get('/search-event', 'Home::search');
 $routes->get('/event/(:num)', 'Home::detail/$1');
-$routes->get('/test-email', 'TestMail::index'); // Rute testing email
+$routes->get('/test-email', 'TestMail::index'); 
 
 // --- AUTHENTICATION ---
 $routes->get('/login', 'Auth::login');
@@ -31,7 +31,10 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     // BOOKING SYSTEM
     $routes->get('/book/(:num)', 'Booking::create/$1');
     $routes->get('/my-bookings', 'Booking::myBookings');
-    $routes->get('/booking/delete/(:num)', 'Booking::delete/$1');
+    
+    // PERBAIKAN: Diubah dari GET menjadi POST demi keamanan CSRF
+    $routes->post('/booking/delete/(:num)', 'Booking::delete/$1');
+    
     $routes->get('/ticket/(:num)', 'Booking::ticket/$1');
     $routes->get('/ticket/verify/(:num)', 'Booking::verify/$1');
 
@@ -45,7 +48,7 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->get('/comment/delete/(:num)', 'Comment::delete/$1');
 });
 
-// --- ORGANIZER ONLY (Harus Hak Akses Organizer: 'organizer') ---
+// --- ORGANIZER ONLY ---
 $routes->group('organizer', ['filter' => 'organizer'], function($routes) {
     $routes->get('/', 'Organizer::index');
     $routes->get('bookings', 'Organizer::bookings');
@@ -53,18 +56,16 @@ $routes->group('organizer', ['filter' => 'organizer'], function($routes) {
     $routes->get('booking/reject/(:num)', 'Organizer::rejectBooking/$1');
 });
 
-// --- ADMIN ONLY (Harus Hak Akses Admin: 'admin') ---
+// --- ADMIN ONLY ---
 $routes->group('admin', ['filter' => 'admin'], function($routes) {
-    // Dashboard Admin
     $routes->get('/', 'Admin::index');
     $routes->get('export', 'Admin::exportCSV');
-    
-    // Managemen Approval Global via Admin (Jika diperlukan)
     $routes->get('booking/approve/(:num)', 'Booking::approve/$1');
     $routes->get('booking/reject/(:num)', 'Booking::reject/$1');
 });
 
-$routes->group('event', ['filter' => 'admin'], function($routes) {
+// --- EVENT MANAGEMENT ---
+$routes->group('event', ['filter' => 'auth'], function($routes) {
     $routes->get('/', 'Event::index');
     $routes->get('create', 'Event::create');
     $routes->post('store', 'Event::store');

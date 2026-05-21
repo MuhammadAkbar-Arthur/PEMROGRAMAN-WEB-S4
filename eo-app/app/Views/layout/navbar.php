@@ -70,6 +70,10 @@ $currentUrl = trim(service('uri')->getPath(), '/');
                         <a href="/organizer" class="w-full md:w-auto <?= $currentUrl == 'organizer' ? 'bg-blue-600 text-white px-3 py-2 rounded-lg font-semibold block' : 'hover:text-blue-400 px-3 py-2 block'; ?> transition">
                             Organizer Dashboard
                         </a>
+                        <a href="/event/create"
+                        class="px-4 py-2 rounded hover:bg-blue-500">
+                            Create Event
+                        </a>
                         <a href="/organizer/bookings" class="w-full md:w-auto <?= $currentUrl == 'organizer/bookings' ? 'bg-blue-600 text-white px-3 py-2 rounded-lg font-semibold block' : 'hover:text-blue-400 px-3 py-2 block'; ?> transition">
                             Manage Bookings
                         </a>
