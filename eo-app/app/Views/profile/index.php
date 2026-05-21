@@ -149,6 +149,19 @@ function showLoading(button)
                        class="w-full border p-3 rounded-lg">
 
             </div>
+            <!-- CONFIRM PASSWORD -->
+            <div class="mb-6">
+
+                <label class="block font-semibold mb-2">
+                    Confirm Password
+                </label>
+
+                <input type="password"
+                    name="confirm_password"
+                    placeholder="Ulangi password baru"
+                    class="w-full border p-3 rounded-lg">
+
+            </div>
 
             <button onclick="showLoading(this)"
                 class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg">

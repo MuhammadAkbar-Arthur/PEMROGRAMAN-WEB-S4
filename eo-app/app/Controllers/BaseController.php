@@ -8,8 +8,16 @@ class BaseController extends Controller
 {
     protected function checkLogin()
     {
-        if (!session()->get('id')) {
-            return redirect()->to('/login')->send();
+        if (!session()->get('logged_in')) {
+
+            return redirect()
+                ->to('/login')
+                ->with(
+                    'error',
+                    'Login terlebih dahulu'
+                )
+                ->send();
+
             exit;
         }
     }

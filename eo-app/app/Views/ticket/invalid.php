@@ -25,7 +25,7 @@
     </h1>
 
     <p class="text-gray-600">
-        Ticket tidak ditemukan atau tidak valid.
+        Ticket tidak ditemukan, rejected, atau belum di-approve admin.
     </p>
 
 </div>

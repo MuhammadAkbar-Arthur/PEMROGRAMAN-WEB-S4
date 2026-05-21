@@ -140,7 +140,9 @@ class Event extends BaseController
 
             'quota'       => $this->request->getPost('quota'),
 
-            'image'       => $fileName
+            'image'       => $fileName,
+
+            'owner_id' => session()->get('id')
 
         ]);
 
@@ -164,6 +166,30 @@ class Event extends BaseController
         $data['categories'] = $categoryModel->findAll();
 
         return view('event/edit', $data);
+
+        $event = $model->find($id);
+
+        if (!$event) {
+
+            return redirect()->back()
+                ->with(
+                    'error',
+                    'Event tidak ditemukan'
+                );
+        }
+
+        // OWNER CHECK
+        if (
+            session()->get('role') == 'organizer' &&
+            $event['owner_id'] != session()->get('id')
+        ) {
+
+            return redirect()->back()
+                ->with(
+                    'error',
+                    'Bukan event milik kamu'
+                );
+        }
     }
 
     public function update($id)
@@ -259,7 +285,7 @@ class Event extends BaseController
             'category_id' => $this->request->getPost('category_id'),
 
             'quota'       => $this->request->getPost('quota'),
-
+            'owner_id' => session()->get('id'),
             'image'       => $fileName
 
         ]);
@@ -276,6 +302,30 @@ class Event extends BaseController
         $this->checkLogin();
 
         $model = new EventModel();
+
+        $event = $model->find($id);
+
+        if (!$event) {
+
+            return redirect()->back()
+                ->with(
+                    'error',
+                    'Event tidak ditemukan'
+                );
+        }
+
+        // OWNER CHECK
+        if (
+            session()->get('role') == 'organizer' &&
+            $event['owner_id'] != session()->get('id')
+        ) {
+
+            return redirect()->back()
+                ->with(
+                    'error',
+                    'Bukan event milik kamu'
+                );
+        }
 
         $model->delete($id);
 

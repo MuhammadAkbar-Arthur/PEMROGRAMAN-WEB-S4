@@ -99,6 +99,18 @@
                        required>
 
             </div>
+            <div class="mb-6">
+
+                <label class="block mb-2 font-semibold">
+                    Confirm Password
+                </label>
+
+                <input type="password"
+                    name="confirm_password"
+                    class="w-full border p-3 rounded-lg"
+                    required>
+
+            </div>
 
             <button type="submit"
                 class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg hover:opacity-90 transition">

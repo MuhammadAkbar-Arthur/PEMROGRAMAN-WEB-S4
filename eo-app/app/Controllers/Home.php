@@ -83,6 +83,16 @@ class Home extends BaseController
     {
         $db = \Config\Database::connect();
 
+        $bookingModel = new \App\Models\BookingModel();
+
+        $totalApproved = $bookingModel
+            ->where('event_id', $id)
+            ->where('status', 'approved')
+            ->countAllResults();
+
+        $event['remaining_quota'] =
+            $event['quota'] - $totalApproved;
+
         // EVENT + CATEGORY
         $builder = $db->table('events');
 

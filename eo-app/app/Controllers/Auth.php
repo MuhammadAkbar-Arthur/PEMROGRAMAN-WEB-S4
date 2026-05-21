@@ -69,6 +69,22 @@ class Auth extends BaseController
                 );
         }
 
+        // VALIDASI ROLE
+        $allowedRoles = ['admin', 'organizer', 'user'];
+
+        if (!in_array($user['role'], $allowedRoles)) {
+
+            return redirect()->back()
+                ->with(
+                    'error',
+                    'Role akun tidak valid'
+                );
+        }
+
+        // REGENERATE SESSION
+        session()->regenerate();
+
+        // SET SESSION
         session()->set([
 
             'id' => $user['id'],
@@ -136,6 +152,12 @@ class Auth extends BaseController
                     'required' => 'Password wajib diisi',
                     'min_length' => 'Password minimal 6 karakter'
                 ]
+            ],
+            'confirm_password' => [
+                'rules' => 'matches[password]',
+                'errors' => [
+                    'matches' => 'Konfirmasi password tidak sama'
+                ]
             ]
 
         ];
@@ -151,9 +173,15 @@ class Auth extends BaseController
 
         $model->save([
 
-            'name' => $this->request->getPost('name'),
+            'name' => strip_tags(
+                trim(
+                    $this->request->getPost('name')
+                )
+            ),
 
-            'email' => $this->request->getPost('email'),
+            'email' => trim(
+    $this->request->getPost('email')
+),
 
             'password' => password_hash(
                 $this->request->getPost('password'),
@@ -175,6 +203,10 @@ class Auth extends BaseController
     {
         session()->destroy();
 
-        return redirect()->to('/login');
+        return redirect()->to('/login')
+            ->with(
+                'success',
+                'Logout berhasil'
+            );
     }
 }

@@ -15,9 +15,53 @@ class Booking extends BaseController
     {
         $this->checkLogin();
 
+        // ADMIN TIDAK BOLEH BOOKING
+        if (session()->get('role') == 'admin') {
+
+            return redirect()->to('/admin')
+                ->with(
+                    'error',
+                    'Admin tidak dapat melakukan booking'
+                );
+        }
+
         $model = new BookingModel();
 
         $user_id = session()->get('id');
+        // =========================
+        // CEK EVENT
+        // =========================
+        $db = \Config\Database::connect();
+
+        $event = $db->table('events')
+            ->where('id', $event_id)
+            ->get()
+            ->getRowArray();
+
+        if (!$event) {
+
+            return redirect()->back()
+                ->with(
+                    'error',
+                    'Event tidak ditemukan'
+                );
+        }
+        // =========================
+        // HITUNG BOOKING APPROVED
+        // =========================
+        $totalApproved = $model
+            ->where('event_id', $event_id)
+            ->where('status', 'approved')
+            ->countAllResults();
+
+        if ($totalApproved >= $event['quota']) {
+
+            return redirect()->back()
+                ->with(
+                    'error',
+                    'Kuota event sudah penuh'
+                );
+        }
 
         // =========================
         // CEK DOUBLE BOOKING
@@ -82,7 +126,7 @@ class Booking extends BaseController
             events.location,
             events.image
         ');
-
+    
         $builder->join(
             'events',
             'events.id = bookings.event_id'
@@ -150,13 +194,69 @@ class Booking extends BaseController
     // =========================
     public function approve($id)
     {
-        // ADMIN ONLY
-        if (session()->get('role') != 'admin') {
+        $this->checkLogin();
 
-            return redirect()->to('/');
+        // HANYA ADMIN & ORGANIZER
+        if (
+            !in_array(
+                session()->get('role'),
+                ['admin', 'organizer']
+            )
+        ) {
+
+            return redirect()->to('/')
+                ->with(
+                    'error',
+                    'Akses ditolak'
+                );
         }
 
         $model = new BookingModel();
+
+        $db = \Config\Database::connect();
+
+        $builder = $db->table('bookings');
+
+        $builder->select('
+            bookings.*,
+            events.owner_id
+        ');
+
+        $builder->join(
+            'events',
+            'events.id = bookings.event_id'
+        );
+
+        $builder->where(
+            'bookings.id',
+            $id
+        );
+
+        $booking = $builder
+            ->get()
+            ->getRowArray();
+
+        if (!$booking) {
+
+            return redirect()->back()
+                ->with(
+                    'error',
+                    'Booking tidak ditemukan'
+                );
+        }
+
+        // ORGANIZER HANYA BOLEH APPROVE EVENT MILIKNYA
+        if (
+            session()->get('role') == 'organizer' &&
+            $booking['owner_id'] != session()->get('id')
+        ) {
+
+            return redirect()->back()
+                ->with(
+                    'error',
+                    'Bukan booking event milik kamu'
+                );
+        }
 
         $model->update($id, [
 
@@ -179,13 +279,69 @@ class Booking extends BaseController
     // =========================
     public function reject($id)
     {
-        // ADMIN ONLY
-        if (session()->get('role') != 'admin') {
+        $this->checkLogin();
 
-            return redirect()->to('/');
+        // HANYA ADMIN & ORGANIZER
+        if (
+            !in_array(
+                session()->get('role'),
+                ['admin', 'organizer']
+            )
+        ) {
+
+            return redirect()->to('/')
+                ->with(
+                    'error',
+                    'Akses ditolak'
+                );
         }
 
         $model = new BookingModel();
+
+        $db = \Config\Database::connect();
+
+        $builder = $db->table('bookings');
+
+        $builder->select('
+            bookings.*,
+            events.owner_id
+        ');
+
+        $builder->join(
+            'events',
+            'events.id = bookings.event_id'
+        );
+
+        $builder->where(
+            'bookings.id',
+            $id
+        );
+
+        $booking = $builder
+            ->get()
+            ->getRowArray();
+
+        if (!$booking) {
+
+            return redirect()->back()
+                ->with(
+                    'error',
+                    'Booking tidak ditemukan'
+                );
+        }
+
+        // ORGANIZER HANYA BOLEH REJECT EVENT MILIKNYA
+        if (
+            session()->get('role') == 'organizer' &&
+            $booking['owner_id'] != session()->get('id')
+        ) {
+
+            return redirect()->back()
+                ->with(
+                    'error',
+                    'Bukan booking event milik kamu'
+                );
+        }
 
         $model->update($id, [
 
@@ -418,6 +574,11 @@ class Booking extends BaseController
             ->getRowArray();
 
         if (!$booking) {
+
+            return view('ticket/invalid');
+        }
+
+        if ($booking['status'] != 'approved') {
 
             return view('ticket/invalid');
         }
