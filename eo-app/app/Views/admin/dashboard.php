@@ -60,14 +60,6 @@
                Export CSV
 
             </a>
-
-            <a href="/logout"
-               class="bg-red-500 hover:bg-red-600 text-white px-5 py-3 rounded-xl shadow">
-
-               Logout
-
-            </a>
-
         </div>
 
     </div>

@@ -76,40 +76,6 @@
 
     </div>
 
-    <!-- HEADER -->
-    <div class="flex justify-between items-center mb-6">
-
-        <h1 class="text-3xl font-bold">
-            Event Organizer
-        </h1>
-
-        <div class="flex gap-2">
-
-            <?php if(session()->get('id')): ?>
-
-                <a href="/my-bookings"
-                   class="bg-blue-500 text-white px-4 py-2 rounded">
-                   My Booking
-                </a>
-
-                <a href="/logout"
-                   class="bg-red-500 text-white px-4 py-2 rounded">
-                   Logout
-                </a>
-
-            <?php else: ?>
-
-                <a href="/login"
-                   class="bg-green-500 text-white px-4 py-2 rounded">
-                   Login
-                </a>
-
-            <?php endif; ?>
-
-        </div>
-
-    </div>
-
     <!-- SEARCH -->
     <form id="searchForm" class="mb-6 flex gap-2">
 
@@ -177,10 +143,7 @@
 
             <?php foreach($events as $e): ?>
 
-            <div class="bg-white dark:bg-gray-900 shadow rounded p-6"
-                        hover:shadow-2xl
-                        hover:-translate-y-2
-                        transition-all duration-300"
+            <div class="bg-white dark:bg-gray-900 shadow rounded p-6 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300"
                 data-aos="fade-up">
 
                 <?php if($e['image']): ?>

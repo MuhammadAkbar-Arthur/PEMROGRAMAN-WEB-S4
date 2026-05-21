@@ -11,9 +11,11 @@ if(session()->get('logged_in')) {
         ->countAllResults();
 }
 
+$currentUrl = trim(service('uri')->getPath(), '/');
+
 ?>
 
-<nav class="bg-gray-900 dark:bg-black text-white shadow transition duration-300">
+<nav class="bg-gray-900 dark:bg-black text-white shadow transition duration-300 relative z-50">
 
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
 
@@ -24,133 +26,106 @@ if(session()->get('logged_in')) {
            Event Organizer
 
         </a>
+
         <!-- MOBILE BUTTON -->
         <button
             onclick="toggleMenu()"
-            class="md:hidden bg-gray-700 px-3 py-2 rounded">
+            class="md:hidden bg-gray-700 px-3 py-2 rounded relative z-50">
 
             ☰
 
         </button>
-        <!-- MENU -->
-        <div class="hidden md:flex gap-4 items-center flex-wrap" id="mobileMenu">
 
-            <!-- DARK MODE -->
-            <button
-                onclick="toggleTheme()"
-                class="bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded transition">
+        <div id="mobileMenu"
+            class="hidden md:flex flex-col md:flex-row md:flex-1
+                   items-start md:items-center
+                   absolute md:static
+                   top-full left-0 right-0
+                   w-full md:w-auto
+                   bg-gray-900 md:bg-transparent
+                   p-5 md:p-0
+                   shadow-lg md:shadow-none
+                   z-50">
 
-                🌙
+            <div class="flex flex-col md:flex-row flex-1 justify-center items-start md:items-center gap-4 md:gap-8 w-full md:w-auto mb-4 md:mb-0">
+                
+                <button
+                    onclick="toggleTheme()"
+                    class="bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded transition w-full md:w-auto text-left md:text-center">
+                    🌙
+                </button>
 
-            </button>
-        
-
-            <a href="/"
-               class="hover:text-blue-400 transition">
-
-               Home
-
-            </a>
-
-            <?php if(session()->get('logged_in')): ?>
-
-                <!-- WISHLIST -->
-                <a href="/favorite"
-                   class="relative hover:text-pink-400 transition">
-
-                   ❤️ Wishlist
-
-                   <?php if($favoriteCount > 0): ?>
-
-                        <span class="absolute -top-3 -right-4 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-
-                            <?= $favoriteCount; ?>
-
-                        </span>
-
-                   <?php endif; ?>
-
-                </a>
-                <a href="/dashboard"
-                    class="hover:text-blue-400">
-                    Dashboard
-                </a>
-                <!-- BOOKING -->
-                <a href="/my-bookings"
-                   class="hover:text-blue-400 transition">
-
-                   My Booking
-
+                <a href="/"
+                   class="w-full md:w-auto <?= $currentUrl == '' ? 'bg-blue-600 text-white px-3 py-2 rounded-lg font-semibold block' : 'hover:text-blue-400 px-3 py-2 block'; ?> transition">
+                   Home
                 </a>
 
-                <!-- PROFILE -->
-                <a href="/profile"
-                    class="hover:text-blue-400 transition">
+                <?php if(session()->get('logged_in')): ?>
+                    <?php if(session()->get('role') != 'admin'): ?>
+                        <a href="/favorite"
+                           class="relative w-full md:w-auto <?= $currentUrl == 'favorite' ? 'bg-pink-500 text-white px-3 py-2 rounded-lg font-semibold block' : 'hover:text-pink-400 px-3 py-2 block'; ?> transition">
+                           Wishlist
+                           <?php if($favoriteCount > 0): ?>
+                                <span class="absolute -top-3 -right-4 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                                    <?= $favoriteCount; ?>
+                                </span>
+                           <?php endif; ?>
+                        </a>
 
-                    Profile
+                        <a href="/my-bookings"
+                           class="w-full md:w-auto <?= $currentUrl == 'my-bookings' ? 'bg-blue-600 text-white px-3 py-2 rounded-lg font-semibold block' : 'hover:text-blue-400 px-3 py-2 block'; ?> transition">
+                           My Booking
+                        </a>
+                    <?php endif; ?>
 
-                </a>
-
-                <?php if(session()->get('role') == 'admin'): ?>
-
-                    <!-- ADMIN -->
-                    <a href="/admin"
-                       class="hover:text-yellow-400 transition">
-
-                       Admin
-
+                    <a href="/profile"
+                        class="w-full md:w-auto <?= $currentUrl == 'profile' ? 'bg-blue-600 text-white px-3 py-2 rounded-lg font-semibold block' : 'hover:text-blue-400 px-3 py-2 block'; ?> transition">
+                        Profile
                     </a>
 
-                    <!-- EVENT -->
-                    <a href="/event"
-                       class="hover:text-green-400 transition">
+                    <?php if(session()->get('role') == 'admin'): ?>
+                        <a href="/admin"
+                           class="w-full md:w-auto <?= $currentUrl == 'admin' ? 'bg-yellow-500 text-white px-3 py-2 rounded-lg font-semibold block' : 'hover:text-yellow-400 px-3 py-2 block'; ?> transition">
+                           Admin
+                        </a>
 
-                       Kelola Event
-
-                    </a>
-
+                        <a href="/event"
+                           class="w-full md:w-auto <?= $currentUrl == 'event' ? 'bg-green-500 text-white px-3 py-2 rounded-lg font-semibold block' : 'hover:text-green-400 px-3 py-2 block'; ?> transition">
+                           Kelola Event
+                        </a>
+                    <?php endif; ?>
                 <?php endif; ?>
+            </div>
 
-                <!-- USER -->
-                <span class="text-gray-300">
+            <div class="flex flex-col md:flex-row items-start md:items-center gap-4 w-full md:w-auto border-t border-gray-700 md:border-none pt-4 md:pt-0">
+                <?php if(session()->get('logged_in')): ?>
+                    <span class="text-gray-300">
+                        Hi, <?= esc(session()->get('name')); ?>
+                    </span>
 
-                    Hi, <?= esc(session()->get('name')); ?>
+                    <a href="/logout"
+                       class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded transition text-center w-full md:w-auto font-medium shadow-md">
+                       Logout
+                    </a>
+                <?php else: ?>
+                    <a href="/login"
+                       class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded transition text-center w-full md:w-auto">
+                       Login
+                    </a>
 
-                </span>
-
-                <!-- LOGOUT -->
-                <a href="/logout"
-                   class="bg-red-500 hover:bg-red-600 px-3 py-2 rounded transition">
-
-                   Logout
-
-                </a>
-
-            <?php else: ?>
-
-                <!-- LOGIN -->
-                <a href="/login"
-                   class="bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded transition">
-
-                   Login
-
-                </a>
-
-                <!-- REGISTER -->
-                <a href="/register"
-                   class="bg-green-500 hover:bg-green-600 px-3 py-2 rounded transition">
-
-                   Register
-
-                </a>
-
-            <?php endif; ?>
+                    <a href="/register"
+                       class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded transition text-center w-full md:w-auto">
+                       Register
+                    </a>
+                <?php endif; ?>
+            </div>
 
         </div>
 
     </div>
 
 </nav>
+
 <script>
 
     // LOAD THEME
@@ -160,7 +135,7 @@ if(session()->get('logged_in')) {
 
     }
 
-    // TOGGLE
+    // TOGGLE THEME
     function toggleTheme()
     {
         document.documentElement.classList.toggle('dark');
@@ -177,32 +152,13 @@ if(session()->get('logged_in')) {
 
         }
     }
-    <script>
 
+    // MOBILE MENU
     function toggleMenu()
     {
         const menu = document.getElementById('mobileMenu');
 
         menu.classList.toggle('hidden');
-
-        menu.classList.toggle('flex');
-
-        menu.classList.toggle('flex-col');
-
-        menu.classList.toggle('absolute');
-
-        menu.classList.toggle('top-20');
-
-        menu.classList.toggle('right-5');
-
-        menu.classList.toggle('bg-gray-900');
-
-        menu.classList.toggle('p-5');
-
-        menu.classList.toggle('rounded-lg');
-
     }
-
-    </script>
 
 </script>
