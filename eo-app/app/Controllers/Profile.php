@@ -13,10 +13,10 @@ class Profile extends BaseController
         }
 
         $model = new UserModel();
-
         $user = $model->find(session()->get('id'));
 
-        return view('profile/index', [
+        // PERBAIKAN DI SINI: Arahkan kembali ke 'profile/index'
+        return view('profile/index', [ 
             'user' => $user
         ]);
     }
@@ -28,122 +28,81 @@ class Profile extends BaseController
         }
 
         $model = new UserModel();
-
         $id = session()->get('id');
-
         $user = $model->find($id);
 
-        // upload avatar
-        $file = $this->request->getFile('avatar');
-
-        $avatarName = $user['avatar'];
-        // VALIDASI AVATAR
-        $allowedMimeTypes = [
-
-            'image/png',
-            'image/jpeg',
-            'image/jpg',
-            'image/webp'
-
+        $data = [
+            'name'  => trim($this->request->getPost('name')),
+            'phone' => trim($this->request->getPost('phone')),
+            'bio'   => trim($this->request->getPost('bio')),
+            'avatar'=> $user['avatar'] // Default gunakan avatar lama
         ];
 
+        // Validasi Dasar
+        if (empty($data['name'])) {
+            return redirect()->back()->with('error', 'Nama tidak boleh kosong');
+        }
+
+        // =========================
+        // UPLOAD AVATAR
+        // =========================
+        $file = $this->request->getFile('avatar');
+        
         if ($file && $file->isValid()) {
+            $allowedMimeTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
 
             // CEK MIME
             if (!in_array($file->getMimeType(), $allowedMimeTypes)) {
-
-                return redirect()->back()
-                    ->with(
-                        'error',
-                        'Avatar harus berupa gambar'
-                    );
+                return redirect()->back()->with('error', 'Avatar harus berupa gambar (PNG/JPG/WEBP)');
             }
 
-            // CEK SIZE (2MB)
+            // CEK SIZE (Maks 2MB)
             if ($file->getSize() > 2 * 1024 * 1024) {
-
-                return redirect()->back()
-                    ->with(
-                        'error',
-                        'Ukuran avatar maksimal 2MB'
-                    );
+                return redirect()->back()->with('error', 'Ukuran avatar maksimal 2MB');
             }
-        }
-        if ($file && $file->isValid()) {
 
             $avatarName = $file->getRandomName();
 
             // HAPUS AVATAR LAMA
-            if (
-                $user['avatar'] &&
-                file_exists('uploads/' . $user['avatar'])
-            ) {
-
-                unlink('uploads/' . $user['avatar']);
+            if ($user['avatar'] && file_exists(FCPATH . 'uploads/' . $user['avatar'])) {
+                unlink(FCPATH . 'uploads/' . $user['avatar']);
             }
 
-            $file->move('uploads/', $avatarName);
+            // PINDAHKAN AVATAR BARU
+            $file->move(FCPATH . 'uploads/', $avatarName);
+            $data['avatar'] = $avatarName;
         }
 
-        $data = [
-
-            'name' => $this->request->getPost('name'),
-
-            'phone' => $this->request->getPost('phone'),
-
-            'bio' => $this->request->getPost('bio'),
-
-            'avatar' => $avatarName
-        ];
-
-        // update password jika diisi
+        // =========================
+        // UPDATE PASSWORD
+        // =========================
         $password = $this->request->getPost('password');
-
         $confirmPassword = $this->request->getPost('confirm_password');
 
-        // update password jika diisi
-        if ($password) {
-
+        if (!empty($password)) {
             if ($password !== $confirmPassword) {
-
-                return redirect()->back()
-                    ->with(
-                        'error',
-                        'Konfirmasi password tidak sama'
-                    );
+                return redirect()->back()->with('error', 'Konfirmasi password tidak sama');
             }
-
-            $data['password'] = password_hash(
-                $password,
-                PASSWORD_DEFAULT
-            );
+            $data['password'] = password_hash($password, PASSWORD_DEFAULT);
         }
-        // VALIDASI PHONE
-        if (
-            $data['phone'] &&
-            !preg_match('/^[0-9+\-\s]+$/', $data['phone'])
-        ) {
 
-            return redirect()->back()
-                ->with(
-                    'error',
-                    'Format nomor HP tidak valid'
-                );
+        // =========================
+        // VALIDASI FORMAT
+        // =========================
+        if (!empty($data['phone']) && !preg_match('/^[0-9+\-\s]+$/', $data['phone'])) {
+            return redirect()->back()->with('error', 'Format nomor HP tidak valid');
         }
-        // LIMIT BIO
+
         if (strlen($data['bio']) > 300) {
-
-            return redirect()->back()
-                ->with(
-                    'error',
-                    'Bio maksimal 300 karakter'
-                );
+            return redirect()->back()->with('error', 'Bio maksimal 300 karakter');
         }
-        $model->update($id, $data);
 
+        // =========================
+        // SIMPAN KE DATABASE
+        // =========================
+        $model->update($id, $data);
         session()->set('name', $data['name']);
 
-        return redirect()->to('/profile')
-            ->with('success', 'Profile berhasil diupdate');
+        return redirect()->to('/profile')->with('success', 'Profile berhasil diupdate 🎉');
     }
 }

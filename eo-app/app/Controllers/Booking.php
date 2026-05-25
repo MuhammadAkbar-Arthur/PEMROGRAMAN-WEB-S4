@@ -13,64 +13,51 @@ class Booking extends BaseController
     // =========================
     public function create($event_id)
     {
-        $this->checkLogin();
-
         // ADMIN TIDAK BOLEH BOOKING
         if (session()->get('role') == 'admin') {
             return redirect()->to('/admin')
-                ->with('error', 'Admin tidak dapat melakukan booking');
+                ->with('error', 'Admin tidak dapat melakukan pemesanan tiket');
         }
 
         $model = new BookingModel();
         $user_id = session()->get('id');
 
-        // =========================
-        // CEK EVENT
-        // =========================
         $db = \Config\Database::connect();
-        $event = $db->table('events')
-            ->where('id', $event_id)
-            ->get()
-            ->getRowArray();
+        $event = $db->table('events')->where('id', $event_id)->get()->getRowArray();
 
         if (!$event) {
-            return redirect()->back()
-                ->with('error', 'Event tidak ditemukan');
+            return redirect()->back()->with('error', 'Event tidak ditemukan');
         }
 
         // =========================
         // HITUNG BOOKING APPROVED
         // =========================
-        $totalApproved = $model
-            ->where('event_id', $event_id)
-            ->where('status', 'approved')
-            ->countAllResults();
+        $totalApproved = $model->where('event_id', $event_id)
+                               ->where('status', 'approved')
+                               ->countAllResults();
 
         if ($totalApproved >= $event['quota']) {
-            return redirect()->back()
-                ->with('error', 'Kuota event sudah penuh');
+            return redirect()->back()->with('error', 'Mohon maaf, kuota event ini sudah penuh');
         }
 
         // =========================
         // CEK DOUBLE BOOKING
         // =========================
-        $check = $model
-            ->where('user_id', $user_id)
-            ->where('event_id', $event_id)
-            ->first();
+        $check = $model->where('user_id', $user_id)
+                       ->where('event_id', $event_id)
+                       ->first();
 
         if ($check) {
-            return redirect()->back()
-                ->with('error', 'Kamu sudah booking event ini');
+            return redirect()->back()->with('error', 'Anda sudah memesan tiket untuk event ini sebelumnya');
         }
 
         // =========================
         // SAVE BOOKING
         // =========================
         $model->save([
-            'user_id' => $user_id,
+            'user_id'  => $user_id,
             'event_id' => $event_id,
-            'status' => 'pending'
+            'status'   => 'pending'
         ]);
 
         $booking_id = $model->getInsertID();
@@ -78,17 +65,14 @@ class Booking extends BaseController
         // kirim email pending
         $this->sendBookingEmail($booking_id);
 
-        return redirect()->to('/my-bookings')
-            ->with('success', 'Booking berhasil dibuat');
+        return redirect()->to('/my-bookings')->with('success', 'Pemesanan berhasil! Menunggu persetujuan Organizer.');
     }
 
     // =========================
-    // MY BOOKINGS
+    // MY BOOKINGS (USER)
     // =========================
     public function myBookings()
     {
-        $this->checkLogin();
-
         $db = \Config\Database::connect();
         $builder = $db->table('bookings');
 
@@ -112,12 +96,10 @@ class Booking extends BaseController
     }
 
     // =========================
-    // DELETE BOOKING (DIAMANKAN DENGAN METODE POST)
+    // DELETE BOOKING (USER CANCEL)
     // =========================
     public function delete($id)
     {
-        $this->checkLogin();
-
         // VALIDASI KEAMANAN: Blokir jika request dikirim lewat GET URL langsung
         if ($this->request->getMethod() !== 'post') {
             return redirect()->to('/my-bookings')->with('error', 'Akses ilegal diblokir!');
@@ -127,74 +109,71 @@ class Booking extends BaseController
         $booking = $model->find($id);
 
         if (!$booking) {
-            return redirect()->to('/my-bookings')
-                ->with('error', 'Booking tidak ditemukan');
+            return redirect()->to('/my-bookings')->with('error', 'Tiket tidak ditemukan');
         }
 
-        // SECURITY VALIDATION
+        // SECURITY VALIDATION: Hanya pemilik tiket yang bisa membatalkan
         if ($booking['user_id'] != session()->get('id')) {
-            return redirect()->to('/my-bookings')
-                ->with('error', 'Akses ditolak');
+            return redirect()->to('/my-bookings')->with('error', 'Akses ditolak. Ini bukan tiket Anda!');
         }
 
         $model->delete($id);
 
-        return redirect()->to('/my-bookings')
-            ->with('success', 'Booking berhasil dibatalkan');
+        return redirect()->to('/my-bookings')->with('success', 'Pemesanan tiket berhasil dibatalkan');
     }
 
     // =========================
-    // APPROVE BOOKING
+    // APPROVE BOOKING (ADMIN/ORGANIZER)
     // =========================
     public function approve($id)
     {
-        $this->checkLogin();
-
         if (!in_array(session()->get('role'), ['admin', 'organizer'])) {
-            return redirect()->to('/')
-                ->with('error', 'Akses ditolak');
+            return redirect()->to('/')->with('error', 'Akses ditolak');
         }
 
         $model = new BookingModel();
         $db = \Config\Database::connect();
         $builder = $db->table('bookings');
 
-        $builder->select('bookings.*, events.owner_id');
+        $builder->select('bookings.*, events.owner_id, events.quota');
         $builder->join('events', 'events.id = bookings.event_id');
         $builder->where('bookings.id', $id);
 
         $booking = $builder->get()->getRowArray();
 
         if (!$booking) {
-            return redirect()->back()
-                ->with('error', 'Booking tidak ditemukan');
+            return redirect()->back()->with('error', 'Pemesanan tidak ditemukan');
         }
 
-        if (session()->get('role') == 'organizer' && $booking['owner_id'] != session()->get('id')) {
-            return redirect()->back()
-                ->with('error', 'Bukan booking event milik kamu');
+        // VALIDASI KEPEMILIKAN ORGANIZER SECARA STRICT
+        if (session()->get('role') === 'organizer') {
+            if (empty($booking['owner_id']) || $booking['owner_id'] != session()->get('id')) {
+                return redirect()->back()->with('error', 'Akses Ilegal: Anda tidak berhak menyetujui tiket di luar event Anda!');
+            }
         }
 
-        $model->update($id, [
-            'status' => 'approved'
-        ]);
+        // VALIDASI KUOTA SEBELUM APPROVE (Mencegah over-booking jika di-approve paksa bersamaan)
+        $totalApproved = $model->where('event_id', $booking['event_id'])
+                               ->where('status', 'approved')
+                               ->countAllResults();
 
+        if ($totalApproved >= $booking['quota']) {
+            return redirect()->back()->with('error', 'Gagal! Kuota event ini sudah terisi penuh.');
+        }
+
+        $model->update($id, ['status' => 'approved']);
         $this->sendBookingEmail($id);
 
-        return redirect()->back()
-            ->with('success', 'Booking approved');
+        return redirect()->back()->with('success', 'Tiket berhasil disetujui');
     }
 
     // =========================
-    // REJECT BOOKING
+    // REJECT BOOKING (ADMIN/ORGANIZER)
     // =========================
     public function reject($id)
     {
-        $this->checkLogin();
-
         if (!in_array(session()->get('role'), ['admin', 'organizer'])) {
-            return redirect()->to('/')
-                ->with('error', 'Akses ditolak');
+            return redirect()->to('/')->with('error', 'Akses ditolak');
         }
 
         $model = new BookingModel();
@@ -208,23 +187,20 @@ class Booking extends BaseController
         $booking = $builder->get()->getRowArray();
 
         if (!$booking) {
-            return redirect()->back()
-                ->with('error', 'Booking tidak ditemukan');
+            return redirect()->back()->with('error', 'Pemesanan tidak ditemukan');
         }
 
-        if (session()->get('role') == 'organizer' && $booking['owner_id'] != session()->get('id')) {
-            return redirect()->back()
-                ->with('error', 'Bukan booking event milik kamu');
+        // VALIDASI KEPEMILIKAN ORGANIZER SECARA STRICT
+        if (session()->get('role') === 'organizer') {
+            if (empty($booking['owner_id']) || $booking['owner_id'] != session()->get('id')) {
+                return redirect()->back()->with('error', 'Akses Ilegal: Anda tidak berhak menolak tiket di luar event Anda!');
+            }
         }
 
-        $model->update($id, [
-            'status' => 'rejected'
-        ]);
-
+        $model->update($id, ['status' => 'rejected']);
         $this->sendBookingEmail($id);
 
-        return redirect()->back()
-            ->with('success', 'Booking rejected');
+        return redirect()->back()->with('success', 'Tiket telah ditolak');
     }
 
     // =========================
@@ -232,8 +208,6 @@ class Booking extends BaseController
     // =========================
     public function ticket($booking_id)
     {
-        $this->checkLogin();
-
         $db = \Config\Database::connect();
         $builder = $db->table('bookings');
 
@@ -253,18 +227,15 @@ class Booking extends BaseController
         $booking = $builder->get()->getRowArray();
 
         if (!$booking) {
-            return redirect()->back()
-                ->with('error', 'Ticket tidak ditemukan');
+            return redirect()->back()->with('error', 'Tiket tidak ditemukan');
         }
 
         if ($booking['user_id'] != session()->get('id')) {
-            return redirect()->back()
-                ->with('error', 'Akses ditolak');
+            return redirect()->back()->with('error', 'Akses ditolak. Ini bukan tiket Anda!');
         }
 
         if ($booking['status'] != 'approved') {
-            return redirect()->back()
-                ->with('error', 'Ticket hanya tersedia untuk booking approved');
+            return redirect()->back()->with('error', 'Tiket fisik PDF hanya tersedia jika status pemesanan sudah disetujui');
         }
 
         $qrData = base_url('/ticket/verify/' . $booking['id']);
@@ -288,9 +259,12 @@ class Booking extends BaseController
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
-        $dompdf->stream('ticket-' . $booking['id'] . '.pdf', ['Attachment' => true]);
+        $dompdf->stream('ticket-event-' . $booking['id'] . '.pdf', ['Attachment' => true]);
     }
 
+    // =========================
+    // KIRIM NOTIFIKASI EMAIL
+    // =========================
     private function sendBookingEmail($booking_id)
     {
         $db = \Config\Database::connect();
@@ -317,7 +291,7 @@ class Booking extends BaseController
 
         $email = \Config\Services::email();
         $email->setTo($booking['email']);
-        $email->setSubject('Booking Event Notification');
+        $email->setSubject('Notifikasi Status Pemesanan Event - EO Management');
 
         $message = view('email/booking_status', ['booking' => $booking]);
         $email->setMailType('html');
@@ -329,7 +303,7 @@ class Booking extends BaseController
     }
 
     // =========================
-    // VERIFY TICKET
+    // VERIFY TICKET (SCAN QR)
     // =========================
     public function verify($booking_id)
     {
@@ -351,7 +325,7 @@ class Booking extends BaseController
         $booking = $builder->get()->getRowArray();
 
         if (!$booking || $booking['status'] != 'approved') {
-            return view('ticket/invalid');
+            return view('ticket/invalid'); // Pastikan view ini ada
         }
 
         return view('ticket/verify', [

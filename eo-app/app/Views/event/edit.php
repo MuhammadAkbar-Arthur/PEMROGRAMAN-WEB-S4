@@ -13,13 +13,6 @@
 </head>
 <script>
 
-function showLoading(button)
-{
-    button.disabled = true;
-
-    button.innerHTML = 'Loading...';
-}
-
 </script>
 <body class="bg-gray-100 dark:bg-gray-950 transition duration-300">
 
@@ -166,7 +159,7 @@ function showLoading(button)
 
             </div>
 
-            <button onclick="showLoading(this)"
+            <button type="submit"
                 class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-lg">
 
                 Update Event

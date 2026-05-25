@@ -15,6 +15,7 @@ class EventModel extends Model
         'location',
         'category_id',
         'image',
-        'quota'
+        'quota',
+        'owner_id',
     ];
 }

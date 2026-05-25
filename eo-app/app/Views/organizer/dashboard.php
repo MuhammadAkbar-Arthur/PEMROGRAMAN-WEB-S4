@@ -66,7 +66,7 @@
     <div class="bg-white dark:bg-gray-900 shadow-md rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white">Upcoming Events</h2>
-            <a href="/my-events" class="text-blue-500 hover:text-blue-700 font-medium text-sm">View All</a>
+            <a href="/organizer/my-events" class="text-blue-500 hover:text-blue-700 font-medium text-sm">View All</a>
         </div>
 
         <div class="grid md:grid-cols-3 gap-6">

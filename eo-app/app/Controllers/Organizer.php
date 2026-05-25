@@ -110,4 +110,59 @@ class Organizer extends BaseController
             'statusData' => json_encode($statusData),
         ]);
     }
+    public function bookings()
+    {
+        $this->checkLogin();
+
+        if(session()->get('role') != 'organizer') {
+            return redirect()->to('/')
+                ->with('error', 'Akses organizer ditolak');
+        }
+
+        $db = \Config\Database::connect();
+
+        $userId = session()->get('id');
+
+        $bookings = $db->table('bookings')
+            ->select('
+                bookings.*,
+                events.title,
+                users.name,
+                users.email
+            ')
+            ->join('events', 'events.id = bookings.event_id')
+            ->join('users', 'users.id = bookings.user_id')
+            ->where('events.owner_id', $userId)
+            ->orderBy('bookings.id', 'DESC')
+            ->get()
+            ->getResultArray();
+
+        return view('organizer/bookings', [
+            'bookings' => $bookings
+        ]);
+    }
+    public function myEvents()
+    {
+        $this->checkLogin();
+
+        if(session()->get('role') != 'organizer') {
+
+            return redirect()->to('/')
+                ->with('error', 'Akses organizer ditolak');
+        }
+
+        $db = \Config\Database::connect();
+
+        $events = $db->table('events')
+            ->select('events.*, categories.name as category_name')
+            ->join('categories', 'categories.id = events.category_id', 'left')
+            ->where('events.owner_id', session()->get('id'))
+            ->orderBy('events.id', 'DESC')
+            ->get()
+            ->getResultArray();
+
+        return view('organizer/my_events', [
+            'events' => $events
+        ]);
+    }
 }

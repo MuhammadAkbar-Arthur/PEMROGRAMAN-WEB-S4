@@ -54,14 +54,33 @@ $routes->group('organizer', ['filter' => 'organizer'], function($routes) {
     $routes->get('bookings', 'Organizer::bookings');
     $routes->get('booking/approve/(:num)', 'Organizer::approveBooking/$1');
     $routes->get('booking/reject/(:num)', 'Organizer::rejectBooking/$1');
+    $routes->get('my-events', 'Organizer::myEvents');
 });
 
 // --- ADMIN ONLY ---
 $routes->group('admin', ['filter' => 'admin'], function($routes) {
     $routes->get('/', 'Admin::index');
     $routes->get('export', 'Admin::exportCSV');
+    $routes->get('analytics', 'Admin::analytics');
+
+    // Booking Management
     $routes->get('booking/approve/(:num)', 'Booking::approve/$1');
     $routes->get('booking/reject/(:num)', 'Booking::reject/$1');
+
+    // Category Management
+    $routes->get('categories', 'Category::index');
+    $routes->post('categories/store', 'Category::store');
+    $routes->post('categories/update/(:num)', 'Category::update/$1'); // <- Ditambahkan dari Prioritas 2
+    $routes->get('categories/delete/(:num)', 'Category::delete/$1');
+
+    // User Management
+    $routes->get('users', 'Admin::users');
+    $routes->get('users/make-organizer/(:num)', 'Admin::makeOrganizer/$1');
+    $routes->get('users/make-user/(:num)', 'Admin::makeUser/$1');
+    $routes->get('users/delete/(:num)', 'Admin::deleteUser/$1'); // <- Ditambahkan dari Prioritas 3
+    
+    // Event Management (Global Admin Moderation)
+    $routes->get('events/delete/(:num)', 'Admin::deleteEvent/$1'); // <- Ditambahkan dari Prioritas 4
 });
 
 // --- EVENT MANAGEMENT ---
