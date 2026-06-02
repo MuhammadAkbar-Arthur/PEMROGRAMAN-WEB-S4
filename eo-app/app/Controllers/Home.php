@@ -15,59 +15,41 @@ class Home extends BaseController
 
         // JOIN CATEGORY
         $model->select('events.*, categories.name as category_name');
-
-        $model->join(
-            'categories',
-            'categories.id = events.category_id',
-            'left'
-        );
+        $model->join('categories', 'categories.id = events.category_id', 'left');
 
         // GET FILTER
-        $keyword   = $this->request->getGet('keyword');
-        $location  = $this->request->getGet('location');
-        $category  = $this->request->getGet('category');
-        $sort      = $this->request->getGet('sort');
+        $keyword  = $this->request->getGet('keyword');
+        $location = $this->request->getGet('location');
+        $category = $this->request->getGet('category');
+        $sort     = $this->request->getGet('sort');
 
         // SEARCH TITLE
-        if ($keyword) {
-
+        if (!empty($keyword)) {
             $model->like('events.title', $keyword);
-
         }
 
         // SEARCH LOCATION
-        if ($location) {
-
+        if (!empty($location)) {
             $model->like('events.location', $location);
-
         }
 
         // FILTER CATEGORY
-        if ($category) {
-
+        if (!empty($category)) {
             $model->where('events.category_id', $category);
-
         }
 
         // SORTING
         if ($sort == 'oldest') {
-
             $model->orderBy('events.date', 'ASC');
-
         } else {
-
             $model->orderBy('events.date', 'DESC');
-
         }
 
         // PAGINATION
-        $data['events'] = $model->paginate(6);
-
-        $data['pager'] = $model->pager;
+        $data['events'] = $model->findAll();
 
         // CATEGORY DATA
         $categoryModel = new CategoryModel();
-
         $data['categories'] = $categoryModel->findAll();
 
         // FILTER VALUE
@@ -83,156 +65,104 @@ class Home extends BaseController
     {
         $db = \Config\Database::connect();
 
-        $bookingModel = new \App\Models\BookingModel();
-
-        $totalApproved = $bookingModel
-            ->where('event_id', $id)
-            ->where('status', 'approved')
-            ->countAllResults();
-
-        $event['remaining_quota'] =
-            $event['quota'] - $totalApproved;
-
-        // EVENT + CATEGORY
+        // ==========================================
+        // 1. AMBIL DATA EVENT (JOIN CATEGORIES & USERS)
+        // ==========================================
         $builder = $db->table('events');
-
-        $builder->select('events.*, categories.name as category_name');
-
-        $builder->join(
-            'categories',
-            'categories.id = events.category_id',
-            'left'
-        );
-
+        $builder->select('events.*, categories.name as category_name, users.name as organizer_name');
+        $builder->join('categories', 'categories.id = events.category_id', 'left');
+        $builder->join('users', 'users.id = events.owner_id', 'left'); // JOIN KE USERS
         $builder->where('events.id', $id);
-
         $event = $builder->get()->getRowArray();
 
-        // kalau event tidak ada
         if (!$event) {
-
-            return redirect()->to('/');
+            return redirect()->to('/')->with('error', 'Event tidak ditemukan.');
         }
 
         $data['event'] = $event;
-        $bookingModel = new \App\Models\BookingModel();
-        // TOTAL BOOKING APPROVED
-        $totalBooked = $bookingModel
-            ->where('event_id', $id)
-            ->where('status', 'approved')
-            ->countAllResults();
 
-        $data['totalBooked'] = $totalBooked;
-
-        // SISA KURSI
-        $data['remainingSeat'] = $event['quota'] - $totalBooked;
-
-        // FULL EVENT
-        $data['isFull'] = $totalBooked >= $event['quota'];
-
+        // ==========================================
+        // 2. HITUNG SISA KUOTA
+        // ==========================================
         $bookingModel = new BookingModel();
+        
+        $totalBooked = $bookingModel->where('event_id', $id)
+                                    ->where('status', 'approved')
+                                    ->countAllResults();
 
+        $data['totalBooked']   = $totalBooked;
+        $data['remainingSeat'] = $event['quota'] - $totalBooked;
+        $data['isFull']        = $totalBooked >= $event['quota'];
+
+        // ==========================================
+        // 3. CEK STATUS USER (BOOKING & WISHLIST)
+        // ==========================================
         $user_id = session()->get('id');
 
         // DEFAULT
-        $data['isBooked'] = false;
+        $data['isBooked']   = false;
         $data['isFavorite'] = false;
 
-        // CEK BOOKING
         if ($user_id) {
-
-            $checkBooking = $bookingModel
-                ->where('user_id', $user_id)
-                ->where('event_id', $id)
-                ->first();
-
+            // CEK BOOKING
+            $checkBooking = $bookingModel->where('user_id', $user_id)
+                                         ->where('event_id', $id)
+                                         ->first();
             if ($checkBooking) {
-
                 $data['isBooked'] = true;
             }
 
             // CEK FAVORITE
             $favoriteModel = new FavoriteModel();
-
-            $favoriteCheck = $favoriteModel
-                ->where('user_id', $user_id)
-                ->where('event_id', $id)
-                ->first();
-
+            $favoriteCheck = $favoriteModel->where('user_id', $user_id)
+                                           ->where('event_id', $id)
+                                           ->first();
             if ($favoriteCheck) {
-
                 $data['isFavorite'] = true;
             }
         }
-        // COMMENTS
+
+        // ==========================================
+        // 4. LOAD COMMENTS
+        // ==========================================
         $commentBuilder = $db->table('comments');
-
-        $commentBuilder->select('comments.*, users.name');
-
-        $commentBuilder->join(
-            'users',
-            'users.id = comments.user_id'
-        );
-
+        $commentBuilder->select('comments.*, users.name as user_name, users.role as user_role');
+        
+        $commentBuilder->join('users', 'users.id = comments.user_id');
         $commentBuilder->where('comments.event_id', $id);
-
         $commentBuilder->orderBy('comments.id', 'DESC');
 
-        $data['comments'] = $commentBuilder
-            ->get()
-            ->getResultArray();
+        $data['comments'] = $commentBuilder->get()->getResultArray();
             
         return view('event/detail', $data);
     }
+
     public function search()
     {
         $db = \Config\Database::connect();
-
         $builder = $db->table('events');
 
         $builder->select('events.*, categories.name as category_name');
-
-        $builder->join(
-            'categories',
-            'categories.id = events.category_id',
-            'left'
-        );
+        $builder->join('categories', 'categories.id = events.category_id', 'left');
 
         $keyword  = $this->request->getGet('keyword');
         $location = $this->request->getGet('location');
         $category = $this->request->getGet('category');
         $sort     = $this->request->getGet('sort');
 
-        // SEARCH TITLE
-        if ($keyword) {
-
+        if (!empty($keyword)) {
             $builder->like('events.title', $keyword);
-
         }
-
-        // LOCATION
-        if ($location) {
-
+        if (!empty($location)) {
             $builder->like('events.location', $location);
-
         }
-
-        // CATEGORY
-        if ($category) {
-
+        if (!empty($category)) {
             $builder->where('events.category_id', $category);
-
         }
-
-        // SORT
         if ($sort == 'oldest') {
-
             $builder->orderBy('events.date', 'ASC');
-
         } else {
-
             $builder->orderBy('events.date', 'DESC');
-
         }
 
         $events = $builder->get()->getResultArray();

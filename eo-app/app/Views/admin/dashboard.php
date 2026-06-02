@@ -122,10 +122,11 @@
                             <td><?= esc($ev['location']); ?></td>
                             <td><?= esc($ev['quota']); ?> Slot</td>
                             <td>
-                                <a href="/admin/events/delete/<?= $ev['id']; ?>"
-                                   onclick="return confirm('Apakah Anda yakin ingin menghapus paksa event ini? Seluruh transaksi booking tiket milik user pada event ini akan dihapus permanen.')"
-                                   class="inline-flex bg-red-50 hover:bg-red-100 text-red-600 dark:bg-red-950/20 dark:text-red-400 dark:border-red-950 border border-red-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
-                                    Hapus Paksa
+                                
+                                <a href="/admin/events/delete/<?= $ev['id']; ?>" 
+                                    id="btn-delete-<?= $ev['id']; ?>" 
+                                    class="delete-force-btn inline-flex bg-red-50 hover:bg-red-100 text-red-600 dark:bg-red-950/20 dark:text-red-400 dark:border-red-950 border border-red-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                                     Hapus Paksa
                                 </a>
                             </td>
                         </tr>
@@ -165,48 +166,62 @@
 
     </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-// CHART CONFIG
-const ctx = document.getElementById('bookingChart');
-new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: <?= json_encode(json_decode($chartLabels)); ?>,
-        datasets: [{
-            label: 'Akumulasi Pendaftar',
-            data: <?= json_encode(json_decode($chartTotals)); ?>,
-            backgroundColor: 'rgba(99, 102, 241, 0.15)',
-            borderColor: 'rgba(99, 102, 241, 1)',
-            borderWidth: 2,
-            borderRadius: 6
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: { y: { beginAtZero: true, grid: { color: '#f3f4f6' } }, x: { grid: { display: false } } }
-    }
-});
-
-// DATATABLES INITIALIZATION
 $(document).ready(function () {
-    $('#bookingTable').DataTable({
+    // 1. Inisialisasi Chart
+    const ctx = document.getElementById('bookingChart');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: <?= json_encode(json_decode($chartLabels)); ?>,
+                datasets: [{
+                    label: 'Akumulasi Pendaftar',
+                    data: <?= json_encode(json_decode($chartTotals)); ?>,
+                    backgroundColor: 'rgba(99, 102, 241, 0.15)',
+                    borderColor: 'rgba(99, 102, 241, 1)',
+                    borderWidth: 2,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, grid: { color: '#f3f4f6' } }, x: { grid: { display: false } } }
+            }
+        });
+    }
+
+    // 2. Inisialisasi DataTables
+    $('#bookingTable, #eventAdminTable').DataTable({
         pageLength: 5,
         lengthMenu: [5, 10, 25]
     });
 
-    $('#eventAdminTable').DataTable({
-        pageLength: 5,
-        lengthMenu: [5, 10, 25]
+    // 3. Logic Hapus Paksa
+    $('body').on('click', '.delete-force-btn', function(e) {
+        e.preventDefault(); 
+        const url = $(this).attr('href');
+
+        Swal.fire({
+            title: 'Yakin?',
+            text: "Data event ini akan dihapus permanen! Seluruh data booking akan ikut terhapus.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
     });
 });
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<?= view('layout/footer'); ?>
-
 <?php if(session()->getFlashdata('success')): ?>
 <script>
 Swal.fire({ icon: 'success', title: 'Berhasil 🎉', text: '<?= session()->getFlashdata('success'); ?>', confirmButtonColor: '#2563eb' });

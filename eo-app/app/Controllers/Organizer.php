@@ -9,18 +9,14 @@ class Organizer extends BaseController
         $this->checkLogin();
 
         if(session()->get('role') != 'organizer') {
-            return redirect()->to('/')
-                ->with('error', 'Akses organizer ditolak');
+            return redirect()->to('/')->with('error', 'Akses organizer ditolak');
         }
 
         $db = \Config\Database::connect();
-
         $userId = session()->get('id');
 
         // TOTAL EVENT
-        $totalEvents = $db->table('events')
-            ->where('owner_id', $userId)
-            ->countAllResults();
+        $totalEvents = $db->table('events')->where('owner_id', $userId)->countAllResults();
 
         // TOTAL BOOKING
         $totalBookings = $db->table('bookings')
@@ -52,18 +48,11 @@ class Organizer extends BaseController
 
         // CHART DATA BULANAN
         $chartQuery = $db->query("
-            SELECT MONTH(bookings.created_at) as month,
-            COUNT(*) as total
-
+            SELECT MONTH(bookings.created_at) as month, COUNT(*) as total
             FROM bookings
-
-            JOIN events
-            ON events.id = bookings.event_id
-
+            JOIN events ON events.id = bookings.event_id
             WHERE events.owner_id = $userId
-
             GROUP BY MONTH(bookings.created_at)
-
             ORDER BY MONTH(bookings.created_at)
         ")->getResultArray();
 
@@ -77,16 +66,10 @@ class Organizer extends BaseController
 
         // STATUS CHART
         $statusQuery = $db->query("
-            SELECT bookings.status,
-            COUNT(*) as total
-
+            SELECT bookings.status, COUNT(*) as total
             FROM bookings
-
-            JOIN events
-            ON events.id = bookings.event_id
-
+            JOIN events ON events.id = bookings.event_id
             WHERE events.owner_id = $userId
-
             GROUP BY bookings.status
         ")->getResultArray();
 
@@ -110,23 +93,23 @@ class Organizer extends BaseController
             'statusData' => json_encode($statusData),
         ]);
     }
+
     public function bookings()
     {
         $this->checkLogin();
 
         if(session()->get('role') != 'organizer') {
-            return redirect()->to('/')
-                ->with('error', 'Akses organizer ditolak');
+            return redirect()->to('/')->with('error', 'Akses organizer ditolak');
         }
 
         $db = \Config\Database::connect();
-
         $userId = session()->get('id');
 
         $bookings = $db->table('bookings')
             ->select('
                 bookings.*,
                 events.title,
+                events.date,
                 users.name,
                 users.email
             ')
@@ -141,14 +124,13 @@ class Organizer extends BaseController
             'bookings' => $bookings
         ]);
     }
+
     public function myEvents()
     {
         $this->checkLogin();
 
         if(session()->get('role') != 'organizer') {
-
-            return redirect()->to('/')
-                ->with('error', 'Akses organizer ditolak');
+            return redirect()->to('/')->with('error', 'Akses organizer ditolak');
         }
 
         $db = \Config\Database::connect();

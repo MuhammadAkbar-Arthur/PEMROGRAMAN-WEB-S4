@@ -85,8 +85,7 @@
                             <?php endif; ?>
 
                             <a href="/admin/users/delete/<?= $u['id']; ?>"
-                               onclick="return confirm('PERINGATAN! Menghapus user ini akan menghapus semua event & tiket booking terkait secara permanen. Lanjutkan?')"
-                               class="w-full inline-flex justify-center items-center bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-4 py-2.5 rounded-xl text-sm font-medium transition dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-900">
+                            class="delete-user-btn w-full inline-flex justify-center items-center bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-4 py-2.5 rounded-xl text-sm font-medium transition dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-900">
                                 Hapus Akun
                             </a>
                         </div>
@@ -149,8 +148,7 @@
                                     <?php endif; ?>
 
                                     <a href="/admin/users/delete/<?= $u['id']; ?>"
-                                       onclick="return confirm('PERINGATAN! Menghapus user ini akan menghapus semua event & tiket booking terkait secara permanen. Lanjutkan?')"
-                                       class="inline-flex items-center bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-900 px-4 py-2 rounded-xl text-sm font-medium transition">
+                                    class="delete-user-btn inline-flex items-center bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-900 px-4 py-2 rounded-xl text-sm font-medium transition">
                                         Hapus
                                     </a>
                                 <?php else: ?>
@@ -164,6 +162,33 @@
         </div>
     </div>
 </div>
+<?= view('layout/footer'); ?>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script>
+$(document).ready(function () {
+    // Logic SweetAlert untuk Hapus User
+    $('body').on('click', '.delete-user-btn', function(e) {
+        e.preventDefault(); 
+        const url = $(this).attr('href');
+
+        Swal.fire({
+            title: 'Peringatan Berbahaya!',
+            text: "Menghapus user ini akan menghapus semua event & tiket booking terkait secara permanen. Lanjutkan?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Hapus Permanen!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>

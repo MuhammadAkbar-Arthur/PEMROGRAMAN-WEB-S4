@@ -70,7 +70,6 @@ if ($isLoggedIn && $role == 'user') {
                     <a href="/admin/users" class="w-full md:w-auto <?= $currentUrl == 'admin/users' ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-gray-300 hover:text-white hover:bg-gray-800'; ?> px-4 py-2 rounded-lg transition">Kelola User</a>
                     <a href="/admin/categories" class="w-full md:w-auto <?= $currentUrl == 'admin/categories' ? 'bg-purple-600 text-white shadow-md shadow-purple-500/20' : 'text-gray-300 hover:text-white hover:bg-gray-800'; ?> px-4 py-2 rounded-lg transition">Kelola Category</a>
                     <a href="/admin/analytics" class="w-full md:w-auto <?= $currentUrl == 'admin/analytics' ? 'bg-pink-600 text-white shadow-md shadow-pink-500/20' : 'text-gray-300 hover:text-white hover:bg-gray-800'; ?> px-4 py-2 rounded-lg transition">Analytics</a>
-                    <a href="/admin/export" class="w-full md:w-auto <?= $currentUrl == 'admin/export' ? 'bg-green-600 text-white shadow-md shadow-green-500/20' : 'text-gray-300 hover:text-white hover:bg-gray-800'; ?> px-4 py-2 rounded-lg transition">Export CSV</a>
                 <?php endif; ?>
             </div>
 

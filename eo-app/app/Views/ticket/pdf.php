@@ -48,7 +48,7 @@
 
     <div class="title">
 
-        🎫 EVENT TICKET
+        EVENT TICKET
 
     </div>
 

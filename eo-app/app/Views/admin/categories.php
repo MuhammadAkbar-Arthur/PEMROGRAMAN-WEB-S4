@@ -98,8 +98,7 @@
                                 Edit
                             </button>
                             <a href="/admin/categories/delete/<?= $c['id']; ?>"
-                               onclick="return confirm('Hapus kategori ini?')"
-                               class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition duration-150">
+                            class="delete-category-btn bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition duration-150">
                                 Hapus
                             </a>
                         </td>
@@ -174,6 +173,32 @@ window.onclick = function(event) {
 </script>
 
 <?= view('layout/footer'); ?>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script>
+$(document).ready(function () {
+    // Logic SweetAlert untuk Hapus Kategori
+    $('body').on('click', '.delete-category-btn', function(e) {
+        e.preventDefault(); 
+        const url = $(this).attr('href');
+
+        Swal.fire({
+            title: 'Hapus Kategori?',
+            text: "Kategori yang dihapus tidak bisa dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>

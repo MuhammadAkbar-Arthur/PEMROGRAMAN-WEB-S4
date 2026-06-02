@@ -9,6 +9,7 @@ class EventModel extends Model
     protected $table = 'events';
 
     protected $allowedFields = [
+        'owner_id',
         'title',
         'description',
         'date',
@@ -16,6 +17,5 @@ class EventModel extends Model
         'category_id',
         'image',
         'quota',
-        'owner_id',
     ];
 }

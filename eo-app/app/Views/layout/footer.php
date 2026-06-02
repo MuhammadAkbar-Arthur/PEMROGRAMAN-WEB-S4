@@ -43,7 +43,6 @@ $role = session()->get('role');
                         <li><a href="/admin/users" class="hover:text-blue-400 transition">➔ Kelola User</a></li>
                         <li><a href="/admin/categories" class="hover:text-purple-400 transition">➔ Kelola Category</a></li>
                         <li><a href="/admin/analytics" class="hover:text-pink-400 transition">➔ Analytics</a></li>
-                        <li><a href="/admin/export" class="hover:text-green-400 transition">➔ Export CSV</a></li>
                     <?php endif; ?>
 
                 </ul>

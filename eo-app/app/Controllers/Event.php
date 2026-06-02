@@ -7,21 +7,26 @@ use App\Models\CategoryModel;
 
 class Event extends BaseController
 {
+    // Fungsi bantuan untuk menentukan arah redirect agar tidak nyasar
+    private function getRedirectUrl() 
+    {
+        return (session()->get('role') === 'admin') ? '/event' : '/organizer/my-events';
+    }
+
     public function index()
     {
         $db = \Config\Database::connect();
         $builder = $db->table('events');
-        $builder->select('events.*, categories.name as category_name');
+        // Tambahkan join ke users untuk mengambil nama organizer
+        $builder->select('events.*, categories.name as category_name, users.name as organizer_name');
         $builder->join('categories', 'categories.id = events.category_id', 'left');
+        $builder->join('users', 'users.id = events.owner_id', 'left'); 
 
-        // SINKRONISASI SEGREGASI DATA: Filter berdasarkan role pemilik
         if (session()->get('role') === 'organizer') {
             $builder->where('events.owner_id', session()->get('id'));
         }
 
-        // Urutkan dari event terbaru
         $builder->orderBy('events.id', 'DESC');
-
         $data['events'] = $builder->get()->getResultArray();
 
         return view('event/index', $data);
@@ -29,7 +34,6 @@ class Event extends BaseController
 
     public function create()
     {
-        // PROTEKSI ROLE: Hanya Admin dan Organizer yang bisa masuk ke form create
         if (session()->get('role') != 'admin' && session()->get('role') != 'organizer') {
             return redirect()->to('/')->with('error', 'Akses ditolak.');
         }
@@ -42,27 +46,18 @@ class Event extends BaseController
 
     public function store()
     {
-        // PROTEKSI ROLE
         if (session()->get('role') != 'admin' && session()->get('role') != 'organizer') {
             return redirect()->to('/');
         }
 
         $rules = [
-            'title'       => ['rules' => 'required|min_length[3]', 'errors' => ['required' => 'Judul event wajib diisi', 'min_length' => 'Judul minimal 3 karakter']],
-            'description' => ['rules' => 'required', 'errors' => ['required' => 'Deskripsi wajib diisi']],
-            'date'        => ['rules' => 'required', 'errors' => ['required' => 'Tanggal wajib diisi']],
-            'location'    => ['rules' => 'required', 'errors' => ['required' => 'Lokasi wajib diisi']],
-            'category_id' => ['rules' => 'required', 'errors' => ['required' => 'Category wajib dipilih']],
-            'quota'       => ['rules' => 'required|integer|greater_than[0]', 'errors' => ['required' => 'Kuota wajib diisi', 'integer' => 'Kuota harus angka', 'greater_than' => 'Kuota minimal 1']],
-            'image'       => [
-                'rules' => 'uploaded[image]|max_size[image,2048]|is_image[image]|mime_in[image,image/jpg,image/jpeg,image/png,image/webp]',
-                'errors' => [
-                    'uploaded' => 'Gambar event wajib diupload',
-                    'max_size' => 'Ukuran gambar maksimal 2MB',
-                    'is_image' => 'File harus berupa gambar',
-                    'mime_in'  => 'Format gambar tidak valid'
-                ]
-            ]
+            'title'       => 'required|min_length[3]',
+            'description' => 'required',
+            'date'        => 'required',
+            'location'    => 'required',
+            'category_id' => 'required',
+            'quota'       => 'required|integer|greater_than[0]',
+            'image'       => 'uploaded[image]|max_size[image,2048]|is_image[image]|mime_in[image,image/jpg,image/jpeg,image/png,image/webp]'
         ];
 
         if (!$this->validate($rules)) {
@@ -71,14 +66,13 @@ class Event extends BaseController
 
         $model = new EventModel();
         $file = $this->request->getFile('image');
-        $fileName = null;
+        $fileName = 'default.jpg'; // Default jika file gagal
 
         if ($file && $file->isValid()) {
             $fileName = $file->getRandomName();
             $file->move(FCPATH . 'uploads/', $fileName);
         }
 
-        // PROSES INSERT DATABASE + PENGIKATAN OWNER
         $model->save([
             'title'       => trim($this->request->getPost('title')),
             'description' => trim($this->request->getPost('description')),
@@ -90,7 +84,7 @@ class Event extends BaseController
             'owner_id'    => session()->get('id')
         ]);
 
-        return redirect()->to('/event')->with('success', 'Event berhasil dibuat 🎉');
+        return redirect()->to($this->getRedirectUrl())->with('success', 'Event berhasil dibuat 🎉');
     }
 
     public function edit($id)
@@ -98,18 +92,14 @@ class Event extends BaseController
         $model = new EventModel();
         $event = $model->find($id);
 
-        if (!$event) {
-            return redirect()->to('/event')->with('error', 'Event tidak ditemukan');
-        }
+        if (!$event) return redirect()->to($this->getRedirectUrl())->with('error', 'Event tidak ditemukan');
 
-        // VALIDASI OWNER CHECK SECURITY
         if (session()->get('role') === 'organizer' && $event['owner_id'] != session()->get('id')) {
-            return redirect()->to('/event')->with('error', 'Anda tidak memiliki hak akses untuk mengubah event milik orang lain!');
+            return redirect()->to($this->getRedirectUrl())->with('error', 'Akses ditolak!');
         }
 
-        $categoryModel = new CategoryModel();
         $data['event'] = $event;
-        $data['categories'] = $categoryModel->findAll();
+        $data['categories'] = (new CategoryModel())->findAll();
 
         return view('event/edit', $data);
     }
@@ -119,52 +109,32 @@ class Event extends BaseController
         $model = new EventModel();
         $event = $model->find($id);
 
-        if (!$event) {
-            return redirect()->to('/event')->with('error', 'Event tidak ditemukan');
-        }
+        if (!$event) return redirect()->to($this->getRedirectUrl())->with('error', 'Event tidak ditemukan');
 
-        // VALIDASI OWNER UPDATE SECURITY
         if (session()->get('role') === 'organizer' && $event['owner_id'] != session()->get('id')) {
-            return redirect()->to('/event')->with('error', 'Anda tidak berhak memperbarui event ini!');
+            return redirect()->to($this->getRedirectUrl())->with('error', 'Akses ditolak!');
         }
 
         $rules = [
-            'title'       => ['rules' => 'required|min_length[3]', 'errors' => ['required' => 'Judul event wajib diisi', 'min_length' => 'Judul minimal 3 karakter']],
-            'description' => ['rules' => 'required', 'errors' => ['required' => 'Deskripsi wajib diisi']],
-            'date'        => ['rules' => 'required', 'errors' => ['required' => 'Tanggal wajib diisi']],
-            'location'    => ['rules' => 'required', 'errors' => ['required' => 'Lokasi wajib diisi']],
-            'category_id' => ['rules' => 'required', 'errors' => ['required' => 'Category wajib dipilih']],
-            'quota'       => ['rules' => 'required|integer|greater_than[0]', 'errors' => ['required' => 'Kuota wajib diisi', 'integer' => 'Kuota harus angka', 'greater_than' => 'Kuota minimal 1']],
+            'title' => 'required|min_length[3]',
+            'description' => 'required',
+            'date' => 'required',
+            'location' => 'required',
+            'category_id' => 'required',
+            'quota' => 'required|integer|greater_than[0]',
         ];
 
-        // Validasi gambar HANYA JIKA user mengunggah file baru
+        if (!$this->validate($rules)) return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+
+        $fileName = $event['image'];
         $file = $this->request->getFile('image');
+
         if ($file && $file->isValid()) {
-            $rules['image'] = [
-                'rules' => 'max_size[image,2048]|is_image[image]|mime_in[image,image/jpg,image/jpeg,image/png,image/webp]',
-                'errors' => [
-                    'max_size' => 'Ukuran gambar maksimal 2MB',
-                    'is_image' => 'File harus berupa gambar',
-                    'mime_in'  => 'Format gambar tidak valid'
-                ]
-            ];
-        }
-
-        if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-        }
-
-        $fileName = $event['image']; // Default pakai foto lama
-
-        // Proses jika ada foto baru
-        if ($file && $file->isValid() && !$file->hasMoved()) {
+            if ($fileName !== 'default.jpg' && file_exists(FCPATH . 'uploads/' . $fileName)) {
+                unlink(FCPATH . 'uploads/' . $fileName);
+            }
             $fileName = $file->getRandomName();
             $file->move(FCPATH . 'uploads/', $fileName);
-
-            // Bersihkan storage: Hapus foto lama jika ada
-            if ($event['image'] && file_exists(FCPATH . 'uploads/' . $event['image'])) {
-                unlink(FCPATH . 'uploads/' . $event['image']);
-            }
         }
 
         $model->update($id, [
@@ -177,32 +147,24 @@ class Event extends BaseController
             'image'       => $fileName
         ]);
 
-        return redirect()->to('/event')->with('success', 'Event berhasil diupdate 🎉');
+        return redirect()->to($this->getRedirectUrl())->with('success', 'Event berhasil diupdate 🎉');
     }
 
     public function delete($id)
     {
         $model = new EventModel();
         $event = $model->find($id);
-
-        if (!$event) {
-            return redirect()->to('/event')->with('error', 'Event tidak ditemukan');
-        }
-
-        // VALIDASI OWNER DELETE SECURITY
+        if (!$event) return redirect()->to($this->getRedirectUrl())->with('error', 'Event tidak ditemukan');
         if (session()->get('role') === 'organizer' && $event['owner_id'] != session()->get('id')) {
-            return redirect()->to('/event')->with('error', 'Anda tidak diizinkan menghapus event milik pihak lain!');
+            return redirect()->to($this->getRedirectUrl())->with('error', 'Akses ditolak!');
         }
-
-        // Bersihkan storage: Hapus gambar event sebelum datanya dihapus
-        if ($event['image'] && file_exists(FCPATH . 'uploads/' . $event['image'])) {
-            unlink(FCPATH . 'uploads/' . $event['image']);
+        if ($event) {
+            if ($event['image'] !== 'default.jpg' && file_exists(FCPATH . 'uploads/' . $event['image'])) {
+                unlink(FCPATH . 'uploads/' . $event['image']);
+            }
+            $model->delete($id);
+            return redirect()->to($this->getRedirectUrl())->with('success', 'Event berhasil dihapus 🗑');
         }
-
-        $model->delete($id);
-
-        // Optional: Hapus juga tiket booking atau komentar yang terkait event ini (bisa ditambahkan nanti jika perlu)
-
-        return redirect()->to('/event')->with('success', 'Event berhasil dihapus 🗑');
+        return redirect()->to($this->getRedirectUrl())->with('error', 'Event tidak ditemukan');
     }
 }

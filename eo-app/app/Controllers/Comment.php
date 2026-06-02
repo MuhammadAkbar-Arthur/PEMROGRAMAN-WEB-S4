@@ -49,34 +49,37 @@ class Comment extends BaseController
     // =========================
     public function delete($id)
     {
-        // HARUS LOGIN
+        // 1. HARUS LOGIN
         if (!session()->get('logged_in')) {
-
             return redirect()->to('/login');
         }
 
-        $model = new CommentModel();
+        $commentModel = new CommentModel();
+        $comment = $commentModel->find($id);
 
-        $comment = $model->find($id);
-
-        // COMMENT TIDAK ADA
+        // 2. COMMENT TIDAK ADA
         if (!$comment) {
-
-            return redirect()->back()
-                ->with('error', 'Komentar tidak ditemukan');
+            return redirect()->back()->with('error', 'Komentar tidak ditemukan');
         }
 
-        // HANYA PEMILIK KOMENTAR
-        if ($comment['user_id'] != session()->get('id')) {
+        // 3. AMBIL DATA EVENT UNTUK CEK SIAPA ORGANIZER-NYA
+        // (Kita perlu tahu komentar ini ada di event milik siapa)
+        $eventModel = new \App\Models\EventModel();
+        $event = $eventModel->find($comment['event_id']);
 
-            return redirect()->back()
-                ->with('error', 'Akses ditolak');
+        // 4. LOGIKA HAK AKSES (MODERASI)
+        $isCommentOwner   = ($comment['user_id'] == session()->get('id'));
+        $isAdmin          = (session()->get('role') == 'admin');
+        $isEventOrganizer = ($event && $event['owner_id'] == session()->get('id'));
+
+        // JIKA BUKAN PEMILIK KOMENTAR, BUKAN ADMIN, DAN BUKAN ORGANIZER -> TOLAK!
+        if (!$isCommentOwner && !$isAdmin && !$isEventOrganizer) {
+            return redirect()->back()->with('error', 'Akses ditolak. Anda tidak berhak menghapus komentar ini.');
         }
 
-        // DELETE COMMENT
-        $model->delete($id);
+        // 5. DELETE COMMENT
+        $commentModel->delete($id);
 
-        return redirect()->back()
-            ->with('success', 'Komentar berhasil dihapus');
+        return redirect()->back()->with('success', 'Komentar berhasil dihapus');
     }
 }

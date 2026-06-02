@@ -56,7 +56,7 @@
     </div>
 
     <p>
-        Halo <b><?= $booking['name']; ?></b>
+        Halo <b><?= esc($booking['name']); ?></b>
     </p>
 
     <p>
@@ -64,31 +64,31 @@
     </p>
 
     <h2>
-        <?= $booking['title']; ?>
+        <?= esc($booking['title']); ?>
     </h2>
 
     <p>
-        📍 <?= $booking['location']; ?>
+        📍 <?= esc($booking['location']); ?>
     </p>
 
     <p>
-        📅 <?= $booking['date']; ?>
+        📅 <?= esc($booking['date']); ?>
     </p>
 
     <br>
 
-    <div class="status <?= $booking['status']; ?>">
+    <div class="status <?= esc($booking['status']); ?>">
 
-        <?= strtoupper($booking['status']); ?>
-
+        <?= strtoupper(esc($booking['status'])); ?>
+    
     </div>
 
     <p>
-        <?php if($booking['status'] == 'pending'): ?>
+        <?php if(esc($booking['status']) == 'pending'): ?>
 
             Booking kamu sedang menunggu approval admin.
 
-        <?php elseif($booking['status'] == 'approved'): ?>
+        <?php elseif(esc($booking['status']) == 'approved'): ?>
 
             Booking kamu berhasil diapprove 🎉
 

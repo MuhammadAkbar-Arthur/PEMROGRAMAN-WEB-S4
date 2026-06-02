@@ -13,7 +13,6 @@ class Booking extends BaseController
     // =========================
     public function create($event_id)
     {
-        // ADMIN TIDAK BOLEH BOOKING
         if (session()->get('role') == 'admin') {
             return redirect()->to('/admin')
                 ->with('error', 'Admin tidak dapat melakukan pemesanan tiket');
@@ -29,9 +28,7 @@ class Booking extends BaseController
             return redirect()->back()->with('error', 'Event tidak ditemukan');
         }
 
-        // =========================
         // HITUNG BOOKING APPROVED
-        // =========================
         $totalApproved = $model->where('event_id', $event_id)
                                ->where('status', 'approved')
                                ->countAllResults();
@@ -40,9 +37,7 @@ class Booking extends BaseController
             return redirect()->back()->with('error', 'Mohon maaf, kuota event ini sudah penuh');
         }
 
-        // =========================
         // CEK DOUBLE BOOKING
-        // =========================
         $check = $model->where('user_id', $user_id)
                        ->where('event_id', $event_id)
                        ->first();
@@ -51,9 +46,7 @@ class Booking extends BaseController
             return redirect()->back()->with('error', 'Anda sudah memesan tiket untuk event ini sebelumnya');
         }
 
-        // =========================
         // SAVE BOOKING
-        // =========================
         $model->save([
             'user_id'  => $user_id,
             'event_id' => $event_id,
@@ -61,8 +54,6 @@ class Booking extends BaseController
         ]);
 
         $booking_id = $model->getInsertID();
-
-        // kirim email pending
         $this->sendBookingEmail($booking_id);
 
         return redirect()->to('/my-bookings')->with('success', 'Pemesanan berhasil! Menunggu persetujuan Organizer.');
@@ -98,10 +89,13 @@ class Booking extends BaseController
     // =========================
     // DELETE BOOKING (USER CANCEL)
     // =========================
+    // =========================
+    // DELETE BOOKING (USER CANCEL)
+    // =========================
     public function delete($id)
     {
-        // VALIDASI KEAMANAN: Blokir jika request dikirim lewat GET URL langsung
-        if ($this->request->getMethod() !== 'post') {
+        // FIX BUG: Gunakan strtoupper() agar aman dari perbedaan format huruf bawaan server
+        if (strtoupper($this->request->getMethod()) !== 'POST') {
             return redirect()->to('/my-bookings')->with('error', 'Akses ilegal diblokir!');
         }
 
@@ -145,14 +139,12 @@ class Booking extends BaseController
             return redirect()->back()->with('error', 'Pemesanan tidak ditemukan');
         }
 
-        // VALIDASI KEPEMILIKAN ORGANIZER SECARA STRICT
         if (session()->get('role') === 'organizer') {
             if (empty($booking['owner_id']) || $booking['owner_id'] != session()->get('id')) {
                 return redirect()->back()->with('error', 'Akses Ilegal: Anda tidak berhak menyetujui tiket di luar event Anda!');
             }
         }
 
-        // VALIDASI KUOTA SEBELUM APPROVE (Mencegah over-booking jika di-approve paksa bersamaan)
         $totalApproved = $model->where('event_id', $booking['event_id'])
                                ->where('status', 'approved')
                                ->countAllResults();
@@ -190,7 +182,6 @@ class Booking extends BaseController
             return redirect()->back()->with('error', 'Pemesanan tidak ditemukan');
         }
 
-        // VALIDASI KEPEMILIKAN ORGANIZER SECARA STRICT
         if (session()->get('role') === 'organizer') {
             if (empty($booking['owner_id']) || $booking['owner_id'] != session()->get('id')) {
                 return redirect()->back()->with('error', 'Akses Ilegal: Anda tidak berhak menolak tiket di luar event Anda!');
@@ -203,6 +194,9 @@ class Booking extends BaseController
         return redirect()->back()->with('success', 'Tiket telah ditolak');
     }
 
+    // =========================
+    // DOWNLOAD PDF TICKET
+    // =========================
     // =========================
     // DOWNLOAD PDF TICKET
     // =========================
@@ -240,14 +234,32 @@ class Booking extends BaseController
 
         $qrData = base_url('/ticket/verify/' . $booking['id']);
 
-        $result = Builder::create()
-            ->writer(new PngWriter())
-            ->data($qrData)
-            ->size(300)
-            ->margin(10)
-            ->build();
+        // ===============================================
+        // FIX BUG QR CODE: Anti-Error Lintas Versi + Fallback
+        // ===============================================
+        try {
+            // Strategi 1: Coba pakai syntax Endroid standar (bukan Builder)
+            $writer = new \Endroid\QrCode\Writer\PngWriter();
+            
+            // Cek apakah versi baru (menggunakan create) atau versi lama (menggunakan new)
+            if (method_exists(\Endroid\QrCode\QrCode::class, 'create')) {
+                $qrCode = \Endroid\QrCode\QrCode::create($qrData)->setSize(300)->setMargin(10);
+            } else {
+                $qrCode = new \Endroid\QrCode\QrCode($qrData);
+                if(method_exists($qrCode, 'setSize')) $qrCode->setSize(300);
+                if(method_exists($qrCode, 'setMargin')) $qrCode->setMargin(10);
+            }
+            
+            $result = $writer->write($qrCode);
+            $qrImage = base64_encode($result->getString());
 
-        $qrImage = base64_encode($result->getString());
+        } catch (\Throwable $e) {
+            // Strategi 2: FALLBACK API DARURAT
+            // Jika pustaka Endroid di laptop kamu versinya bentrok, 
+            // kita gunakan API pembuat QR otomatis agar presentasi tugas akhir tetap aman!
+            $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($qrData);
+            $qrImage = base64_encode(file_get_contents($qrUrl));
+        }
 
         $html = view('ticket/pdf', [
             'booking' => $booking,
@@ -325,7 +337,7 @@ class Booking extends BaseController
         $booking = $builder->get()->getRowArray();
 
         if (!$booking || $booking['status'] != 'approved') {
-            return view('ticket/invalid'); // Pastikan view ini ada
+            return view('ticket/invalid'); 
         }
 
         return view('ticket/verify', [

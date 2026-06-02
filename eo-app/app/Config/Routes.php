@@ -31,10 +31,12 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     // BOOKING SYSTEM
     $routes->get('/book/(:num)', 'Booking::create/$1');
     $routes->get('/my-bookings', 'Booking::myBookings');
-    
-    // PERBAIKAN: Diubah dari GET menjadi POST demi keamanan CSRF
     $routes->post('/booking/delete/(:num)', 'Booking::delete/$1');
     
+    // APPROVE & REJECT BOOKING (Dipindah ke sini agar bisa diakses Admin & Organizer dengan aman)
+    $routes->get('/booking/approve/(:num)', 'Booking::approve/$1');
+    $routes->get('/booking/reject/(:num)', 'Booking::reject/$1');
+
     $routes->get('/ticket/(:num)', 'Booking::ticket/$1');
     $routes->get('/ticket/verify/(:num)', 'Booking::verify/$1');
 
@@ -52,8 +54,7 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 $routes->group('organizer', ['filter' => 'organizer'], function($routes) {
     $routes->get('/', 'Organizer::index');
     $routes->get('bookings', 'Organizer::bookings');
-    $routes->get('booking/approve/(:num)', 'Organizer::approveBooking/$1');
-    $routes->get('booking/reject/(:num)', 'Organizer::rejectBooking/$1');
+    // Rute approve/reject dihapus dari sini karena sudah dipindah ke global booking di atas
     $routes->get('my-events', 'Organizer::myEvents');
 });
 
@@ -63,24 +64,20 @@ $routes->group('admin', ['filter' => 'admin'], function($routes) {
     $routes->get('export', 'Admin::exportCSV');
     $routes->get('analytics', 'Admin::analytics');
 
-    // Booking Management
-    $routes->get('booking/approve/(:num)', 'Booking::approve/$1');
-    $routes->get('booking/reject/(:num)', 'Booking::reject/$1');
-
     // Category Management
     $routes->get('categories', 'Category::index');
     $routes->post('categories/store', 'Category::store');
-    $routes->post('categories/update/(:num)', 'Category::update/$1'); // <- Ditambahkan dari Prioritas 2
+    $routes->post('categories/update/(:num)', 'Category::update/$1'); 
     $routes->get('categories/delete/(:num)', 'Category::delete/$1');
 
     // User Management
     $routes->get('users', 'Admin::users');
     $routes->get('users/make-organizer/(:num)', 'Admin::makeOrganizer/$1');
     $routes->get('users/make-user/(:num)', 'Admin::makeUser/$1');
-    $routes->get('users/delete/(:num)', 'Admin::deleteUser/$1'); // <- Ditambahkan dari Prioritas 3
+    $routes->get('users/delete/(:num)', 'Admin::deleteUser/$1'); 
     
     // Event Management (Global Admin Moderation)
-    $routes->get('events/delete/(:num)', 'Admin::deleteEvent/$1'); // <- Ditambahkan dari Prioritas 4
+    $routes->get('events/delete/(:num)', 'Admin::deleteEvent/$1'); 
 });
 
 // --- EVENT MANAGEMENT ---
