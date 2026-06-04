@@ -3,95 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Event</title>
+    <title>Detail Event - Elevate</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-    tailwind.config = {
-        darkMode: 'class'
-    }
+    tailwind.config = { darkMode: 'class' }
     </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
-<body class="bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition duration-300">
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition duration-300 flex flex-col min-h-screen">
 
 <?= view('layout/navbar'); ?>
 
-<div class="container mx-auto p-4 md:p-6 space-y-6">
+<main class="container mx-auto p-4 md:p-6 lg:px-24 space-y-6 flex-grow mt-4">
 
-    <a href="javascript:history.back()" class="text-blue-500 hover:text-blue-700 font-semibold inline-block transition transform hover:-translate-x-1">
-        ← Kembali
+    <a href="javascript:history.back()" class="text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 font-semibold inline-flex items-center gap-2 transition transform hover:-translate-x-1">
+        <i class="fa-solid fa-arrow-left"></i> Kembali ke Daftar Acara
     </a>
 
-    <div class="bg-white dark:bg-gray-900 shadow rounded-2xl overflow-hidden">
+    <div class="bg-white dark:bg-gray-900 shadow-xl rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-800">
 
-        <?php if($event['image']): ?>
-            <img src="/uploads/<?= esc($event['image'], 'url') ?>" class="w-full h-[400px] object-cover">
-        <?php else: ?>
-            <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30" class="w-full h-[400px] object-cover">
-        <?php endif; ?>
-
-        <div class="p-6 md:p-8">
-
-            <?php if(isset($event['category_name'])): ?>
-                <span class="bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 px-4 py-1 rounded-full text-sm font-medium">
-                    <?= esc($event['category_name']); ?>
-                </span>
+        <div class="relative w-full h-[350px] md:h-[450px]">
+            <?php if($event['image']): ?>
+                <img src="/uploads/<?= esc($event['image'], 'url') ?>" class="w-full h-full object-cover">
+            <?php else: ?>
+                <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30" class="w-full h-full object-cover filter grayscale-[30%]">
             <?php endif; ?>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+        </div>
 
-            <h1 class="text-3xl md:text-4xl font-bold mt-4 mb-4 text-gray-800 dark:text-white">
-                <?= esc($event['title']) ?>
-            </h1>
+        <div class="p-6 md:p-10 -mt-20 relative z-10">
+            <div class="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-800 mb-8">
+                <?php if(isset($event['category_name'])): ?>
+                    <span class="inline-block bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+                        <?= esc($event['category_name']); ?>
+                    </span>
+                <?php endif; ?>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 dark:text-white leading-tight tracking-tight">
+                    <?= esc($event['title']) ?>
+                </h1>
+            </div>
 
-                <div class="bg-gray-100 dark:bg-gray-800 rounded-xl p-4">
-                    <p class="text-gray-500 text-sm dark:text-gray-400">Location</p>
-                    <a href="https://www.google.com/maps/search/?api=1&query=<?= urlencode($event['location']) ?>" 
-                       target="_blank" 
-                       class="font-bold text-base md:text-lg text-blue-500 hover:underline">
-                        📍 <?= esc($event['location']) ?> 🔗
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 hover:shadow-md transition">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400 flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider dark:text-gray-400 mb-1">Lokasi</p>
+                    <a href="http://maps.google.com/?q=<?= urlencode($event['location']) ?>" target="_blank" class="font-bold text-sm md:text-base text-gray-800 dark:text-white hover:text-blue-600 transition flex items-center gap-1">
+                        <?= esc($event['location']) ?> <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-gray-400"></i>
                     </a>
                 </div>
 
-                <div class="bg-gray-100 dark:bg-gray-800 rounded-xl p-4">
-                    <p class="text-gray-500 text-sm dark:text-gray-400">Organizer</p>
-                    <p class="font-bold text-base md:text-lg">
-                        👤 <?= esc($event['organizer_name'] ?? 'Admin') ?>
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 hover:shadow-md transition">
+                    <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400 flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-building-ngo"></i>
+                    </div>
+                    <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider dark:text-gray-400 mb-1">Penyelenggara</p>
+                    <p class="font-bold text-sm md:text-base text-gray-800 dark:text-white line-clamp-1">
+                        <?= esc($event['organizer_name'] ?? 'Admin') ?>
                     </p>
                 </div>
 
-                <div class="bg-gray-100 dark:bg-gray-800 rounded-xl p-4">
-                    <p class="text-gray-500 text-sm dark:text-gray-400">Event Date</p>
-                    <p class="font-bold text-base md:text-lg">
-                        📅 <?= esc($event['date']) ?>
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 hover:shadow-md transition">
+                    <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-400 flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider dark:text-gray-400 mb-1">Tanggal Acara</p>
+                    <p class="font-bold text-sm md:text-base text-gray-800 dark:text-white">
+                        <?= esc($event['date']) ?>
                     </p>
                 </div>
 
-                <div class="bg-gray-100 dark:bg-gray-800 rounded-xl p-4 border-l-4 border-blue-500">
-                    <p class="text-gray-500 text-sm dark:text-gray-400">Sisa Slot</p>
-                    <p class="font-bold text-base md:text-lg text-blue-600 dark:text-blue-400">
-                        🔥 <?= $remainingSeat; ?> Slot
+                <div class="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-5 border-l-4 border-blue-500 hover:shadow-md transition">
+                    <div class="w-10 h-10 rounded-full bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3 shadow-sm">
+                        <i class="fa-solid fa-ticket-simple"></i>
+                    </div>
+                    <p class="text-blue-600 dark:text-blue-400 text-xs font-semibold uppercase tracking-wider mb-1">Ketersediaan</p>
+                    <p class="font-extrabold text-lg md:text-xl text-blue-700 dark:text-blue-300">
+                        <?= $remainingSeat; ?> Slot
                     </p>
                 </div>
-
             </div>
 
-            <div class="bg-gray-50 dark:bg-gray-800/40 rounded-xl p-4 mb-6 flex items-center justify-between">
-                <span class="text-gray-600 dark:text-gray-400 font-medium">Status Registrasi:</span>
+            <div class="rounded-xl p-4 mb-8 flex items-center justify-between border <?= $isBooked ? 'bg-emerald-50 border-emerald-200 dark:bg-emerald-900/20 dark:border-emerald-800/50' : 'bg-gray-50 border-gray-200 dark:bg-gray-800/50 dark:border-gray-700' ?>">
+                <span class="text-gray-600 dark:text-gray-400 font-semibold flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info"></i> Status Registrasi Anda:
+                </span>
                 <?php if($isBooked): ?>
-                    <span class="font-bold text-green-600 bg-green-50 dark:bg-green-900/20 px-3 py-1 rounded-lg">✔ Already Booked</span>
+                    <span class="font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/50 px-4 py-1.5 rounded-lg flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-check"></i> Sudah Terdaftar
+                    </span>
                 <?php else: ?>
-                    <span class="font-bold text-orange-500 bg-orange-50 dark:bg-orange-900/20 px-3 py-1 rounded-lg">Available</span>
+                    <span class="font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 px-4 py-1.5 rounded-lg shadow-sm text-sm">
+                        Belum Terdaftar
+                    </span>
                 <?php endif; ?>
             </div>
 
-            <div class="mb-8 border-t border-gray-100 dark:border-gray-800 pt-6">
-                <h2 class="text-2xl font-bold mb-3 text-gray-800 dark:text-white">About Event</h2>
-                <p class="text-gray-700 dark:text-gray-200 leading-8"><?= esc($event['description']) ?></p>
+            <div class="mb-10">
+                <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-align-left text-blue-500"></i> Tentang Acara Ini
+                </h2>
+                <div class="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 leading-loose">
+                    <p><?= nl2br(esc($event['description'])) ?></p>
+                </div>
             </div>
 
-            <div class="flex flex-wrap gap-4 items-center border-t border-gray-100 dark:border-gray-800 pt-6">
+            <div class="flex flex-col sm:flex-row flex-wrap gap-4 pt-8 border-t border-gray-100 dark:border-gray-800">
                 <?php 
                 $currentUserId = session()->get('id');
                 $userRole = session()->get('role');
@@ -101,133 +123,161 @@
                 if($currentUserId && $userRole != 'admin' && !$isOwner): 
                 ?>
                     <?php if(!$isBooked && $remainingSeat > 0): ?>
-                        <a href="/book/<?= $event['id'] ?>" class="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-xl inline-block text-lg font-semibold shadow-lg transition-all transform active:scale-[0.98]">🎟 Book Now</a>
+                        <a href="/book/<?= $event['id'] ?>" class="flex-1 sm:flex-none text-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1 active:scale-[0.98] flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-ticket"></i> Pesan Tiket Sekarang
+                        </a>
                     <?php elseif(!$isBooked && $remainingSeat <= 0): ?>
-                        <button disabled class="bg-gray-400 dark:bg-gray-700 text-gray-200 px-8 py-4 rounded-xl cursor-not-allowed">❌ Sold Out</button>
+                        <button disabled class="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gray-300 dark:bg-gray-800 text-gray-500 dark:text-gray-500 px-8 py-4 rounded-xl font-bold cursor-not-allowed">
+                            <i class="fa-solid fa-ban"></i> Tiket Habis
+                        </button>
                     <?php else: ?>
-                        <div class="bg-green-100 text-green-700 dark:bg-green-900/30 px-6 py-4 rounded-xl font-semibold">✔ Kamu sudah booking event ini</div>
+                        <div class="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-8 py-4 rounded-xl font-bold border border-emerald-200 dark:border-emerald-800">
+                            <i class="fa-solid fa-circle-check"></i> Tiket Anda Sudah Tersimpan
+                        </div>
                     <?php endif; ?>
                     
                     <?php if(!$isFavorite): ?>
-                        <a href="/favorite/add/<?= $event['id'] ?>" class="bg-pink-500 hover:bg-pink-600 text-white px-8 py-4 rounded-xl inline-block text-lg font-semibold shadow-lg transition-all">❤️ Add Wishlist</a>
+                        <a href="/favorite/add/<?= $event['id'] ?>" class="flex-1 sm:flex-none text-center bg-white dark:bg-gray-800 hover:bg-pink-50 dark:hover:bg-pink-900/20 text-gray-700 dark:text-gray-200 hover:text-pink-600 dark:hover:text-pink-400 border border-gray-200 dark:border-gray-700 hover:border-pink-300 px-8 py-4 rounded-xl font-bold shadow-sm transition-all flex items-center justify-center gap-2 group">
+                            <i class="fa-regular fa-heart group-hover:fa-solid group-hover:scale-110 transition-transform"></i> Simpan ke Wishlist
+                        </a>
                     <?php else: ?>
-                        <a href="/favorite/remove/<?= $event['id'] ?>" class="bg-gray-700 hover:bg-gray-800 text-white px-8 py-4 rounded-xl inline-block text-lg font-semibold shadow-lg transition-all">❌ Remove Wishlist</a>
+                        <a href="/favorite/remove/<?= $event['id'] ?>" class="flex-1 sm:flex-none text-center bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-400 border border-pink-200 dark:border-pink-800 px-8 py-4 rounded-xl font-bold shadow-sm transition-all flex items-center justify-center gap-2 group">
+                            <i class="fa-solid fa-heart-crack group-hover:scale-110 transition-transform"></i> Hapus dari Wishlist
+                        </a>
                     <?php endif; ?>
 
                 <?php elseif(!$currentUserId): ?>
-                    <a href="/login" class="bg-red-500 hover:bg-red-600 text-white px-8 py-4 rounded-xl w-full md:w-auto text-center font-semibold">Login untuk Booking</a>
+                    <a href="/login" class="w-full bg-gray-800 dark:bg-gray-700 hover:bg-gray-900 dark:hover:bg-gray-600 text-white px-8 py-4 rounded-xl text-center font-bold shadow-md transition-colors flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk untuk Memesan Tiket
+                    </a>
                     
                 <?php else: ?>
-                    <div class="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-6 py-4 rounded-xl font-medium w-full text-center">
-                        👋 Mode Tinjauan <?= ucfirst($userRole) ?> (Aksi pendaftaran tiket dinonaktifkan untuk Anda)
+                    <div class="w-full bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-500 border border-amber-200 dark:border-amber-800/50 p-4 rounded-xl font-medium text-center flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-eye"></i> Mode Tinjauan <?= ucfirst($userRole) ?>. Transaksi pendaftaran dinonaktifkan.
                     </div>
                 <?php endif; ?>
             </div>
         </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-900 shadow rounded-2xl p-6 md:p-8">
-        <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-white">💬 Discussion</h2>
+    <div class="bg-white dark:bg-gray-900 shadow-xl rounded-3xl p-6 md:p-10 border border-gray-100 dark:border-gray-800">
+        <h2 class="text-2xl font-bold mb-8 text-gray-900 dark:text-white flex items-center gap-2">
+            <i class="fa-regular fa-comments text-blue-500"></i> Diskusi Acara
+        </h2>
         
         <?php 
-        $currentUserId = session()->get('id');
-        $userRole = session()->get('role');
-        $isOwner = ($currentUserId && $currentUserId == $event['owner_id']);
-        
-        // HANYA USER BIASA YANG BISA MENULIS KOMENTAR BARU
+        // HANYA USER BIASA (PESERTA) YANG BISA MENULIS KOMENTAR BARU
         if($currentUserId && $userRole == 'user' && !$isOwner): 
         ?>
-            <form action="/comment/store/<?= $event['id']; ?>" method="post" class="mb-8">
-                <textarea name="comment" rows="4" placeholder="Tulis komentar..." class="w-full border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-4 rounded-xl mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-white" required></textarea>
-                <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-medium transition-colors">Kirim Komentar</button>
+            <form action="/comment/store/<?= $event['id']; ?>" method="post" class="mb-10">
+                <div class="relative">
+                    <textarea name="comment" rows="3" placeholder="Tuliskan pertanyaan atau tanggapan Anda di sini..." class="w-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-white transition shadow-inner" required></textarea>
+                </div>
+                <div class="flex justify-end mt-3">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-bold transition-colors shadow-md flex items-center gap-2">
+                        <i class="fa-regular fa-paper-plane"></i> Kirim Pesan
+                    </button>
+                </div>
             </form>
         <?php elseif(!$currentUserId): ?>
-            <div class="bg-red-50 text-red-700 dark:bg-red-900/20 p-4 rounded-xl mb-6 font-medium">Login untuk ikut diskusi</div>
+            <div class="bg-gray-50 text-gray-600 dark:bg-gray-800 dark:text-gray-400 p-4 rounded-xl mb-8 font-medium text-center border border-dashed border-gray-300 dark:border-gray-700">
+                <i class="fa-solid fa-lock mr-2"></i> Masuk (Login) terlebih dahulu untuk bergabung dalam diskusi.
+            </div>
         <?php else: ?>
-            <div class="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 p-4 rounded-xl mb-6 font-medium text-center">
-                Moderasi Komentar: Anda dapat menghapus komentar yang tidak pantas menggunakan ikon 🗑️ di sebelah kanan komentar.
+            <div class="bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-500 p-4 rounded-xl mb-8 font-medium text-center text-sm border border-amber-200 dark:border-amber-800/50">
+                <i class="fa-solid fa-shield-halved mr-2"></i> Hak Akses Moderasi: Anda dapat menghapus komentar yang melanggar menggunakan ikon tempat sampah di sebelah kanan setiap komentar.
             </div>
         <?php endif; ?>
 
         <div class="space-y-4">
         <?php if (empty($comments)): ?>
-            <div class="text-center py-8 text-gray-500 dark:text-gray-400 italic">
-                Belum ada diskusi. Jadilah yang pertama berkomentar!
+            <div class="text-center py-12 bg-gray-50 dark:bg-gray-800/30 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700">
+                <i class="fa-regular fa-comment-dots text-4xl text-gray-300 dark:text-gray-600 mb-3 block"></i>
+                <p class="text-gray-500 dark:text-gray-400 font-medium">Belum ada diskusi. Jadilah yang pertama bertanya!</p>
             </div>
         <?php else: ?>
             <?php foreach ($comments as $c): ?>
-                <div class="bg-gray-50 dark:bg-gray-800/40 p-5 rounded-xl border border-gray-100 dark:border-gray-800 transition duration-300 relative group">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                            <div class="bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400 rounded-full w-8 h-8 flex items-center justify-center text-sm">
-                                <?= substr($c['user_name'], 0, 1) ?>
-                            </div>
-                            <?= esc($c['user_name']) ?>
-                            <?php $roleBadge = $c['user_role'] ?? 'user'; ?>
-                            <?php if($roleBadge == 'admin'): ?>
-                                <span class="ml-2 text-[10px] font-bold bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400 px-2 py-0.5 rounded-full">
-                                    Admin
-                                </span>
-                            <?php elseif($roleBadge == 'organizer'): ?>
-                                <span class="ml-2 text-[10px] font-bold bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400 px-2 py-0.5 rounded-full">
-                                    Organizer
-                                </span>
-                            <?php endif; ?>
-                        </span>
-                        
+                <div class="bg-gray-50 dark:bg-gray-800/40 p-5 rounded-2xl border border-gray-100 dark:border-gray-800 transition duration-300 relative group hover:bg-white dark:hover:bg-gray-800 hover:shadow-md">
+                    <div class="flex justify-between items-start mb-3">
                         <div class="flex items-center gap-3">
-                            <span class="text-xs text-gray-400 dark:text-gray-500">
-                                <?= date('d M Y, H:i', strtotime($c['created_at'])) ?>
-                            </span>
-                            
-                            <?php 
-                            // LOGIKA HAK AKSES HAPUS KOMENTAR
-                            $isCommentOwner = (session()->get('id') == $c['user_id']);
-                            $isAdmin = (session()->get('role') == 'admin');
-                            $isEventOrganizer = (session()->get('id') == $event['owner_id']);
-                            
-                            if($isCommentOwner || $isAdmin || $isEventOrganizer): 
-                            ?>
-                                <a href="/comment/delete/<?= $c['id']; ?>" class="delete-comment-btn text-red-500 hover:text-red-700 transition opacity-0 group-hover:opacity-100 cursor-pointer" title="Hapus Komentar">
-                                    🗑️
-                                </a>
-                            <?php endif; ?>
+                            <div class="bg-gradient-to-br from-blue-500 to-purple-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold shadow-sm">
+                                <?= strtoupper(substr($c['user_name'], 0, 1)) ?>
+                            </div>
+                            <div>
+                                <span class="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                    <?= esc($c['user_name']) ?>
+                                    <?php $roleBadge = $c['user_role'] ?? 'user'; ?>
+                                    <?php if($roleBadge == 'admin'): ?>
+                                        <i class="fa-solid fa-certificate text-red-500 text-xs" title="Admin"></i>
+                                    <?php elseif($roleBadge == 'organizer'): ?>
+                                        <i class="fa-solid fa-circle-check text-blue-500 text-xs" title="Organizer"></i>
+                                    <?php endif; ?>
+                                </span>
+                                <span class="text-xs text-gray-400 block mt-0.5">
+                                    <?= date('d M Y, H:i', strtotime($c['created_at'])) ?>
+                                </span>
+                            </div>
                         </div>
+                        
+                        <?php 
+                        // LOGIKA HAK AKSES HAPUS KOMENTAR
+                        $isCommentOwner = (session()->get('id') == $c['user_id']);
+                        $isAdmin = (session()->get('role') == 'admin');
+                        $isEventOrganizer = (session()->get('id') == $event['owner_id']);
+                        
+                        if($isCommentOwner || $isAdmin || $isEventOrganizer): 
+                        ?>
+                            <a href="/comment/delete/<?= $c['id']; ?>" class="delete-comment-btn text-gray-300 hover:text-red-500 dark:text-gray-600 dark:hover:text-red-500 transition-colors cursor-pointer p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20" title="Hapus Komentar">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </a>
+                        <?php endif; ?>
                     </div>
-                    <p class="text-gray-700 dark:text-gray-300 ml-10">
+                    <p class="text-gray-700 dark:text-gray-300 ml-13 pl-1 leading-relaxed">
                         <?= esc($c['comment']) ?>
                     </p>
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>
+        </div>
     </div>
-        
-    </div>
-</div> 
+</main> 
+
 <?= view('layout/footer'); ?>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-$(document).ready(function () {
-    $('body').on('click', '.delete-comment-btn', function(e) {
-        e.preventDefault(); 
-        const url = $(this).attr('href');
+    // VANILLA JS UNTUK SWEETALERT HAPUS KOMENTAR (Menggantikan jQuery yang tidak terbaca)
+    document.addEventListener("DOMContentLoaded", function() {
+        const deleteButtons = document.querySelectorAll('.delete-comment-btn');
+        
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault(); 
+                const url = this.getAttribute('href');
 
-        Swal.fire({
-            title: 'Hapus Komentar?',
-            text: "Komentar ini akan dihapus permanen.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = url;
-            }
+                Swal.fire({
+                    title: 'Hapus Diskusi?',
+                    text: "Komentar ini akan dihapus secara permanen.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc2626', // Merah Tailwind
+                    cancelButtonColor: '#6b7280', // Abu-abu Tailwind
+                    confirmButtonText: '<i class="fa-solid fa-trash-can mr-2"></i> Ya, hapus!',
+                    cancelButtonText: 'Batal',
+                    background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#ffffff',
+                    color: document.documentElement.classList.contains('dark') ? '#f9fafb' : '#111827',
+                    customClass: {
+                        confirmButton: 'rounded-xl',
+                        cancelButton: 'rounded-xl'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            });
         });
     });
-});
 </script>
 </body>
 </html>

@@ -10,7 +10,7 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 $routes->get('/search-event', 'Home::search');
 $routes->get('/event/(:num)', 'Home::detail/$1');
-$routes->get('/test-email', 'TestMail::index'); 
+$routes->get('/bantuan', 'Home::bantuan'); // Atau sesuaikan dengan nama controller-mu 
 
 // --- AUTHENTICATION ---
 $routes->get('/login', 'Auth::login');
@@ -18,13 +18,18 @@ $routes->post('/login/process', 'Auth::processLogin');
 $routes->get('/register', 'Auth::register');
 $routes->post('/register/process', 'Auth::processRegister');
 $routes->get('/logout', 'Auth::logout');
+// Rute untuk Lupa Kata Sandi
+$routes->get('/forgot-password', 'Auth::forgotPassword');
+$routes->post('/forgot-password/process', 'Auth::forgotPasswordProcess');
+
+// Rute untuk Reset Kata Sandi Baru
+$routes->get('/reset-password', 'Auth::resetPassword');
+$routes->post('/reset-password/process', 'Auth::resetPasswordProcess');
 
 // --- REGISTERED USER ONLY (Harus Login: 'auth') ---
 $routes->group('', ['filter' => 'auth'], function($routes) {
     
-    // DASHBOARD & PROFILE
-    $routes->get('/user', 'Dashboard::user');
-    $routes->get('/dashboard', 'Dashboard::index');
+    //PROFILE
     $routes->get('/profile', 'Profile::index');
     $routes->post('/profile/update', 'Profile::update');
 
@@ -62,7 +67,6 @@ $routes->group('organizer', ['filter' => 'organizer'], function($routes) {
 $routes->group('admin', ['filter' => 'admin'], function($routes) {
     $routes->get('/', 'Admin::index');
     $routes->get('export', 'Admin::exportCSV');
-    $routes->get('analytics', 'Admin::analytics');
 
     // Category Management
     $routes->get('categories', 'Category::index');

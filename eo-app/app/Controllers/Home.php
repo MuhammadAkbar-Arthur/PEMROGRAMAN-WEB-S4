@@ -9,6 +9,11 @@ use App\Models\CategoryModel;
 
 class Home extends BaseController
 {
+    public function bantuan()
+    {
+        // Memanggil file bantuan.php yang ada di folder Views
+        return view('bantuan');
+    }
     public function index()
     {
         $model = new EventModel();

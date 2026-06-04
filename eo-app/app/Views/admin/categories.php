@@ -3,103 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Kategori</title>
+    <title>Kelola Kategori - Elevate</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-    tailwind.config = {
-        darkMode: 'class'
-    }
+    tailwind.config = { darkMode: 'class' }
     </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-100 dark:bg-gray-950 text-gray-800 dark:text-gray-200 transition duration-300">
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200 transition duration-300 flex flex-col min-h-screen">
 
 <?= view('layout/navbar'); ?>
 
-<div class="container mx-auto p-4 md:p-6 max-w-6xl">
+<main class="container mx-auto p-4 md:p-6 max-w-6xl flex-grow mt-4 mb-12">
 
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 border-b border-gray-200 dark:border-gray-800 pb-6">
         <div>
-            <h1 class="text-4xl font-bold text-gray-800 dark:text-white">
-                Kelola Kategori 🏷️
+            <h1 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 tracking-tight flex items-center gap-3">
+                <i class="fa-solid fa-tags text-blue-600 dark:text-blue-400"></i> Kelola Kategori
             </h1>
-            <p class="text-gray-500 dark:text-gray-400 mt-2">
-                Tambah dan kelola kategori event.
+            <p class="text-gray-500 dark:text-gray-400 mt-2 font-medium">
+                Tambah, ubah, dan kelola klasifikasi kategori acara di dalam sistem.
             </p>
         </div>
+        <a href="/admin" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 px-5 py-2.5 rounded-xl shadow-sm transition flex items-center gap-2 font-bold text-sm shrink-0">
+            <i class="fa-solid fa-chart-line"></i> Dashboard Admin
+        </a>
     </div>
 
-    <?php if(session()->getFlashdata('success')): ?>
-        <div class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 p-4 rounded-lg mb-6 border border-green-200 dark:border-green-800">
-            <?= session()->getFlashdata('success'); ?>
-        </div>
-    <?php endif; ?>
-
-    <?php if(session()->getFlashdata('error')): ?>
-        <div class="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 p-4 rounded-lg mb-6 border border-red-200 dark:border-red-800">
-            <?= session()->getFlashdata('error'); ?>
-        </div>
-    <?php endif; ?>
-
-    <div class="bg-white dark:bg-gray-900 shadow rounded-xl p-6 mb-8 border border-gray-200 dark:border-gray-800">
-        <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">
-            Tambah Kategori
+    <div class="bg-white dark:bg-gray-900 shadow-sm rounded-3xl p-6 md:p-8 mb-8 border border-gray-100 dark:border-gray-800 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-blue-500 to-indigo-500"></div>
+        
+        <h2 class="text-xl font-bold mb-5 text-gray-800 dark:text-white flex items-center gap-2">
+            <i class="fa-solid fa-circle-plus text-blue-500"></i> Tambah Kategori Baru
         </h2>
+        
         <form action="/admin/categories/store" method="post">
             <div class="flex flex-col md:flex-row gap-4">
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Nama kategori baru..."
-                    class="flex-1 border dark:border-gray-700 bg-white dark:bg-gray-800 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required>
-                <button
-                    type="submit"
-                    class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition duration-200 font-semibold">
-                    Tambah
+                <div class="relative flex-1">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-tag text-gray-400"></i>
+                    </div>
+                    <input type="text" name="name" placeholder="Ketik nama kategori (Misal: Konser, Seminar, Workshop)..."
+                           class="w-full border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 pl-11 pr-4 py-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-900 dark:text-white font-medium" required>
+                </div>
+                <button type="submit" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-3.5 rounded-xl transition duration-200 font-bold shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 shrink-0">
+                    <i class="fa-solid fa-floppy-disk"></i> Simpan Kategori
                 </button>
             </div>
         </form>
     </div>
 
-    <div class="bg-white dark:bg-gray-900 shadow rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800">
-        <div class="p-6 border-b dark:border-gray-800">
-            <h2 class="text-xl font-bold text-gray-800 dark:text-white">
-                Daftar Kategori
+    <div class="bg-white dark:bg-gray-900 shadow-sm rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-800">
+        <div class="p-6 border-b border-gray-100 dark:border-gray-800">
+            <h2 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                <i class="fa-solid fa-list text-indigo-500"></i> Daftar Kategori Tersedia
             </h2>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full">
-                <thead class="bg-gray-50 dark:bg-gray-800/50 border-b dark:border-gray-800">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-gray-50 dark:bg-gray-800/60 border-b border-gray-100 dark:border-gray-800">
                     <tr>
-                        <th class="p-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider w-20">ID</th>
-                        <th class="p-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nama Kategori</th>
-                        <th class="p-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider w-48">Aksi</th>
+                        <th class="p-5 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider w-24 text-center">ID</th>
+                        <th class="p-5 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nama Kategori</th>
+                        <th class="p-5 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-right">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+                <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
                     <?php if(empty($categories)): ?>
                         <tr>
-                            <td colspan="3" class="p-8 text-center text-gray-400">Belum ada kategori.</td>
+                            <td colspan="3" class="p-10 text-center text-gray-400 dark:text-gray-500 font-medium">
+                                <i class="fa-solid fa-box-open text-3xl mb-3 block"></i>
+                                Belum ada data kategori.
+                            </td>
                         </tr>
                     <?php endif; ?>
+                    
                     <?php foreach($categories as $c): ?>
-                    <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition duration-150">
-                        <td class="p-4 text-gray-500 dark:text-gray-400 font-mono text-sm">
-                            <?= $c['id']; ?>
+                    <tr class="hover:bg-gray-50/80 dark:hover:bg-gray-800/40 transition duration-150">
+                        <td class="p-5 text-center text-gray-400 dark:text-gray-500 font-mono text-sm font-bold">
+                            #<?= $c['id']; ?>
                         </td>
-                        <td class="p-4 font-medium text-gray-900 dark:text-white">
-                            <?= esc($c['name']); ?>
+                        <td class="p-5 font-bold text-gray-900 dark:text-white text-base">
+                            <span class="bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 px-3 py-1 rounded-lg border border-blue-100 dark:border-blue-800/50">
+                                <?= esc($c['name']); ?>
+                            </span>
                         </td>
-                        <td class="p-4 flex gap-2">
-                            <button 
-                                type="button"
-                                onclick="openEditModal('<?= $c['id']; ?>', '<?= esc($c['name'], 'js'); ?>')"
-                                class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition duration-150">
-                                Edit
+                        <td class="p-5 flex justify-end gap-2">
+                            <button type="button" onclick="openEditModal('<?= $c['id']; ?>', '<?= esc($c['name'], 'js'); ?>')"
+                                    class="inline-flex items-center gap-1.5 bg-amber-50 hover:bg-amber-500 hover:text-white text-amber-600 border border-amber-200 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-400 dark:hover:bg-amber-600 dark:hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition">
+                                <i class="fa-solid fa-pen-to-square"></i> Edit
                             </button>
                             <a href="/admin/categories/delete/<?= $c['id']; ?>"
-                            class="delete-category-btn bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition duration-150">
-                                Hapus
+                               class="delete-category-btn inline-flex items-center gap-1.5 bg-rose-50 hover:bg-rose-600 hover:text-white text-rose-600 border border-rose-200 dark:border-rose-900/50 dark:bg-rose-900/20 dark:text-rose-400 dark:hover:bg-rose-600 dark:hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition">
+                                <i class="fa-solid fa-trash-can"></i> Hapus
                             </a>
                         </td>
                     </tr>
@@ -108,97 +106,109 @@
             </table>
         </div>
     </div>
-</div>
+</main>
 
-<div id="editModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-x-hidden overflow-y-auto h-full w-full">
-    <div class="relative bg-white dark:bg-gray-900 rounded-xl shadow-xl max-w-md w-full p-6 border border-gray-200 dark:border-gray-800 animate-in fade-in zoom-in-95 duration-150">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Ubah Nama Kategori</h3>
-            <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-xl font-bold">&times;</button>
+<div id="editModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-x-hidden overflow-y-auto transition-opacity">
+    <div class="relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl max-w-md w-full p-8 border border-gray-100 dark:border-gray-800 transform transition-all scale-95 opacity-0" id="modalContent">
+        
+        <div class="flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-800 pb-4">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square text-amber-500"></i> Ubah Nama Kategori
+            </h3>
+            <button onclick="closeEditModal()" class="text-gray-400 hover:text-rose-500 transition text-2xl font-bold">&times;</button>
         </div>
+        
         <form id="editForm" method="post">
-            <div class="mb-5">
-                <label for="edit_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nama Kategori</label>
-                <input 
-                    type="text" 
-                    id="edit_name" 
-                    name="name" 
-                    class="w-full border dark:border-gray-700 bg-white dark:bg-gray-800 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-white" 
-                    required>
+            <div class="mb-6">
+                <label for="edit_name" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Nama Kategori Baru</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-tag text-gray-400"></i>
+                    </div>
+                    <input type="text" id="edit_name" name="name" 
+                           class="w-full border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 pl-11 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-gray-900 dark:text-white font-medium" required>
+                </div>
             </div>
             <div class="flex justify-end gap-3">
-                <button 
-                    type="button" 
-                    onclick="closeEditModal()" 
-                    class="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-lg text-sm font-medium transition">
+                <button type="button" onclick="closeEditModal()" class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300 rounded-xl text-sm font-bold transition">
                     Batal
                 </button>
-                <button 
-                    type="submit" 
-                    class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition">
-                    Simpan Perubahan
+                <button type="submit" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-sm font-bold shadow-md shadow-amber-500/30 transition flex items-center gap-2">
+                    <i class="fa-solid fa-check"></i> Simpan Perubahan
                 </button>
             </div>
         </form>
     </div>
 </div>
 
-<script>
-function openEditModal(id, name) {
-    const modal = document.getElementById('editModal');
-    const form = document.getElementById('editForm');
-    const input = document.getElementById('edit_name');
-    
-    // Set action URL form secara dinamis menuju method update di controller
-    form.action = '/admin/categories/update/' + id;
-    // Set value input nama kategori saat ini
-    input.value = name;
-    
-    // Tampilkan modal
-    modal.classList.remove('hidden');
-}
-
-function closeEditModal() {
-    const modal = document.getElementById('editModal');
-    modal.classList.add('hidden');
-}
-
-// Menutup modal jika area luar modal di-klik
-window.onclick = function(event) {
-    const modal = document.getElementById('editModal');
-    if (event.target == modal) {
-        closeEditModal();
-    }
-}
-</script>
-
 <?= view('layout/footer'); ?>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-$(document).ready(function () {
-    // Logic SweetAlert untuk Hapus Kategori
-    $('body').on('click', '.delete-category-btn', function(e) {
-        e.preventDefault(); 
-        const url = $(this).attr('href');
+    function openEditModal(id, name) {
+        const modal = document.getElementById('editModal');
+        const modalContent = document.getElementById('modalContent');
+        const form = document.getElementById('editForm');
+        const input = document.getElementById('edit_name');
+        
+        form.action = '/admin/categories/update/' + id;
+        input.value = name;
+        
+        modal.classList.remove('hidden');
+        // Trigger reflow for animation
+        void modal.offsetWidth;
+        modalContent.classList.remove('scale-95', 'opacity-0');
+        modalContent.classList.add('scale-100', 'opacity-100');
+    }
 
-        Swal.fire({
-            title: 'Hapus Kategori?',
-            text: "Kategori yang dihapus tidak bisa dikembalikan!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = url;
-            }
+    function closeEditModal() {
+        const modal = document.getElementById('editModal');
+        const modalContent = document.getElementById('modalContent');
+        
+        modalContent.classList.remove('scale-100', 'opacity-100');
+        modalContent.classList.add('scale-95', 'opacity-0');
+        
+        setTimeout(() => { modal.classList.add('hidden'); }, 150);
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('editModal');
+        if (event.target == modal) { closeEditModal(); }
+    }
+
+    // Logic SweetAlert untuk Hapus Kategori
+    $(document).ready(function () {
+        $('body').on('click', '.delete-category-btn', function(e) {
+            e.preventDefault(); 
+            const url = $(this).attr('href');
+
+            Swal.fire({
+                title: 'Hapus Kategori?',
+                text: "Kategori yang dihapus akan hilang dari sistem. Lanjutkan?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: '<i class="fa-solid fa-trash-can mr-2"></i> Ya, Hapus',
+                cancelButtonText: 'Batal',
+                background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#ffffff',
+                color: document.documentElement.classList.contains('dark') ? '#f9fafb' : '#111827',
+                customClass: { confirmButton: 'rounded-xl', cancelButton: 'rounded-xl' }
+            }).then((result) => {
+                if (result.isConfirmed) { window.location.href = url; }
+            });
         });
     });
-});
 </script>
+
+<?php if(session()->getFlashdata('success')): ?>
+<script>Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: <?= json_encode(session()->getFlashdata('success')); ?>, showConfirmButton: false, timer: 3000, background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#ffffff', color: document.documentElement.classList.contains('dark') ? '#f9fafb' : '#111827' });</script>
+<?php endif; ?>
+<?php if(session()->getFlashdata('error')): ?>
+<script>Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: <?= json_encode(session()->getFlashdata('error')); ?>, showConfirmButton: false, timer: 3000, background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#ffffff', color: document.documentElement.classList.contains('dark') ? '#f9fafb' : '#111827' });</script>
+<?php endif; ?>
+
 </body>
 </html>

@@ -279,39 +279,40 @@ class Booking extends BaseController
     // =========================
     private function sendBookingEmail($booking_id)
     {
-        $db = \Config\Database::connect();
-        $builder = $db->table('bookings');
+        return true;
+        // $db = \Config\Database::connect();
+        // $builder = $db->table('bookings');
 
-        $builder->select('
-            bookings.*,
-            users.name,
-            users.email,
-            events.title,
-            events.location,
-            events.date
-        ');
+        // $builder->select('
+        //     bookings.*,
+        //     users.name,
+        //     users.email,
+        //     events.title,
+        //     events.location,
+        //     events.date
+        // ');
 
-        $builder->join('users', 'users.id = bookings.user_id');
-        $builder->join('events', 'events.id = bookings.event_id');
-        $builder->where('bookings.id', $booking_id);
+        // $builder->join('users', 'users.id = bookings.user_id');
+        // $builder->join('events', 'events.id = bookings.event_id');
+        // $builder->where('bookings.id', $booking_id);
 
-        $booking = $builder->get()->getRowArray();
+        // $booking = $builder->get()->getRowArray();
 
-        if (!$booking) {
-            return;
-        }
+        // if (!$booking) {
+        //     return;
+        // }
 
-        $email = \Config\Services::email();
-        $email->setTo($booking['email']);
-        $email->setSubject('Notifikasi Status Pemesanan Event - EO Management');
+        // $email = \Config\Services::email();
+        // $email->setTo($booking['email']);
+        // $email->setSubject('Notifikasi Status Pemesanan Event - EO Management');
 
-        $message = view('email/booking_status', ['booking' => $booking]);
-        $email->setMailType('html');
-        $email->setMessage($message);
+        // $message = view('email/booking_status', ['booking' => $booking]);
+        // $email->setMailType('html');
+        // $email->setMessage($message);
 
-        if (!$email->send()) {
-            log_message('error', $email->printDebugger(['headers']));
-        }
+        // if (!$email->send()) {
+        //     log_message('error', $email->printDebugger(['headers']));
+        // }
     }
 
     // =========================

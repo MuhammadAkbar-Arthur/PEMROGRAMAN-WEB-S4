@@ -153,4 +153,77 @@ class Auth extends BaseController
         }
         return redirect()->to('/');
     }
+    // Proses saat tombol 'Kirim Link Reset' ditekan
+    public function forgotPasswordProcess()
+    {
+        $email = $this->request->getPost('email');
+        $userModel = new \App\Models\UserModel(); // Sesuaikan dengan model kamu
+        $user = $userModel->where('email', $email)->first();
+
+        if ($user) {
+            // TRIK DEMO: Alih-alih kirim email asli, kita langsung buatkan sesi token 
+            // dan arahkan ke halaman reset password agar dosen bisa langsung lihat alurnya.
+            
+            // Generate token acak (opsional, untuk keamanan)
+            $token = bin2hex(random_bytes(16));
+            
+            // Simpan email dan token di session untuk sementara
+            session()->setFlashdata('reset_email', $email);
+            session()->setFlashdata('reset_token', $token);
+            
+            // Redirect langsung ke halaman reset password
+            return redirect()->to('/reset-password');
+        } else {
+            return redirect()->back()->with('error', 'Alamat email tidak ditemukan dalam sistem.');
+        }
+    }
+
+    // Menampilkan halaman reset password
+    public function resetPassword()
+    {
+        // Ambil data dari flashdata yang diset tadi
+        $data = [
+            'email' => session()->getFlashdata('reset_email'),
+            'token' => session()->getFlashdata('reset_token')
+        ];
+
+        // Jika tidak ada email dari proses sebelumnya, tendang balik ke form forgot
+        if (empty($data['email'])) {
+            return redirect()->to('/forgot-password')->with('error', 'Sesi reset tidak valid atau telah kadaluarsa.');
+        }
+
+        // Tampilkan view
+        return view('reset-password', $data);
+    }
+    public function forgotPassword()
+    {
+        return view('forgot-password');
+    }
+    // =========================
+    // PROCESS RESET PASSWORD
+    // =========================
+    public function resetPasswordProcess()
+    {
+        $email = $this->request->getPost('email');
+        $newPassword = $this->request->getPost('new_password');
+        $confirmPassword = $this->request->getPost('confirm_password');
+
+        if ($newPassword !== $confirmPassword) {
+            session()->setFlashdata('reset_email', $email);
+            return redirect()->to('/reset-password')->with('error', 'Konfirmasi kata sandi tidak cocok!');
+        }
+
+        $userModel = new \App\Models\UserModel(); 
+        $user = $userModel->where('email', $email)->first();
+
+        if ($user) {
+            $userModel->update($user['id'], [
+                'password' => password_hash($newPassword, PASSWORD_DEFAULT)
+            ]);
+
+            return redirect()->to('/login')->withInput()->with('success', 'Kata sandi berhasil diubah! Silakan masuk dengan sandi baru Anda.');
+        }
+
+        return redirect()->to('/forgot-password')->with('error', 'Terjadi kesalahan sistem. Silakan coba lagi.');
+    }
 }
