@@ -15,8 +15,11 @@ if ($isLoggedIn && $role == 'user') {
 <nav class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md text-gray-800 dark:text-gray-100 shadow-md transition duration-300 sticky top-0 z-50 border-b border-gray-200 dark:border-gray-800">
     <div class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center relative">
 
-        <a href="/" class="flex items-center gap-2 z-50 shrink-0">
-            <img src="<?= base_url('assets/images/logo.png'); ?>" alt="Logo Elevate" class="w-8 h-8 object-contain">
+        <!-- KODE BARU YANG SUDAH DIPERBAIKI -->
+        <a href="/" class="flex items-center gap-3 z-50 shrink-0 pl-6 md:pl-10">
+            <div class="flex items-center">
+                <img src="<?= base_url('assets/images/logo.png'); ?>" alt="Logo Elevate" class="h-10 w-auto object-contain">
+            </div>
             <span class="text-xl md:text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 tracking-tight">
                 Elevate
             </span>
