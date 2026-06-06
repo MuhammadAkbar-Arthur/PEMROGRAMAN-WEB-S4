@@ -61,6 +61,7 @@ $routes->group('organizer', ['filter' => 'organizer'], function($routes) {
     $routes->get('bookings', 'Organizer::bookings');
     // Rute approve/reject dihapus dari sini karena sudah dipindah ke global booking di atas
     $routes->get('my-events', 'Organizer::myEvents');
+    $routes->get('deleteBooking/(:num)', 'Organizer::deleteBooking/$1');
 });
 
 // --- ADMIN ONLY ---

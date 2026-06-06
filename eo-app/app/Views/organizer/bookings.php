@@ -121,6 +121,10 @@
                                     <a href="/booking/reject/<?= $booking['id']; ?>" onclick="confirmReject(event, this.href)" class="bg-white dark:bg-gray-800 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 border border-gray-200 dark:border-gray-700 hover:border-rose-300 dark:hover:border-rose-800 px-4 py-2 rounded-xl text-sm font-bold transition flex items-center gap-2">
                                         <i class="fa-solid fa-xmark"></i> Tolak
                                     </a>
+                               <?php elseif($booking['status'] == 'rejected'): ?>
+                                    <a href="/organizer/deleteBooking/<?= $booking['id']; ?>" onclick="confirmDelete(event, this.href)" class="bg-gray-100 text-red-600 hover:bg-red-500 hover:text-white dark:bg-gray-800 dark:hover:bg-red-600 px-4 py-2 rounded-xl text-sm font-bold transition flex items-center gap-2 border border-gray-200 dark:border-gray-700">
+                                        <i class="fa-solid fa-trash-can"></i> Hapus
+                                    </a>
                                 <?php else: ?>
                                     <span class="text-sm font-bold text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded-xl border border-transparent dark:border-gray-700">
                                         <i class="fa-solid fa-lock mr-1"></i> Selesai
@@ -172,9 +176,18 @@
                                 <i class="fa-solid fa-xmark"></i> Tolak
                             </a>
                         </div>
+                    <?php elseif($booking['status'] == 'rejected'): ?>
+                        <div class="grid grid-cols-2 gap-2 mt-2">
+                            <div class="w-full text-center bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 px-4 py-3 rounded-xl text-sm font-bold border border-rose-200 dark:border-rose-800 flex justify-center items-center gap-2">
+                                <i class="fa-solid fa-circle-xmark"></i> Ditolak
+                            </div>
+                            <a href="/organizer/deleteBooking/<?= $booking['id']; ?>" onclick="confirmDelete(event, this.href)" class="w-full text-center bg-gray-100 dark:bg-gray-800 hover:bg-red-500 hover:text-white dark:hover:bg-red-600 text-gray-600 dark:text-gray-300 px-4 py-3 rounded-xl text-sm font-bold transition flex justify-center items-center gap-2 border border-gray-200 dark:border-gray-700">
+                                <i class="fa-solid fa-trash-can"></i> Hapus
+                            </a>
+                        </div>
                     <?php else: ?>
-                        <div class="w-full text-center bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 px-4 py-3 rounded-xl text-sm font-bold border border-transparent dark:border-gray-700">
-                            <?= $booking['status'] == 'approved' ? '<i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i> Tiket Disetujui' : '<i class="fa-solid fa-circle-xmark text-rose-500 mr-2"></i> Tiket Ditolak' ?>
+                        <div class="w-full text-center bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 px-4 py-3 rounded-xl text-sm font-bold border border-emerald-200 dark:border-emerald-800">
+                            <i class="fa-solid fa-circle-check mr-2"></i> Tiket Disetujui
                         </div>
                     <?php endif; ?>
                 </div>
@@ -223,6 +236,27 @@
             confirmButtonColor: '#dc2626', // Rose
             cancelButtonColor: '#6b7280',
             confirmButtonText: '<i class="fa-solid fa-xmark mr-2"></i> Ya, Tolak',
+            cancelButtonText: 'Batal',
+            background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#ffffff',
+            color: document.documentElement.classList.contains('dark') ? '#f9fafb' : '#111827',
+            customClass: { confirmButton: 'rounded-xl', cancelButton: 'rounded-xl' }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+    // Konfirmasi Hapus (Delete)
+    function confirmDelete(event, url) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Hapus Data Pesanan?',
+            text: 'Data yang ditolak akan dihapus sehingga peserta dapat mencoba mendaftar ulang.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626', // Merah
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: '<i class="fa-solid fa-trash-can mr-2"></i> Ya, Hapus',
             cancelButtonText: 'Batal',
             background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#ffffff',
             color: document.documentElement.classList.contains('dark') ? '#f9fafb' : '#111827',

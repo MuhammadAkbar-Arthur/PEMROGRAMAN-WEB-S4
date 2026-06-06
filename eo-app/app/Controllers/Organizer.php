@@ -147,4 +147,41 @@ class Organizer extends BaseController
             'events' => $events
         ]);
     }
+    // =========================
+    // DELETE REJECTED BOOKING (ORGANIZER)
+    // =========================
+    public function deleteBooking($id)
+    {
+        $this->checkLogin();
+
+        if (session()->get('role') != 'organizer') {
+            return redirect()->to('/')->with('error', 'Akses organizer ditolak');
+        }
+
+        $db = \Config\Database::connect();
+        $builder = $db->table('bookings');
+
+        // Pastikan tiket ini ada dan event-nya adalah milik organizer yang login
+        $booking = $builder->select('bookings.id, bookings.status, events.owner_id')
+                           ->join('events', 'events.id = bookings.event_id')
+                           ->where('bookings.id', $id)
+                           ->get()->getRowArray();
+
+        if (!$booking) {
+            return redirect()->back()->with('error', 'Data pesanan tidak ditemukan!');
+        }
+
+        if ($booking['owner_id'] != session()->get('id')) {
+            return redirect()->back()->with('error', 'Akses Ilegal: Anda tidak berhak menghapus pesanan di event orang lain!');
+        }
+
+        if ($booking['status'] != 'rejected') {
+            return redirect()->back()->with('error', 'Hanya pesanan dengan status DITOLAK yang dapat dihapus.');
+        }
+
+        // Hapus data booking
+        $db->table('bookings')->where('id', $id)->delete();
+
+        return redirect()->back()->with('success', 'Data pesanan berhasil dihapus. Peserta kini dapat mendaftar ulang.');
+    }
 }

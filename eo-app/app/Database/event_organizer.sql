@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 04, 2026 at 09:20 AM
+-- Generation Time: Jun 06, 2026 at 08:52 AM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.30
 
@@ -42,7 +42,6 @@ CREATE TABLE `bookings` (
 INSERT INTO `bookings` (`id`, `user_id`, `event_id`, `status`, `created_at`) VALUES
 (14, 13, 11, 'approved', '2026-06-02 19:33:21'),
 (16, 6, 16, 'rejected', '2026-06-03 13:39:40'),
-(17, 13, 22, 'rejected', '2026-06-04 06:07:49'),
 (18, 13, 12, 'approved', '2026-06-04 07:45:28'),
 (20, 15, 21, 'approved', '2026-06-04 07:59:45');
 
@@ -111,29 +110,30 @@ CREATE TABLE `events` (
   `category_id` int DEFAULT NULL,
   `image` varchar(255) DEFAULT 'default.jpg',
   `quota` int DEFAULT '50',
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `price` int DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `events`
 --
 
-INSERT INTO `events` (`id`, `owner_id`, `title`, `description`, `date`, `location`, `category_id`, `image`, `quota`, `created_at`) VALUES
-(11, 12, 'Music Festival', 'Festival musik dengan artis nasional.', '2026-08-01', 'Bandung', 1, 'default.jpg', 200, '2026-05-20 05:18:31'),
-(12, 12, 'Startup Workshop', 'Belajar membangun startup dari nol.', '2026-06-15', 'Surabaya', 8, 'default.jpg', 50, '2026-05-20 05:18:31'),
-(16, 12, 'Cyber Security Meetup', 'Diskusi keamanan siber terbaru.', '2026-06-28', 'Malang', 8, 'default.jpg', 60, '2026-05-20 05:18:31'),
-(17, 12, 'UI UX Design Camp', 'Pelatihan desain UI UX interaktif.', '2026-07-22', 'Makassar', 7, 'default.jpg', 70, '2026-05-20 05:18:31'),
-(21, 12, 'Bootcamp Web Development HMIF', 'Pelatihan intensif pengembangan aplikasi web menggunakan CodeIgniter 4 dan Tailwind CSS. Cocok untuk mahasiswa yang ingin memperdalam full-stack development.', '2026-06-15', 'Gedung Universitas Mataram', 8, 'default.jpg', 50, '2026-05-25 06:11:57'),
-(22, 12, 'Turnamen eFootball 2026 Campus Edition', 'Ajang unjuk taktik dan skill bermain eFootball tingkat universitas. Buktikan siapa manajer terbaik dengan formasi 4-3-1-2 andalanmu!', '2026-06-25', 'Arena E-Sports Mataram', 9, '1780560297_b27fe6fd6003ecba6b37.jpg', 64, '2026-05-25 06:11:57'),
-(26, 17, 'Event Seri 1 - EO ID 17', 'Deskripsi profesional untuk event seri ke-1.', '2026-06-05', 'Mataram City', 1, 'default.jpg', 100, '2026-06-04 08:37:40'),
-(27, 17, 'Event Seri 2 - EO ID 17', 'Deskripsi profesional untuk event seri ke-2.', '2026-06-06', 'Mataram City', 1, 'default.jpg', 100, '2026-06-04 08:37:40'),
-(28, 17, 'Event Seri 3 - EO ID 17', 'Deskripsi profesional untuk event seri ke-3.', '2026-06-07', 'Mataram City', 1, 'default.jpg', 100, '2026-06-04 08:37:40'),
-(29, 18, 'Event Seri 1 - EO ID 18', 'Deskripsi profesional untuk event seri ke-1.', '2026-06-05', 'Mataram City', 1, 'default.jpg', 100, '2026-06-04 08:37:40'),
-(30, 18, 'Event Seri 2 - EO ID 18', 'Deskripsi profesional untuk event seri ke-2.', '2026-06-06', 'Mataram City', 1, 'default.jpg', 100, '2026-06-04 08:37:40'),
-(31, 18, 'Event Seri 3 - EO ID 18', 'Deskripsi profesional untuk event seri ke-3.', '2026-06-07', 'Mataram City', 1, 'default.jpg', 100, '2026-06-04 08:37:40'),
-(32, 19, 'Event Seri 1 - EO ID 19', 'Deskripsi profesional untuk event seri ke-1.', '2026-06-05', 'Mataram City', 1, 'default.jpg', 100, '2026-06-04 08:37:40'),
-(33, 19, 'Event Seri 2 - EO ID 19', 'Deskripsi profesional untuk event seri ke-2.', '2026-06-06', 'Mataram City', 1, 'default.jpg', 100, '2026-06-04 08:37:40'),
-(34, 19, 'Event Seri 3 - EO ID 19', 'Deskripsi profesional untuk event seri ke-3.', '2026-06-07', 'Mataram City', 1, 'default.jpg', 100, '2026-06-04 08:37:40');
+INSERT INTO `events` (`id`, `owner_id`, `title`, `description`, `date`, `location`, `category_id`, `image`, `quota`, `created_at`, `price`) VALUES
+(11, 12, 'Music Festival', 'Festival musik dengan artis nasional.', '2026-08-01', 'Bandung', 1, 'default.jpg', 200, '2026-05-20 05:18:31', 50000),
+(12, 12, 'Startup Workshop', 'Belajar membangun startup dari nol.', '2026-06-15', 'Surabaya', 8, 'default.jpg', 50, '2026-05-20 05:18:31', 50000),
+(16, 12, 'Cyber Security Meetup', 'Diskusi keamanan siber terbaru.', '2026-06-28', 'Malang', 8, 'default.jpg', 60, '2026-05-20 05:18:31', 50000),
+(17, 12, 'UI UX Design Camp', 'Pelatihan desain UI UX interaktif.', '2026-07-22', 'Makassar', 7, 'default.jpg', 70, '2026-05-20 05:18:31', 50000),
+(21, 12, 'Bootcamp Web Development HMIF', 'Pelatihan intensif pengembangan aplikasi web menggunakan CodeIgniter 4 dan Tailwind CSS. Cocok untuk mahasiswa yang ingin memperdalam full-stack development.', '2026-06-15', 'Gedung Universitas Mataram', 8, 'default.jpg', 50, '2026-05-25 06:11:57', 50000),
+(22, 12, 'Turnamen eFootball 2026 Campus Edition', 'Ajang unjuk taktik dan skill bermain eFootball tingkat universitas. Buktikan siapa manajer terbaik dengan formasi 4-3-1-2 andalanmu!', '2026-06-25', 'Arena E-Sports Mataram', 9, '1780560297_b27fe6fd6003ecba6b37.jpg', 64, '2026-05-25 06:11:57', 50000),
+(26, 17, 'Event Seri 1 - EO ID 17', 'Deskripsi profesional untuk event seri ke-1.', '2026-06-05', 'Mataram City', 1, 'default.jpg', 100, '2026-06-04 08:37:40', 50000),
+(27, 17, 'Event Seri 2 - EO ID 17', 'Deskripsi profesional untuk event seri ke-2.', '2026-06-06', 'Mataram City', 1, 'default.jpg', 100, '2026-06-04 08:37:40', 50000),
+(28, 17, 'Event Seri 3 - EO ID 17', 'Deskripsi profesional untuk event seri ke-3.', '2026-06-07', 'Mataram City', 1, 'default.jpg', 100, '2026-06-04 08:37:40', 50000),
+(29, 18, 'Event Seri 1 - EO ID 18', 'Deskripsi profesional untuk event seri ke-1.', '2026-06-05', 'Mataram City', 1, 'default.jpg', 100, '2026-06-04 08:37:40', 50000),
+(30, 18, 'Event Seri 2 - EO ID 18', 'Deskripsi profesional untuk event seri ke-2.', '2026-06-06', 'Mataram City', 1, 'default.jpg', 100, '2026-06-04 08:37:40', 50000),
+(31, 18, 'Event Seri 3 - EO ID 18', 'Deskripsi profesional untuk event seri ke-3.', '2026-06-07', 'Mataram City', 1, 'default.jpg', 100, '2026-06-04 08:37:40', 50000),
+(32, 19, 'Event Seri 1 - EO ID 19', 'Deskripsi profesional untuk event seri ke-1.', '2026-06-05', 'Mataram City', 1, 'default.jpg', 100, '2026-06-04 08:37:40', 50000),
+(33, 19, 'Event Seri 2 - EO ID 19', 'Deskripsi profesional untuk event seri ke-2.', '2026-06-06', 'Mataram City', 1, 'default.jpg', 100, '2026-06-04 08:37:40', 50000),
+(34, 19, 'Event Seri 3 - EO ID 19', 'Deskripsi profesional untuk event seri ke-3.', '2026-06-07', 'Mataram City', 1, 'default.jpg', 100, '2026-06-04 08:37:40', 50000);
 
 -- --------------------------------------------------------
 
@@ -179,16 +179,16 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `avatar`, `bio`, `phone`, `created_at`) VALUES
-(6, 'Muhammad Akbar -  Arthur', 'f1d02410075@student.unram.ac.id', '$2y$10$OrSZOOMLFOwe7Hx0y.Sq1OiOoFu8YwdVdeTbJ78TvpD//BA1zeSOu', 'user', '1780432851_d2bdcfa849e89ba94ece.jpg', 'Halo guys', '085253820284', '2026-05-19 00:36:25'),
-(7, 'Mustafida - Firda', 'f1d02410126@student.unram.ac.id', '$2y$10$8CccO.T.9BXfyttI3AkVtOeAqtliUkbZkuBxXDWJNOdVNI9bIZVc2', 'organizer', NULL, 'Halo guys', NULL, '2026-05-19 00:45:07'),
-(8, 'Musfiqoh Rizkia Aulia - Rizka', 'f1d02410083@student.unram.ac.id', '$2y$10$rrztaLBn0UQnKb0H.xCuJunlcuRYrHLTiqvElp0hgxi/mqihr6Rva', 'admin', NULL, NULL, NULL, '2026-05-19 00:54:57'),
-(11, 'A1 Official', 'admin@eo.com', '$2y$10$kzj3y8qK/SL5Rmhmu0o7Vew1j1bAG72Fs0Rsj2XmdIU5WKGjselBG', 'admin', NULL, 'Administrator utama sistem EO Management.', '081200000000', '2026-05-25 06:11:57'),
-(12, 'EO1 Official', 'organizer@eo.com', '$2y$10$SU9vRMjaAQaoL8PN8rZhy.oqzCXU0SCVoUV2Vr.ycGdb9/NvCLazS', 'organizer', NULL, 'Penyelenggara event kampus dan turnamen gaming.', '081987654321', '2026-05-25 06:11:57'),
-(13, 'U1 Official', 'user@user.com', '$2y$10$1Emu1jFuLdNY.5UUVgN6jOHCdIV4uLZO6QJ9i4Nqg0uXuKmYDEicG', 'user', NULL, 'Mahasiswa Teknik Informatika penggiat IT.', '081234567890', '2026-05-25 06:11:57'),
-(15, 'Peserta Tester 1', 'peserta1@tester.com', '$2y$10$6ppTOlwfLpWoEukaFcpqCukfes6rS/yVkHfaigrqzM5wt/XRf.bs.', 'user', NULL, 'Saya tester', '', '2026-06-04 07:52:33'),
-(17, 'EO2 Official', 'organizer2@eo.com', '$2y$10$NCT9UWzpF9N8YeqrzfMPd.9HV3azcgQXtEjuX3QBA.x9r5b8.YUgK', 'organizer', NULL, 'Penyelenggara event kampus.', '081222333444', '2026-06-04 08:37:40'),
-(18, 'EO3 Official', 'organizer3@eo.com', '$2y$10$IadfjF8e8TBm1gJXwWeNSeDZZr6yEFbNAsIgXd6xazsoQtbmAD4oC', 'organizer', NULL, 'Spesialis turnamen gaming.', '081222333555', '2026-06-04 08:37:40'),
-(19, 'EO4 Official', 'organizer4@eo.com', '$2y$10$W7i26HWT5eWXLjdDQihXQefsRIYJJNI6Hvrz1QhdIYx5FMyVizIW2', 'organizer', NULL, 'Penyelenggara seminar IT.', '081222333666', '2026-06-04 08:37:40');
+(6, 'Muhammad Akbar -  Arthur', 'f1d02410075@student.unram.ac.id', '$2y$10$OrSZOOMLFOwe7Hx0y.Sq1OiOoFu8YwdVdeTbJ78TvpD//BA1zeSOu', 'user', '1780432851_d2bdcfa849e89ba94ece.jpg', 'Halo guys', '6285253820284', '2026-05-19 00:36:25'),
+(7, 'Mustafida - Firda', 'f1d02410126@student.unram.ac.id', '$2y$10$8CccO.T.9BXfyttI3AkVtOeAqtliUkbZkuBxXDWJNOdVNI9bIZVc2', 'organizer', NULL, 'Halo guys', '6285253820284', '2026-05-19 00:45:07'),
+(8, 'Musfiqoh Rizkia Aulia - Rizka', 'f1d02410083@student.unram.ac.id', '$2y$10$rrztaLBn0UQnKb0H.xCuJunlcuRYrHLTiqvElp0hgxi/mqihr6Rva', 'admin', NULL, NULL, '6285253820284', '2026-05-19 00:54:57'),
+(11, 'A1 Official', 'admin@eo.com', '$2y$10$kzj3y8qK/SL5Rmhmu0o7Vew1j1bAG72Fs0Rsj2XmdIU5WKGjselBG', 'admin', NULL, 'Administrator utama sistem EO Management.', '6285253820284', '2026-05-25 06:11:57'),
+(12, 'EO1 Official', 'organizer@eo.com', '$2y$10$SU9vRMjaAQaoL8PN8rZhy.oqzCXU0SCVoUV2Vr.ycGdb9/NvCLazS', 'organizer', NULL, 'Penyelenggara event kampus dan turnamen gaming.', '6285253820284', '2026-05-25 06:11:57'),
+(13, 'U1 Official', 'user@user.com', '$2y$10$1Emu1jFuLdNY.5UUVgN6jOHCdIV4uLZO6QJ9i4Nqg0uXuKmYDEicG', 'user', NULL, 'Mahasiswa Teknik Informatika penggiat IT.', '6285253820284', '2026-05-25 06:11:57'),
+(15, 'Peserta Tester 1', 'peserta1@tester.com', '$2y$10$6ppTOlwfLpWoEukaFcpqCukfes6rS/yVkHfaigrqzM5wt/XRf.bs.', 'user', NULL, 'Saya tester', '6285253820284', '2026-06-04 07:52:33'),
+(17, 'EO2 Official', 'organizer2@eo.com', '$2y$10$NCT9UWzpF9N8YeqrzfMPd.9HV3azcgQXtEjuX3QBA.x9r5b8.YUgK', 'organizer', NULL, 'Penyelenggara event kampus.', '6285253820284', '2026-06-04 08:37:40'),
+(18, 'EO3 Official', 'organizer3@eo.com', '$2y$10$IadfjF8e8TBm1gJXwWeNSeDZZr6yEFbNAsIgXd6xazsoQtbmAD4oC', 'organizer', NULL, 'Spesialis turnamen gaming.', '6285253820284', '2026-06-04 08:37:40'),
+(19, 'EO4 Official', 'organizer4@eo.com', '$2y$10$W7i26HWT5eWXLjdDQihXQefsRIYJJNI6Hvrz1QhdIYx5FMyVizIW2', 'organizer', NULL, 'Penyelenggara seminar IT.', '6285253820284', '2026-06-04 08:37:40');
 
 --
 -- Indexes for dumped tables
@@ -247,7 +247,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `categories`

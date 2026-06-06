@@ -74,7 +74,7 @@ class Home extends BaseController
         // 1. AMBIL DATA EVENT (JOIN CATEGORIES & USERS)
         // ==========================================
         $builder = $db->table('events');
-        $builder->select('events.*, categories.name as category_name, users.name as organizer_name');
+        $builder->select('events.*, categories.name as category_name, users.name as organizer_name, users.phone as organizer_phone');
         $builder->join('categories', 'categories.id = events.category_id', 'left');
         $builder->join('users', 'users.id = events.owner_id', 'left'); // JOIN KE USERS
         $builder->where('events.id', $id);
@@ -107,6 +107,7 @@ class Home extends BaseController
         // DEFAULT
         $data['isBooked']   = false;
         $data['isFavorite'] = false;
+        $data['bookingStatus'] = null; // Tambahkan variabel ini
 
         if ($user_id) {
             // CEK BOOKING
@@ -115,6 +116,7 @@ class Home extends BaseController
                                          ->first();
             if ($checkBooking) {
                 $data['isBooked'] = true;
+                $data['bookingStatus'] = $checkBooking['status']; // Ambil statusnya (pending/approved/rejected)
             }
 
             // CEK FAVORITE

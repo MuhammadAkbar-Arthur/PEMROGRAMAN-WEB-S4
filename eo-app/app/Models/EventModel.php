@@ -17,5 +17,6 @@ class EventModel extends Model
         'category_id',
         'image',
         'quota',
+        'price',
     ];
 }
