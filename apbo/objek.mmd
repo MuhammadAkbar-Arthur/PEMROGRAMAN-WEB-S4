@@ -1,0 +1,27 @@
+classDiagram
+    direction LR  %% Menata diagram dari Kiri ke Kanan biar lebih rapi
+    
+    %% Jika kamu ingin menyembunyikan kotak type di kiri, cukup hapus baris class User { <<type>> } dll.
+    
+    class Akbar {
+        <<object>>
+        +int id = 6
+        +string name = "Muhammad Akbar - Arthur"
+        +string role = "user"
+    }
+
+    class Event_EFootball {
+        <<object>>
+        +int id = 22
+        +string title = "Turnamen eFootball 2026"
+        +int price = 50000
+    }
+
+    class Booking_23 {
+        <<object>>
+        +int id = 23
+        +string status = "pending"
+    }
+
+    Akbar -- Booking_23 : melakukan
+    Event_EFootball -- Booking_23 : dipesan_di

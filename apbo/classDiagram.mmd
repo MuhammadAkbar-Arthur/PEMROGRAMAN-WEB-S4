@@ -1,0 +1,152 @@
+classDiagram
+    class BaseController {
+        +checkLogin()
+    }
+
+    class Admin {
+        +index()
+        +deleteEvent(id)
+        +exportCSV()
+        +users()
+        +makeOrganizer(id)
+        +makeUser(id)
+        +analytics()
+        +deleteUser(id)
+    }
+
+    class Auth {
+        +login()
+        +processLogin()
+        +register()
+        +processRegister()
+        +logout()
+        +redirectBasedOnRole(role)
+        +forgotPasswordProcess()
+        +resetPassword()
+        +forgotPassword()
+        +resetPasswordProcess()
+    }
+
+    class Booking {
+        +create(event_id)
+        +myBookings()
+        +delete(id)
+        +approve(id)
+        +reject(id)
+        +ticket(booking_id)
+        +sendBookingEmail(booking_id)
+        +verify(booking_id)
+    }
+
+    class CategoryController {
+        +index()
+        +store()
+        +delete(id)
+        +update(id)
+    }
+
+    class CommentController {
+        +store(event_id)
+        +delete(id)
+    }
+
+    class EventController {
+        +index()
+        +create()
+        +store()
+        +edit(id)
+        +update(id)
+        +delete(id)
+    }
+
+    class FavoriteController {
+        +add(event_id)
+        +remove(event_id)
+        +index()
+    }
+
+    class Home {
+        +bantuan()
+        +index()
+        +detail(id)
+        +search()
+    }
+
+    class Organizer {
+        +index()
+        +bookings()
+        +myEvents()
+        +deleteBooking(id)
+    }
+
+    class Profile {
+        +index()
+        +update()
+    }
+
+    class CategoryModel {
+        -table = 'categories'
+        -allowedFields = ['name']
+    }
+
+    class BookingModel {
+        -table = 'bookings'
+        -allowedFields = ['user_id','event_id','status']
+    }
+
+    class CommentModel {
+        -table = 'comments'
+        -allowedFields = ['user_id','event_id','comment']
+    }
+
+    class EventModel {
+        -table = 'events'
+        -allowedFields = ['owner_id','title','description','date','location','category_id','image','quota','price']
+    }
+
+    class FavoriteModel {
+        -table = 'favorites'
+        -allowedFields = ['user_id','event_id']
+    }
+
+    class UserModel {
+        -table = 'users'
+        -allowedFields = ['name','email','password','role','avatar','bio','phone']
+    }
+
+    BaseController <|-- Admin
+    BaseController <|-- Auth
+    BaseController <|-- Booking
+    BaseController <|-- CategoryController
+    BaseController <|-- CommentController
+    BaseController <|-- EventController
+    BaseController <|-- FavoriteController
+    BaseController <|-- Home
+    BaseController <|-- Organizer
+    BaseController <|-- Profile
+
+    Booking --> BookingModel : uses
+    Booking --> EventModel : loads event data
+    Booking --> UserModel : loads user data
+
+    CategoryController --> CategoryModel : uses
+    CommentController --> CommentModel : uses
+    CommentController --> EventModel : loads event data
+    EventController --> EventModel : uses
+    EventController --> CategoryModel : loads categories
+    FavoriteController --> FavoriteModel : uses
+    FavoriteController --> EventModel : uses
+    Home --> EventModel : uses
+    Home --> BookingModel : checks bookings
+    Home --> FavoriteModel : checks favorites
+    Home --> CategoryModel : loads categories
+    Profile --> UserModel : uses
+
+    EventModel --> CategoryModel : category_id
+    EventModel --> UserModel : owner_id
+    BookingModel --> EventModel : event_id
+    BookingModel --> UserModel : user_id
+    CommentModel --> EventModel : event_id
+    CommentModel --> UserModel : user_id
+    FavoriteModel --> EventModel : event_id
+    FavoriteModel --> UserModel : user_id
