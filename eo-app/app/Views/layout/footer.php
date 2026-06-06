@@ -56,7 +56,6 @@ $role = session()->get('role');
                         <li><a href="/event" class="hover:text-emerald-600 dark:hover:text-emerald-400 transition flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px]"></i> Kelola Acara</a></li>
                         <li><a href="/admin/users" class="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px]"></i> Kelola Pengguna</a></li>
                         <li><a href="/admin/categories" class="hover:text-purple-600 dark:hover:text-purple-400 transition flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px]"></i> Kelola Kategori</a></li>
-                        <li><a href="/admin/analytics" class="hover:text-pink-600 dark:hover:text-pink-400 transition flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px]"></i> Analytics</a></li>
                     <?php endif; ?>
 
                 </ul>
