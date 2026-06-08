@@ -1,0 +1,32 @@
+flowchart TD
+    Start([Mulai])
+    OpenBookings[Organizer/Admin membuka daftar booking]
+    RoleCheck{Role admin atau organizer?}
+    Denied[Akses ditolak]
+    SelectBooking[Pilih booking]
+    LoadBooking[Ambil booking join event]
+    FoundCheck{Booking ditemukan?}
+    NotFound[Tampilkan pesan booking tidak ditemukan]
+    OwnerCheck{Jika organizer, event miliknya?}
+    Illegal[Tampilkan akses ilegal]
+    ChooseDecision{Keputusan}
+    CountQuota[Hitung total booking approved]
+    QuotaCheck{Kuota masih tersedia?}
+    Full[Tampilkan pesan kuota penuh]
+    Approve[Update status menjadi approved]
+    Reject[Update status menjadi rejected]
+    Notify[Siapkan notifikasi status booking]
+    Back[Kembali ke daftar booking]
+    End([Selesai])
+
+    Start --> OpenBookings --> RoleCheck
+    RoleCheck -- Tidak --> Denied --> End
+    RoleCheck -- Ya --> SelectBooking --> LoadBooking --> FoundCheck
+    FoundCheck -- Tidak --> NotFound --> End
+    FoundCheck -- Ya --> OwnerCheck
+    OwnerCheck -- Tidak --> Illegal --> End
+    OwnerCheck -- Ya --> ChooseDecision
+    ChooseDecision -- Approve --> CountQuota --> QuotaCheck
+    QuotaCheck -- Tidak --> Full --> End
+    QuotaCheck -- Ya --> Approve --> Notify --> Back --> End
+    ChooseDecision -- Reject --> Reject --> Notify --> Back --> End

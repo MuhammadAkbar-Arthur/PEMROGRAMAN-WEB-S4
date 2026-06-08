@@ -1,0 +1,50 @@
+flowchart TD
+    Start([Mulai])
+    OpenUsers[Admin membuka menu users]
+    RoleCheck{Role admin?}
+    Denied[Akses ditolak]
+    LoadUsers[Ambil daftar user dari database]
+    ShowUsers[Tampilkan daftar user]
+    ChooseAction{Pilih aksi}
+
+    SelectForOrganizer[Pilih user untuk dijadikan organizer]
+    FoundOrganizer{User ditemukan?}
+    MakeOrganizer[Update role menjadi organizer]
+
+    SelectForUser[Pilih organizer untuk dijadikan user]
+    FoundUser{User ditemukan?}
+    MakeUser[Update role menjadi user]
+
+    SelectForDelete[Pilih user yang akan dihapus]
+    FoundDelete{User ditemukan?}
+    SelfDelete{Menghapus akun sendiri?}
+    BlockSelf[Tampilkan pesan tidak boleh hapus akun sendiri]
+    StartTransaction[Mulai transaksi database]
+    DeleteRelations[Hapus booking dan favorite user]
+    DeleteOwnedEvents[Hapus event milik organizer beserta relasinya]
+    DeleteUser[Hapus data user]
+    TransactionOk{Transaksi berhasil?}
+
+    Error[Tampilkan pesan error]
+    Success[Tampilkan pesan berhasil]
+    End([Selesai])
+
+    Start --> OpenUsers --> RoleCheck
+    RoleCheck -- Tidak --> Denied --> End
+    RoleCheck -- Ya --> LoadUsers --> ShowUsers --> ChooseAction
+
+    ChooseAction -- Jadikan organizer --> SelectForOrganizer --> FoundOrganizer
+    FoundOrganizer -- Tidak --> Error --> End
+    FoundOrganizer -- Ya --> MakeOrganizer --> Success --> End
+
+    ChooseAction -- Jadikan user --> SelectForUser --> FoundUser
+    FoundUser -- Tidak --> Error
+    FoundUser -- Ya --> MakeUser --> Success
+
+    ChooseAction -- Hapus user --> SelectForDelete --> FoundDelete
+    FoundDelete -- Tidak --> Error
+    FoundDelete -- Ya --> SelfDelete
+    SelfDelete -- Ya --> BlockSelf --> End
+    SelfDelete -- Tidak --> StartTransaction --> DeleteRelations --> DeleteOwnedEvents --> DeleteUser --> TransactionOk
+    TransactionOk -- Tidak --> Error
+    TransactionOk -- Ya --> Success

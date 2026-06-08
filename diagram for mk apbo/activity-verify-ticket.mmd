@@ -1,0 +1,13 @@
+flowchart TD
+    Start([Mulai])
+    ScanQR[QR tiket dibuka atau discan]
+    OpenVerify[Sistem membuka URL verifikasi tiket]
+    LoadBooking[Ambil booking join user dan event]
+    ValidCheck{Booking ada dan status approved?}
+    Invalid[Tampilkan halaman tiket invalid]
+    ShowValid[Tampilkan halaman verifikasi tiket valid]
+    End([Selesai])
+
+    Start --> ScanQR --> OpenVerify --> LoadBooking --> ValidCheck
+    ValidCheck -- Tidak --> Invalid --> End
+    ValidCheck -- Ya --> ShowValid --> End

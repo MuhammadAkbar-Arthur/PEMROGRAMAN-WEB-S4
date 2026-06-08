@@ -1,0 +1,31 @@
+flowchart TD
+    Start([Mulai])
+    ClickBook[User klik booking tiket pada detail event]
+    LoginCheck{User sudah login?}
+    RedirectLogin[Arahkan ke login]
+    RoleCheck{Role user biasa?}
+    Denied[Tampilkan pesan admin/organizer tidak boleh booking]
+    LoadEvent[Ambil data event berdasarkan id]
+    EventFound{Event ditemukan?}
+    EventNotFound[Tampilkan pesan event tidak ditemukan]
+    CountApproved[Hitung booking approved]
+    QuotaCheck{Kuota masih tersedia?}
+    Full[Tampilkan pesan kuota penuh]
+    DuplicateCheck{User sudah booking event ini?}
+    Duplicate[Tampilkan pesan sudah pernah booking]
+    SaveBooking[Simpan booking status pending]
+    Notify[Siapkan notifikasi status booking]
+    RedirectMyBooking[Arahkan ke halaman My Bookings]
+    End([Selesai])
+
+    Start --> ClickBook --> LoginCheck
+    LoginCheck -- Tidak --> RedirectLogin --> End
+    LoginCheck -- Ya --> RoleCheck
+    RoleCheck -- Tidak --> Denied --> End
+    RoleCheck -- Ya --> LoadEvent --> EventFound
+    EventFound -- Tidak --> EventNotFound --> End
+    EventFound -- Ya --> CountApproved --> QuotaCheck
+    QuotaCheck -- Tidak --> Full --> End
+    QuotaCheck -- Ya --> DuplicateCheck
+    DuplicateCheck -- Ya --> Duplicate --> End
+    DuplicateCheck -- Tidak --> SaveBooking --> Notify --> RedirectMyBooking --> End

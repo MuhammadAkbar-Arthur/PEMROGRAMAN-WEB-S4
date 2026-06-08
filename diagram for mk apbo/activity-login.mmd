@@ -1,0 +1,32 @@
+flowchart TD
+    Start([Mulai])
+    OpenLogin[User membuka halaman login]
+    AlreadyLogin{Sudah login?}
+    RedirectRole[Arahkan ke halaman sesuai role]
+    FillForm[Isi email dan password]
+    Validate{Input valid?}
+    ShowValidation[Tampilkan pesan validasi]
+    FindUser[Sistem mencari user berdasarkan email]
+    AuthCheck{Email dan password cocok?}
+    ShowError[Tampilkan pesan email/password salah]
+    RoleCheck{Role valid?}
+    InvalidRole[Tampilkan pesan role tidak valid]
+    SetSession[Regenerate dan set session login]
+    RoleRedirect{Role user}
+    AdminPage[Masuk dashboard admin]
+    OrganizerPage[Masuk dashboard organizer]
+    HomePage[Masuk halaman utama user]
+    End([Selesai])
+
+    Start --> OpenLogin --> AlreadyLogin
+    AlreadyLogin -- Ya --> RedirectRole --> End
+    AlreadyLogin -- Tidak --> FillForm --> Validate
+    Validate -- Tidak --> ShowValidation --> FillForm
+    Validate -- Ya --> FindUser --> AuthCheck
+    AuthCheck -- Tidak --> ShowError --> FillForm
+    AuthCheck -- Ya --> RoleCheck
+    RoleCheck -- Tidak --> InvalidRole --> End
+    RoleCheck -- Ya --> SetSession --> RoleRedirect
+    RoleRedirect -- Admin --> AdminPage --> End
+    RoleRedirect -- Organizer --> OrganizerPage --> End
+    RoleRedirect -- User --> HomePage --> End

@@ -1,48 +1,17 @@
 flowchart TD
-    Start([Mulai])
-    OpenHome[User membuka halaman utama]
-    Browse[Melihat daftar event]
-    Search{Cari/filter event?}
-    ApplyFilter[Masukkan keyword lokasi kategori atau sort]
-    ShowResults[Sistem menampilkan hasil event]
-    SelectEvent[Pilih event]
-    Detail[Sistem menampilkan detail event, kuota, wishlist, booking, komentar]
-    LoggedIn{Sudah login?}
-    Login[Login atau register]
-    RoleCheck{Role user biasa?}
-    Denied[Booking ditolak karena admin/organizer tidak boleh booking]
-    QuotaCheck{Kuota approved masih tersedia?}
-    Full[Event penuh]
-    DuplicateCheck{Sudah pernah booking?}
-    Duplicate[Tampilkan pesan sudah booking]
-    SaveBooking[Simpan booking status pending]
-    Notify[Siapkan notifikasi status booking]
-    Waiting[User menunggu approval]
-    OrganizerReview[Organizer/Admin melihat daftar booking]
-    Decision{Booking disetujui?}
-    Approve[Update status approved]
-    Reject[Update status rejected]
-    UserCheck[User membuka My Bookings]
-    ApprovedCheck{Status approved?}
-    DownloadTicket[Download tiket PDF berisi QR]
-    VerifyQR[Scan/verifikasi QR tiket]
-    End([Selesai])
+    Start([Daftar Activity Diagram])
+    A01[activity-login.mmd]
+    A02[activity-register.mmd]
+    A03[activity-search-detail-event.mmd]
+    A04[activity-booking-ticket.mmd]
+    A05[activity-download-ticket.mmd]
+    A06[activity-verify-ticket.mmd]
+    A07[activity-manage-event.mmd]
+    A08[activity-approve-reject-booking.mmd]
+    A09[activity-manage-category.mmd]
+    A10[activity-manage-user.mmd]
+    A11[activity-export-booking-csv.mmd]
+    End([Preview masing-masing file untuk laporan])
 
-    Start --> OpenHome --> Browse --> Search
-    Search -- Ya --> ApplyFilter --> ShowResults
-    Search -- Tidak --> ShowResults
-    ShowResults --> SelectEvent --> Detail --> LoggedIn
-    LoggedIn -- Tidak --> Login --> Detail
-    LoggedIn -- Ya --> RoleCheck
-    RoleCheck -- Bukan user --> Denied --> End
-    RoleCheck -- User --> QuotaCheck
-    QuotaCheck -- Tidak --> Full --> End
-    QuotaCheck -- Ya --> DuplicateCheck
-    DuplicateCheck -- Ya --> Duplicate --> End
-    DuplicateCheck -- Tidak --> SaveBooking --> Notify --> Waiting
-    Waiting --> OrganizerReview --> Decision
-    Decision -- Ya --> Approve --> UserCheck
-    Decision -- Tidak --> Reject --> UserCheck
-    UserCheck --> ApprovedCheck
-    ApprovedCheck -- Ya --> DownloadTicket --> VerifyQR --> End
-    ApprovedCheck -- Tidak --> End
+    Start --> A01 --> A02 --> A03 --> A04 --> A05 --> A06
+    A06 --> A07 --> A08 --> A09 --> A10 --> A11 --> End

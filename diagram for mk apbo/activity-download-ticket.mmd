@@ -1,0 +1,29 @@
+flowchart TD
+    Start([Mulai])
+    OpenBooking[User membuka My Bookings]
+    ChooseTicket[Pilih tiket untuk download]
+    LoadBooking[Ambil booking join user dan event]
+    BookingFound{Booking ditemukan?}
+    NotFound[Tampilkan pesan tiket tidak ditemukan]
+    OwnerCheck{Booking milik user login?}
+    AccessDenied[Tampilkan akses ditolak]
+    StatusCheck{Status approved?}
+    NotApproved[Tampilkan pesan tiket PDF hanya tersedia jika approved]
+    BuildQR[Susun URL verifikasi QR]
+    GenerateQR{QR library berhasil?}
+    UseEndroid[Generate QR dengan Endroid]
+    UseFallback[Generate QR dengan API fallback]
+    RenderPDF[Render view tiket menjadi PDF]
+    DownloadPDF[Download file ticket-event-id.pdf]
+    End([Selesai])
+
+    Start --> OpenBooking --> ChooseTicket --> LoadBooking --> BookingFound
+    BookingFound -- Tidak --> NotFound --> End
+    BookingFound -- Ya --> OwnerCheck
+    OwnerCheck -- Tidak --> AccessDenied --> End
+    OwnerCheck -- Ya --> StatusCheck
+    StatusCheck -- Tidak --> NotApproved --> End
+    StatusCheck -- Ya --> BuildQR --> GenerateQR
+    GenerateQR -- Ya --> UseEndroid --> RenderPDF
+    GenerateQR -- Tidak --> UseFallback --> RenderPDF
+    RenderPDF --> DownloadPDF --> End
