@@ -1,0 +1,117 @@
+classDiagram
+    direction LR
+
+    class User {
+        +int id
+        +string name
+        +string email
+        +string password
+        +string role
+        +string avatar
+        +string bio
+        +string phone
+        +datetime created_at
+        +register()
+        +login()
+        +updateProfile()
+    }
+
+    class Admin {
+        +viewDashboard()
+        +manageUsers()
+        +manageCategories()
+        +moderateEvents()
+        +exportCSV()
+    }
+
+    class Organizer {
+        +manageOwnEvents()
+        +viewEventBookings()
+        +approveBooking()
+        +rejectBooking()
+    }
+
+    class Participant {
+        +bookEvent()
+        +cancelBooking()
+        +downloadTicket()
+        +manageFavorite()
+        +writeComment()
+    }
+
+    class Category {
+        +int id
+        +string name
+        +create()
+        +update()
+        +delete()
+    }
+
+    class Event {
+        +int id
+        +int owner_id
+        +string title
+        +text description
+        +date date
+        +string location
+        +int category_id
+        +string image
+        +int quota
+        +datetime created_at
+        +create()
+        +update()
+        +delete()
+        +getRemainingSeat()
+    }
+
+    class Booking {
+        +int id
+        +int user_id
+        +int event_id
+        +string status
+        +datetime created_at
+        +createPending()
+        +approve()
+        +reject()
+        +cancel()
+    }
+
+    class Ticket {
+        +int booking_id
+        +string qrData
+        +generatePDF()
+        +verifyQR()
+    }
+
+    class Favorite {
+        +int id
+        +int user_id
+        +int event_id
+        +datetime created_at
+        +add()
+        +remove()
+    }
+
+    class Comment {
+        +int id
+        +int user_id
+        +int event_id
+        +text comment
+        +datetime created_at
+        +store()
+        +delete()
+    }
+
+    User <|-- Admin
+    User <|-- Organizer
+    User <|-- Participant
+
+    Organizer "1" --> "0..*" Event : owns
+    Category "1" --> "0..*" Event : groups
+    Participant "1" --> "0..*" Booking : makes
+    Event "1" --> "0..*" Booking : receives
+    Booking "1" --> "0..1" Ticket : produces
+    Participant "1" --> "0..*" Favorite : saves
+    Event "1" --> "0..*" Favorite : favorited
+    User "1" --> "0..*" Comment : writes
+    Event "1" --> "0..*" Comment : has

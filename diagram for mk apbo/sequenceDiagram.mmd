@@ -1,0 +1,51 @@
+sequenceDiagram
+    actor User as User/Peserta
+    participant Home as Home Controller
+    participant Booking as Booking Controller
+    participant BookingModel as BookingModel
+    participant DB as Database
+    actor Organizer as Organizer/Admin
+    participant Ticket as Ticket/PDF QR
+
+    User->>Home: Buka detail event
+    Home->>DB: Ambil event, kategori, organizer
+    Home->>BookingModel: Hitung booking approved
+    BookingModel->>DB: SELECT bookings WHERE event_id AND status approved
+    DB-->>BookingModel: Total approved
+    Home->>DB: Cek booking, favorite, komentar user
+    DB-->>Home: Detail event lengkap
+    Home-->>User: Tampilkan detail event
+
+    User->>Booking: Klik booking tiket
+    Booking->>DB: Ambil event berdasarkan event_id
+    DB-->>Booking: Data event
+    Booking->>BookingModel: Hitung approved dan cek duplicate booking
+    BookingModel->>DB: SELECT/COUNT bookings
+    DB-->>BookingModel: Hasil validasi
+
+    alt Kuota penuh atau sudah booking
+        Booking-->>User: Tampilkan pesan gagal
+    else Booking valid
+        Booking->>BookingModel: Simpan booking status pending
+        BookingModel->>DB: INSERT bookings
+        DB-->>BookingModel: booking_id
+        Booking-->>User: Redirect ke My Bookings
+    end
+
+    Organizer->>Booking: Approve booking
+    Booking->>DB: Ambil booking join event
+    DB-->>Booking: Data booking dan owner event
+    Booking->>BookingModel: Update status approved
+    BookingModel->>DB: UPDATE bookings
+    Booking-->>Organizer: Booking disetujui
+
+    User->>Booking: Download tiket
+    Booking->>DB: Ambil booking join user dan event
+    DB-->>Booking: Data tiket approved
+    Booking->>Ticket: Generate QR dan PDF
+    Ticket-->>User: File ticket-event-id.pdf
+
+    User->>Booking: Verifikasi QR tiket
+    Booking->>DB: Ambil booking approved
+    DB-->>Booking: Data valid/invalid
+    Booking-->>User: Tampilkan halaman verifikasi tiket
