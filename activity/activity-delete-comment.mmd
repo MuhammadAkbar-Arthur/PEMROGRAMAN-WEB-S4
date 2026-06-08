@@ -1,0 +1,22 @@
+flowchart TD
+    Start([Mulai])
+    ClickDelete[Pilih hapus komentar]
+    LoginCheck{Sudah login?}
+    RedirectLogin[Arahkan ke halaman login]
+    LoadComment[Ambil komentar berdasarkan id]
+    CommentFound{Komentar ditemukan?}
+    NotFound[Tampilkan pesan komentar tidak ditemukan]
+    LoadEvent[Ambil data event dari komentar]
+    PermissionCheck{Pemilik komentar atau admin atau organizer event?}
+    Denied[Tampilkan pesan akses ditolak]
+    DeleteComment[Hapus komentar]
+    BackDetail[Kembali ke halaman sebelumnya]
+    End([Selesai])
+
+    Start --> ClickDelete --> LoginCheck
+    LoginCheck -- Tidak --> RedirectLogin --> End
+    LoginCheck -- Ya --> LoadComment --> CommentFound
+    CommentFound -- Tidak --> NotFound --> BackDetail
+    CommentFound -- Ya --> LoadEvent --> PermissionCheck
+    PermissionCheck -- Tidak --> Denied --> BackDetail
+    PermissionCheck -- Ya --> DeleteComment --> BackDetail --> End

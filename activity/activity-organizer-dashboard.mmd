@@ -1,0 +1,21 @@
+flowchart TD
+    Start([Mulai])
+    OpenDashboard[Organizer membuka dashboard]
+    LoginCheck{Sudah login?}
+    RedirectLogin[Arahkan ke login]
+    RoleCheck{Role organizer?}
+    Denied[Akses organizer ditolak]
+    CountEvents[Hitung total event milik organizer]
+    CountBookings[Hitung total booking pada event organizer]
+    CountStatus[Hitung booking approved dan rejected]
+    LoadUpcoming[Ambil 3 event terdekat milik organizer]
+    BuildMonthlyChart[Susun chart booking bulanan]
+    BuildStatusChart[Susun chart status booking]
+    ShowDashboard[Tampilkan dashboard organizer]
+    End([Selesai])
+
+    Start --> OpenDashboard --> LoginCheck
+    LoginCheck -- Tidak --> RedirectLogin --> End
+    LoginCheck -- Ya --> RoleCheck
+    RoleCheck -- Tidak --> Denied --> End
+    RoleCheck -- Ya --> CountEvents --> CountBookings --> CountStatus --> LoadUpcoming --> BuildMonthlyChart --> BuildStatusChart --> ShowDashboard --> End

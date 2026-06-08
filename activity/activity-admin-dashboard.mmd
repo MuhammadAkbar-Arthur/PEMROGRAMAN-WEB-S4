@@ -1,0 +1,16 @@
+flowchart TD
+    Start([Mulai])
+    OpenDashboard[Admin membuka dashboard]
+    RoleCheck{Role admin?}
+    Denied[Arahkan ke halaman utama]
+    CountStats[Hitung total users events bookings favorites]
+    CountStatus[Hitung booking pending approved rejected]
+    LoadBookings[Ambil data booking join users dan events]
+    LoadEvents[Ambil semua event join organizer]
+    BuildChart[Susun label dan total chart booking per event]
+    ShowDashboard[Tampilkan dashboard admin]
+    End([Selesai])
+
+    Start --> OpenDashboard --> RoleCheck
+    RoleCheck -- Tidak --> Denied --> End
+    RoleCheck -- Ya --> CountStats --> CountStatus --> LoadBookings --> LoadEvents --> BuildChart --> ShowDashboard --> End

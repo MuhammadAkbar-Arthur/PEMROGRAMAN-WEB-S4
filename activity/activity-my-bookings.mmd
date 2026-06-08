@@ -1,0 +1,20 @@
+flowchart TD
+    Start([Mulai])
+    OpenMyBookings[User membuka halaman My Bookings]
+    LoginCheck{Sudah login?}
+    RedirectLogin[Arahkan ke login]
+    QueryBookings[Ambil bookings milik user join events]
+    SortBookings[Urutkan booking terbaru]
+    ShowBookings[Tampilkan daftar booking user]
+    ChooseAction{Pilih aksi pada booking?}
+    CancelBooking[Lanjut ke batalkan booking]
+    DownloadTicket[Lanjut ke download tiket PDF]
+    NoAction[Tidak ada aksi]
+    End([Selesai])
+
+    Start --> OpenMyBookings --> LoginCheck
+    LoginCheck -- Tidak --> RedirectLogin --> End
+    LoginCheck -- Ya --> QueryBookings --> SortBookings --> ShowBookings --> ChooseAction
+    ChooseAction -- Batalkan --> CancelBooking --> End
+    ChooseAction -- Download tiket --> DownloadTicket --> End
+    ChooseAction -- Tidak --> NoAction --> End

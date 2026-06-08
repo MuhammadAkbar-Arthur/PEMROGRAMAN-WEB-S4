@@ -1,0 +1,30 @@
+flowchart TD
+    Start([Mulai])
+    OpenWishlistAction[User memilih aksi wishlist]
+    RoleCheck{Role user biasa?}
+    Denied[Tampilkan pesan fitur hanya untuk user peserta]
+    ChooseAction{Pilih aksi}
+    AddEvent[Pilih tambah event ke wishlist]
+    DuplicateCheck{Event sudah ada di wishlist?}
+    Duplicate[Tampilkan pesan event sudah ada]
+    SaveFavorite[Simpan event ke wishlist]
+    OpenFavoritePage[Buka halaman favorite]
+    LoadFavorites[Ambil favorite join events milik user]
+    ShowFavorites[Tampilkan daftar wishlist]
+    RemoveEvent[Pilih hapus event dari wishlist]
+    FavoriteFound{Data wishlist ditemukan?}
+    NotFound[Tampilkan pesan data wishlist tidak ditemukan]
+    DeleteFavorite[Hapus data wishlist]
+    Back[Redirect kembali]
+    End([Selesai])
+
+    Start --> OpenWishlistAction --> RoleCheck
+    RoleCheck -- Tidak --> Denied --> End
+    RoleCheck -- Ya --> ChooseAction
+    ChooseAction -- Tambah --> AddEvent --> DuplicateCheck
+    DuplicateCheck -- Ya --> Duplicate --> Back --> End
+    DuplicateCheck -- Tidak --> SaveFavorite --> Back --> End
+    ChooseAction -- Lihat --> OpenFavoritePage --> LoadFavorites --> ShowFavorites --> End
+    ChooseAction -- Hapus --> RemoveEvent --> FavoriteFound
+    FavoriteFound -- Tidak --> NotFound --> Back
+    FavoriteFound -- Ya --> DeleteFavorite --> Back
