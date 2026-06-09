@@ -1,0 +1,20 @@
+flowchart TD
+    Start([Mulai])
+    ClickCancel[User klik tombol 'Batalkan Booking' pada tiket]
+    LoginCheck{User sudah login?}
+    RedirectLogin[Arahkan ke halaman login]
+    CheckStatus{Status tiket valid untuk dibatalkan?<br/>misal: status masih Pending}
+    InvalidStatus[Tampilkan pesan error status tidak valid]
+    ConfirmDialog{Sistem menampilkan konfirmasi pembatalan.<br/>User setuju?}
+    ProcessCancel[Sistem mengubah status tiket menjadi 'Canceled']
+    RestoreQuota[Sistem mengembalikan kuota event]
+    SuccessMessage[Sistem menampilkan pesan berhasil]
+    End([Selesai])
+
+    Start --> ClickCancel --> LoginCheck
+    LoginCheck -- Tidak --> RedirectLogin --> End
+    LoginCheck -- Ya --> CheckStatus
+    CheckStatus -- Tidak --> InvalidStatus --> End
+    CheckStatus -- Ya --> ConfirmDialog
+    ConfirmDialog -- Tidak --> End
+    ConfirmDialog -- Ya --> ProcessCancel --> RestoreQuota --> SuccessMessage --> End
