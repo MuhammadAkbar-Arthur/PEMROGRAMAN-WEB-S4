@@ -120,11 +120,15 @@ class Auth extends BaseController
 
         $model = new UserModel();
 
+        // Ambil input role dari form, jika tidak cocok/kosong, paksa ke default 'user'
+        $inputRole = $this->request->getPost('role');
+        $role = in_array($inputRole, ['user', 'organizer']) ? $inputRole : 'user';
+
         $model->save([
             'name'     => strip_tags(trim($this->request->getPost('name'))),
             'email'    => trim($this->request->getPost('email')),
             'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-            'role'     => 'user'
+            'role'     => $role
         ]);
 
         return redirect()->to('/login')->with('success', 'Register berhasil. Silakan login!');
