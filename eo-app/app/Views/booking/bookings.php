@@ -14,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
-<body class="bg-gray-50 dark:bg-gray-950 transition duration-300 text-gray-800 dark:text-gray-100 flex flex-col min-h-screen">
+<body class="bg-slate-50 dark:bg-slate-950 transition duration-300 text-slate-800 dark:text-slate-100 flex flex-col min-h-screen antialiased selection:bg-blue-500 selection:text-white">
 
 <?= view('layout/navbar'); ?>
 
@@ -22,8 +22,11 @@
 
     <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4 border-b border-gray-200 dark:border-gray-800 pb-6">
         <div>
-            <h1 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 tracking-tight flex items-center gap-3">
-                <i class="fa-solid fa-ticket text-blue-600 dark:text-blue-400"></i> Tiket Saya
+            <h1 class="text-3xl md:text-4xl font-black tracking-tight text-blue-600 dark:text-blue-400 flex items-center gap-3.5">
+                <span class="p-2.5 bg-blue-50 dark:bg-blue-950/50 rounded-2xl inline-flex text-blue-600 dark:text-blue-400 border border-blue-100/50 dark:border-blue-900/30">
+                    <i class="fa-solid fa-ticket transform -rotate-12 text-2xl"></i>
+                </span>
+                Tiket Saya
             </h1>
             <p class="text-gray-500 dark:text-gray-400 mt-2 font-medium">
                 Pantau status pendaftaran dan unduh tiket acaramu di sini.

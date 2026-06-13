@@ -24,7 +24,7 @@
                 <i class="fa-solid fa-tags text-blue-600 dark:text-blue-400"></i> Kelola Kategori
             </h1>
             <p class="text-gray-500 dark:text-gray-400 mt-2 font-medium">
-                Tambah, ubah, dan kelola klasifikasi kategori acara di dalam sistem.
+                Tambah, ubah, dan kelola klasifikasi kategori acara di dalam sistem
             </p>
         </div>
         <a href="/admin" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 px-5 py-2.5 rounded-xl shadow-sm transition flex items-center gap-2 font-bold text-sm shrink-0">

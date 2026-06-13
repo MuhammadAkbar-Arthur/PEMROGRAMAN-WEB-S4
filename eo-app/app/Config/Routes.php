@@ -2,6 +2,7 @@
 
 use CodeIgniter\Router\RouteCollection;
 
+// peta jalan website
 /**
  * @var RouteCollection $routes
  */
