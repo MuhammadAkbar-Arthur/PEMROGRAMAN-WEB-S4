@@ -15,6 +15,23 @@ class Organizer extends BaseController
         $db = \Config\Database::connect();
         $userId = session()->get('id');
 
+        // =========================
+        // FILTER RANGE TANGGAL (BARU)
+        // =========================
+        $range = $this->request->getGet('range') ?? 'month';
+
+        // default condition
+        $dateCondition = "";
+
+        if ($range == 'today') {
+            $dateCondition = "DATE(bookings.created_at) = CURDATE()";
+        } elseif ($range == 'week') {
+            $dateCondition = "bookings.created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+        } else {
+            $dateCondition = "MONTH(bookings.created_at) = MONTH(CURDATE())
+                              AND YEAR(bookings.created_at) = YEAR(CURDATE())";
+        }
+
         // TOTAL EVENT
         $totalEvents = $db->table('events')->where('owner_id', $userId)->countAllResults();
 
@@ -46,12 +63,15 @@ class Organizer extends BaseController
             ->get()
             ->getResultArray();
 
-        // CHART DATA BULANAN
+        // =========================
+        // CHART DATA (SUDAH FILTER)
+        // =========================
         $chartQuery = $db->query("
             SELECT MONTH(bookings.created_at) as month, COUNT(*) as total
             FROM bookings
             JOIN events ON events.id = bookings.event_id
             WHERE events.owner_id = $userId
+            AND $dateCondition
             GROUP BY MONTH(bookings.created_at)
             ORDER BY MONTH(bookings.created_at)
         ")->getResultArray();
@@ -91,6 +111,7 @@ class Organizer extends BaseController
             'chartData' => json_encode($chartData),
             'statusLabels' => json_encode($statusLabels),
             'statusData' => json_encode($statusData),
+            'range' => $range
         ]);
     }
 
@@ -147,9 +168,7 @@ class Organizer extends BaseController
             'events' => $events
         ]);
     }
-    // =========================
-    // DELETE REJECTED BOOKING (ORGANIZER)
-    // =========================
+
     public function deleteBooking($id)
     {
         $this->checkLogin();
@@ -161,7 +180,6 @@ class Organizer extends BaseController
         $db = \Config\Database::connect();
         $builder = $db->table('bookings');
 
-        // Pastikan tiket ini ada dan event-nya adalah milik organizer yang login
         $booking = $builder->select('bookings.id, bookings.status, events.owner_id')
                            ->join('events', 'events.id = bookings.event_id')
                            ->where('bookings.id', $id)
@@ -179,7 +197,6 @@ class Organizer extends BaseController
             return redirect()->back()->with('error', 'Hanya pesanan dengan status DITOLAK yang dapat dihapus.');
         }
 
-        // Hapus data booking
         $db->table('bookings')->where('id', $id)->delete();
 
         return redirect()->back()->with('success', 'Data pesanan berhasil dihapus. Peserta kini dapat mendaftar ulang.');

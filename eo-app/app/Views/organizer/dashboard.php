@@ -83,34 +83,54 @@
         </div>
     </div>
 
-    <!-- AREA GRAFIK (CHART.JS) -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        <!-- Bar Chart: Booking Bulanan -->
-        <div class="lg:col-span-2 bg-white dark:bg-gray-900 shadow-sm rounded-3xl p-6 md:p-8 border border-gray-100 dark:border-gray-800 flex flex-col">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                    <i class="fa-solid fa-chart-column text-blue-500"></i> Analitik Pemesanan
-                </h2>
-            </div>
-            <div class="w-full flex-grow min-h-[300px] relative">
-                <canvas id="bookingChart"></canvas>
-            </div>
+<!-- AREA GRAFIK (CHART.JS) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- Bar Chart: Booking Bulanan -->
+    <div class="lg:col-span-2 bg-white dark:bg-gray-900 shadow-sm rounded-3xl p-6 md:p-8 border border-gray-100 dark:border-gray-800 flex flex-col">
+
+        <div class="flex justify-between items-center mb-6">
+
+            <h2 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                <i class="fa-solid fa-chart-column text-blue-500"></i> Analitik Pemesanan
+            </h2>
+
+            <!-- ========================= -->
+            <!-- FILTER RANGE (BARU) -->
+            <!-- ========================= -->
+            <form method="GET" class="flex items-center gap-2">
+                <select name="range"
+                    onchange="this.form.submit()"
+                    class="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium">
+
+                    <option value="today" <?= ($range == 'today') ? 'selected' : '' ?>>Hari Ini</option>
+                    <option value="week" <?= ($range == 'week') ? 'selected' : '' ?>>Minggu Ini</option>
+                    <option value="month" <?= ($range == 'month') ? 'selected' : '' ?>>Bulan Ini</option>
+
+                </select>
+            </form>
+
         </div>
 
-        <!-- Doughnut Chart: Status Pemesanan -->
-        <div class="bg-white dark:bg-gray-900 shadow-sm rounded-3xl p-6 md:p-8 border border-gray-100 dark:border-gray-800 flex flex-col">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                    <i class="fa-solid fa-chart-pie text-purple-500"></i> Rasio Status
-                </h2>
-            </div>
-            <div class="w-full flex-grow flex items-center justify-center min-h-[300px]">
-                <canvas id="statusChart"></canvas>
-            </div>
+        <div class="w-full flex-grow min-h-[300px] relative">
+            <canvas id="bookingChart"></canvas>
         </div>
-
     </div>
+
+    <!-- Doughnut Chart: Status Pemesanan -->
+    <div class="bg-white dark:bg-gray-900 shadow-sm rounded-3xl p-6 md:p-8 border border-gray-100 dark:border-gray-800 flex flex-col">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                <i class="fa-solid fa-chart-pie text-purple-500"></i> Rasio Status
+            </h2>
+        </div>
+
+        <div class="w-full flex-grow flex items-center justify-center min-h-[300px]">
+            <canvas id="statusChart"></canvas>
+        </div>
+    </div>
+
+</div>
 
     <!-- ACARA MENDATANG -->
     <div class="bg-white dark:bg-gray-900 shadow-sm rounded-3xl p-6 md:p-8 border border-gray-100 dark:border-gray-800">
