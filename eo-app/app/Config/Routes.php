@@ -2,7 +2,10 @@
 
 use CodeIgniter\Router\RouteCollection;
 
+// File ini berfungsi sebagai resepsionis utama website.
 // peta jalan website
+// Mengatur jalurnya URL yang diketik pengunjung di browser menuju ke 
+// Controller dan Fungsi yang tepat di dalam sistem.
 /**
  * @var RouteCollection $routes
  */
