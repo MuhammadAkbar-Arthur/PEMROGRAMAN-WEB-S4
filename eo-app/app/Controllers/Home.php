@@ -96,8 +96,8 @@ class Home extends BaseController
                                     ->countAllResults();
 
         $data['totalBooked']   = $totalBooked;
-        $data['remainingSeat'] = $event['quota'] - $totalBooked;
-        $data['isFull']        = $totalBooked >= $event['quota'];
+        $data['remainingSeat'] = $event['quota'];
+        $data['isFull']        = $event['quota'] <= 0;
 
         // ==========================================
         // 3. CEK STATUS USER (BOOKING & WISHLIST)
