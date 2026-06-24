@@ -145,18 +145,23 @@ class Booking extends BaseController
             }
         }
 
-        $totalApproved = $model->where('event_id', $booking['event_id'])
-                               ->where('status', 'approved')
-                               ->countAllResults();
-
-        if ($totalApproved >= $booking['quota']) {
-            return redirect()->back()->with('error', 'Gagal! Kuota event ini sudah terisi penuh.');
+        // Pengecekan sisa kuota langsung dari database
+        if ($booking['quota'] <= 0) {
+            return redirect()->back()->with('error', 'Gagal! Kuota event ini sudah habis.');
         }
 
+        // 1. UBAH STATUS BOOKING JADI APPROVED
         $model->update($id, ['status' => 'approved']);
+
+        // 2. KURANGI KUOTA DI DATABASE (Tabel events)
+        $db->table('events')
+           ->where('id', $booking['event_id'])
+           ->set('quota', 'quota - 1', false) // Parameter false agar CI4 tidak menambahkan quote string
+           ->update();
+
         $this->sendBookingEmail($id);
 
-        return redirect()->back()->with('success', 'Tiket berhasil disetujui');
+        return redirect()->back()->with('success', 'Tiket berhasil disetujui dan kuota tiket telah dikurangi!');
     }
 
     // =========================
