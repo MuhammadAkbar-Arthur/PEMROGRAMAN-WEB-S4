@@ -47,7 +47,7 @@
                     </h1>
                 </div>
 
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
                     <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 hover:shadow-md transition">
                         <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400 flex items-center justify-center mb-3">
                             <i class="fa-solid fa-location-dot"></i>
@@ -85,6 +85,15 @@
                         <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider dark:text-gray-400 mb-1">Harga Tiket</p>
                         <p class="font-bold text-lg text-gray-800 dark:text-white">
                             <?= ($event['price'] > 0) ? 'Rp ' . number_format($event['price'], 0, ',', '.') : 'Gratis'; ?>
+                        </p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 hover:shadow-md transition">
+                        <div class="w-10 h-10 rounded-full bg-red-100 text-red-600 dark:bg-red-900/50 dark:text-red-400 flex items-center justify-center mb-3">
+                            <i class="fa-solid fa-users-viewfinder"></i>
+                        </div>
+                        <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider dark:text-gray-400 mb-1">Sisa Kuota</p>
+                        <p class="font-bold text-lg <?= ($remainingSeat <= 5) ? 'text-red-600 animate-pulse' : 'text-gray-800 dark:text-white' ?>">
+                            <?= esc($remainingSeat) ?> Orang
                         </p>
                     </div>
                 </div> 
